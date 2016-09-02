@@ -1,0 +1,3 @@
+CommentFromMike: This is the manifest for the agent
+Premain-Class: DurationAgent
+Boot-Class-Path: jboss-javassist-javassist-89c91fa/javassist.jar

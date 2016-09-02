@@ -1,0 +1,2 @@
+CommentFromMike: This is the manifest for a sample program
+Main-Class: TestInstrumentation
