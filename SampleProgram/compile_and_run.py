@@ -6,7 +6,7 @@ KNOB_PLATFORM="LINUX" # Could also be MAC
 KNOB_TEST="TEST1"
 
 # Compile the Test programs
-os.system('python compile.py')
+os.system('python build.py')
 
 # Simple Test Program
 # (Optional) Run the sample program without static instrumentation
