@@ -1,7 +1,7 @@
 import subprocess
 
 subprocess.call(['python','run.py'])
-subprocess.call(['cd','SampleProgram'])
+subprocess.call(['cd','./SampleProgram'])
 subprocess.call(['python','run.py'])
 subprocess.call(['cd','..'])
 
