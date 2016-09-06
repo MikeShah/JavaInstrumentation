@@ -7,3 +7,9 @@ import os
 os.system('javac *.java')
 # Build a jar of the test program
 JAR = 'TestInstrumentation.jar'
+
+
+os.system('jar -cfm '+JAR+' manifest.mf *.class')
+
+#os.system('jar cvfm '+JAR+' ./manifest.mf -C ./*.class .')
+
