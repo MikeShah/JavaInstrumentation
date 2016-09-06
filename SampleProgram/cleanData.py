@@ -12,6 +12,8 @@ f = open("CallTreeStream.txt",'r')
 # Load all of the lines into a list
 lst = f.readlines()
 
+print "================Cleaning data=================="
+
 
 # We can get away with this method, because the indentation should match up
 # and serve as a unique identifier.
@@ -34,10 +36,12 @@ while(pos < len(lst)):
         pos = pos + 1
 
 
+
 # Output the file
 f2 = open("CleanCallTreeStream.txt",'w')
 
 print "Generating output for list of length:"+str(len(lst))
+print "Writing output to CleanCallTreeStream.txt"
 
 for i in lst:
     # Only output the data that is complete with timing information
