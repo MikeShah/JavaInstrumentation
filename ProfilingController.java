@@ -225,7 +225,7 @@ public final class ProfilingController {
 
 	// Prints out the call as a single String
 	public static synchronized String printCallTree(){
-		if(callOccuranceMap==null){
+		if(callOccuranceMap==null || statisticMap==null){
 			init();
 		}
 
@@ -256,8 +256,12 @@ public final class ProfilingController {
 					callOccuranceMap.put(funcName,callOccuranceMap.get(funcName)+1);
 				}
 		   		Statistic temp = statisticMap.get(id);
-		   		result = funcNameWithSpaces;
-				result +=temp.dumpParse(callOccuranceMap.get(funcName)) + "\n";
+		   		if(temp!=null){
+					result = funcNameWithSpaces;
+					result +=temp.dumpParse(callOccuranceMap.get(funcName)) + "\n";
+				}else{
+					// TODO: Put some error message here
+				}
 			}
 			
 		}

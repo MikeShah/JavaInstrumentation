@@ -25,11 +25,12 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
         ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
 
         byte[] byteCode = classfileBuffer;
- 
-        for(int x = 0; x < ProfilingController.classNames.size(); ++x){
+
+	for(int x = 0; x < ProfilingController.classNames.size(); ++x){
             /// Note that we have to use slashes here (i.e. org/something/something)
             if (className.equals(ProfilingController.classNames.get(x).replace('.','/'))) {
-                System.out.println("Attempted transform()"+ProfilingController.classNames.get(x));
+        	System.out.println("============= (SleepClassFileTransformer.java) Transforming and Instrumenting Classes ================== ");       
+	        System.out.println("Attempted transform(): "+ProfilingController.classNames.get(x));
                 try {
                     final ClassPool cp = ClassPool.getDefault();
                     // The class here (i.e. org.something.something)
@@ -37,8 +38,8 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
 
                     // Modify all of the classes methods
                     CtBehavior[] methods = cc.getDeclaredBehaviors();
-                    System.out.println("Instrumenting: "+methods.length+" methods in class "+cc.getName());
-                    // Loop that instruments all of the mtehods
+                    System.out.println("\tInstrumenting: "+methods.length+" methods in class "+cc.getName());
+                    // Loop that instruments all of the methods
                     for(int i =0; i < methods.length;i++){
                         // If the method is empty, then we do not need to instrument it.
                         if(methods[i].isEmpty()==false && isNative(methods[i])==false){
@@ -62,6 +63,8 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
             }
         }
 
+	//System.out.println("============= (SleepClassFileTransformer.java) Transforming and Instrumenting Classes ================== "); 
+        
         return byteCode;
     }
 
