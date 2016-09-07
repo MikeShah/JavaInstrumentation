@@ -105,7 +105,7 @@ public final class ProfilingController {
     		streamFunctionMapWriter = new PrintWriter(new BufferedWriter(new FileWriter("functionMap.txt")));
     	}
 
-    		// Create a new buffered reader that takes in a list of classnames.
+            // Create a new buffered reader that takes in a list of classnames.
             BufferedReader reader = new BufferedReader(new FileReader(fileName));
             String line;
             System.out.println("Trying stuff");
@@ -133,8 +133,8 @@ public final class ProfilingController {
 
         }
         
-        //ProfilingController.classNames.add("Sleeping");
-        //ProfilingController.classNames.add("TestInstrumentation");
+        ProfilingController.classNames.add("Sleeping");
+        ProfilingController.classNames.add("TestInstrumentation");
     }
 
 	// Initialize the constructor
@@ -256,7 +256,8 @@ public final class ProfilingController {
 					callOccuranceMap.put(funcName,callOccuranceMap.get(funcName)+1);
 				}
 		   		Statistic temp = statisticMap.get(id);
-		   		result += funcNameWithSpaces+temp.dumpParse(callOccuranceMap.get(funcName)) + "\n";
+		   		result = funcNameWithSpaces;
+				result +=temp.dumpParse(callOccuranceMap.get(funcName)) + "\n";
 			}
 			
 		}

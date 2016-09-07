@@ -1,0 +1,12 @@
+============================================================================
+==== functionMap(8) Dump of <key,function name> ==== and statistics
+============================================================================
+0 add Statistics-Average of 1 Runs = 0 Runs = {(1)0,}
+1 RandomSleep Statistics-Average of 6 Runs = 870 Runs = {(1)539,(1)822,(1)995,(1)937,(1)876,(1)1054,}
+2 RandomSleep2 Statistics-Average of 2 Runs = 1052 Runs = {(1)1139,(1)965,}
+3 a Statistics-Average of 2 Runs = 1 Runs = {(1)1,(1)1,}
+4 b Statistics-Average of 2 Runs = 1 Runs = {(1)1,(1)1,}
+5 c Statistics-Average of 2 Runs = 0 Runs = {(1)0,(1)0,}
+6 d Statistics-Average of 2 Runs = 1 Runs = {(1)1,(1)1,}
+7 e Statistics-Average of 2 Runs = 0 Runs = {(1)0,(1)1,}
+============================================================================
