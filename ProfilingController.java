@@ -36,7 +36,7 @@ public final class ProfilingController {
 	// The number of functions in the program.
 	// Also used as a unique ID for all functions in the program.
 	static int functionCount;
-	/// The indentation level for the call graph.
+	/// The indentation level for the call graph. This in general is the number of spaces before a function
 	static int prettyPrint = 0;
 
 	/// Add indentation before a function entry
@@ -221,6 +221,15 @@ public final class ProfilingController {
 
 	}
 
+	private static synchronized String removeLeadingNumeric(String s){
+		int i = 0;
+		while(s.charAt(i)>=48 && s.charAt(i) <= 57){
+			++i;			
+		}
+		
+		return s.substring(i);
+	}
+
 	// Prints out the call as a single String
 	public static synchronized String printCallTree(){
 		if(callOccuranceMap==null || statisticMap==null){
@@ -237,6 +246,7 @@ public final class ProfilingController {
 		   	if(funcName.contains("__Entry")){
 		   		// Remove __Entry from name
 				funcName = funcName.substring(0,funcName.length()-"__Entry".length());
+				funcName = removeLeadingNumeric(funcName);
    				// Retrieve the ID of the function in our map to
    				// update its values
    				Integer id = 0;
@@ -246,8 +256,21 @@ public final class ProfilingController {
 		    				break;
 		    			}
 		    		}
+				// If the id is not found, then output an error message
+				if(id >= functionMap.size()){
+					System.out.println("Function: \""+funcName+"\" has not been found!");
+					System.out.println("Available functions are:");
+					for(int j= 0; j < functionMap.size(); ++j){
+						System.out.println(functionMap.get(j).toString());
+					}
+				}
 		    		// Update our occurance map, so that we output the correct
 		    		// values in our call tree.
+		    		// This occurance map is basically a one time use item
+		    		// for when we are outputting the call tree. It will ensure that
+		    		// for each function we are outputting a unique occurence of it
+		    		// in our resulting string, and that we get the appropriate instance
+		    		// from the statisticMap, using the dumpParse function.
 				if(!callOccuranceMap.containsKey(funcName)){
 					callOccuranceMap.put(funcName,0);
 				}else{
@@ -255,13 +278,13 @@ public final class ProfilingController {
 					callOccuranceMap.put(funcName,callOccuranceMap.get(funcName)+1);
 				}
 				// First we pick out the function from the statistic map using the 'id'
-				
+			
 		   		Statistic temp = statisticMap.get(id);
-		   		System.out.println("ID:"+id);	
-				result += funcNameWithSpaces + "\n";
-				if(temp!=null){
-					result += temp.dumpParse(callOccuranceMap.get(funcName)) + "\n";
-				}
+		   		//System.out.println("ID:"+id);	
+				result += funcNameWithSpaces;
+				//if(temp!=null){
+				result += temp.dumpParse(callOccuranceMap.get(funcName)) + "\n";
+				//}
 			}
 			
 		}

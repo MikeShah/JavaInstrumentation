@@ -56,11 +56,11 @@ import java.util.*;
 		//	 (1) instance is less than threadIDList or timeList range
 		public String dumpParse(int instance){
 			String result="";
+			//System.out.println("dumpParse:"+instance);
 			// If the instance is out of bounds, then return empty.
 			if(instance > threadIDList.size() || instance > timeList.size()){
 				return result;
 			}			
-
 
 			//long avg = 0;
 			// Output every time and the thread id

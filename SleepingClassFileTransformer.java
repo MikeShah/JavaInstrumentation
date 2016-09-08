@@ -20,7 +20,9 @@ import java.io.*;
 public class SleepingClassFileTransformer implements ClassFileTransformer {
  
 
-
+/// This is the transformation that is called
+/// on every method.
+//
     public byte[] transform(ClassLoader loader, String className, Class classBeingRedefined,
         ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
 
@@ -81,6 +83,7 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
     }    
 
     // Updates a method such that it has a timer
+    // This function actually modifies the method inserting code at each entry and exit.	 
     private void instrumentMethod(CtBehavior method) throws NotFoundException, CannotCompileException{
         // Add a method to our final map
         String m_name = method.getName();
