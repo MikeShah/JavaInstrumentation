@@ -20,7 +20,6 @@ public final class ProfilingController {
 	// The statisticMap maps a Key of a function to statistics about how
 	// many times it has executed.
 	public static ConcurrentHashMap<Integer,Statistic> statisticMap;
-
 	// Writes all of the function entries and exits.
 	public static CopyOnWriteArrayList<String> callTreeList;
 	// The callOccuranceMap is used for output
@@ -28,19 +27,15 @@ public final class ProfilingController {
 	// we output the correct instance of the statistic data in the Statistic Map (for example, when
 	// seeing how many ms it took the 4th execution of a method)
 	public static ConcurrentHashMap<String,Integer> callOccuranceMap;
-
 	// Store all of the class names that we profile in our program
 	public static CopyOnWriteArrayList<String> classNames;
-
 	// A stream that buffers and builds a Call Tree of the program.
 	public static PrintWriter streamCallTreeWriter;
 	// A stream that builds the funtion mapping list
 	public static PrintWriter streamFunctionMapWriter; 
-
 	// The number of functions in the program.
 	// Also used as a unique ID for all functions in the program.
 	static int functionCount;
-
 	/// The indentation level for the call graph.
 	static int prettyPrint = 0;
 
@@ -97,13 +92,13 @@ public final class ProfilingController {
 
         // Instantiate our class names list        
         try{
-       	if(streamCallTreeWriter==null){
+       	    if(streamCallTreeWriter==null){
     		streamCallTreeWriter = new PrintWriter(new BufferedWriter(new FileWriter("CallTreeStream.txt")));
-    	}
+    	    }
 
-    	if(streamFunctionMapWriter==null){
+    	    if(streamFunctionMapWriter==null){
     		streamFunctionMapWriter = new PrintWriter(new BufferedWriter(new FileWriter("functionMap.txt")));
-    	}
+            }
 
             // Create a new buffered reader that takes in a list of classnames.
             BufferedReader reader = new BufferedReader(new FileReader(fileName));
@@ -133,6 +128,7 @@ public final class ProfilingController {
 
         }
         
+	// FIXME: Remove this because we do not want to have to manually add our classes
         ProfilingController.classNames.add("Sleeping");
         ProfilingController.classNames.add("TestInstrumentation");
     }
@@ -142,21 +138,21 @@ public final class ProfilingController {
 	// that the datastructures are created before using them.
 	private static void init(){
 		// If our function map is null, then allocate memory for it.
-		if(functionMap==null){
+		if(functionMap == null){
 			//System.out.println("functionMap allocted");
-			functionMap = new ConcurrentHashMap<Integer,String>();
-			functionCount = 0;
+			functionMap 	 = new ConcurrentHashMap<Integer,String>();
+			functionCount 	 = 0;
 		}
 		// If our statistic map is null, then allocat memory for it.
-		if(statisticMap==null){
+		if(statisticMap == null){
 			//System.out.println("statisticMap allocted");
-			statisticMap = new ConcurrentHashMap<Integer,Statistic>();
+			statisticMap 	 = new ConcurrentHashMap<Integer,Statistic>();
 		}
-		if(callTreeList==null){
-			callTreeList = new CopyOnWriteArrayList<String>();
+		if(callTreeList == null){
+			callTreeList 	 = new CopyOnWriteArrayList<String>();
 		}
-		if(classNames==null){
-			classNames = new CopyOnWriteArrayList<String>();
+		if(classNames   == null){
+			classNames 	 = new CopyOnWriteArrayList<String>();
 		}
 		if(callOccuranceMap==null){
 			callOccuranceMap = new ConcurrentHashMap<String,Integer>();
@@ -179,10 +175,12 @@ public final class ProfilingController {
 		}
 
 		if(functionMap.contains(functionName)){
-			// Do something>
+			// Do something
+			// TODO: Add some sort of error message I suppose
 		}
 		else{
 			// Associate a unique key(function Count) to a function name
+			// Note that the functionmap and statisticMap share ID's
 			functionMap.put(functionCount,functionName);
 			statisticMap.put(functionCount,new Statistic());
 			functionCount++;
@@ -202,12 +200,12 @@ public final class ProfilingController {
 		// Based on the functionName, get the key, and update the values.
 		int id = 0;
 		for (Integer keyType: functionMap.keySet()){
-            String value = functionMap.get(keyType).toString();  
-            if(value.equals(functionName)){
-            	//System.out.println("Found: "+value+"=="+functionName+" at id:"+id);
-            	break;
-            }  
-            id++;
+            		String value = functionMap.get(keyType).toString();  
+            		if(value.equals(functionName)){
+            			//System.out.println("Found: "+value+"=="+functionName+" at id:"+id);
+            			break;
+            		}		  
+	            id++;
 		} 
 
 		if(statisticMap!=null){
@@ -237,30 +235,32 @@ public final class ProfilingController {
 			String funcNameWithSpaces = callTreeList.get(i).substring(0,callTreeList.get(i).length()-"__Entry".length());
 			// Setup the string that gets exported
 		   	if(funcName.contains("__Entry")){
-		   		funcName = funcName.substring(0,funcName.length()-"__Entry".length());
+		   		// Remove __Entry from name
+				funcName = funcName.substring(0,funcName.length()-"__Entry".length());
    				// Retrieve the ID of the function in our map to
    				// update its values
    				Integer id = 0;
    				for(id=0; id < functionMap.size(); ++id){
-		    		String functionName = functionMap.get(id).toString(); 
-		    		if(functionName.equals(funcName)){
-		    			break;
+		    			String functionName = functionMap.get(id).toString(); 
+		    			if(functionName.equals(funcName)){
+		    				break;
+		    			}
 		    		}
-		    	}
-		    	// Update our occurance map, so that we output the correct
-		    	// values in our call tree.
+		    		// Update our occurance map, so that we output the correct
+		    		// values in our call tree.
 				if(!callOccuranceMap.containsKey(funcName)){
 					callOccuranceMap.put(funcName,0);
 				}else{
 					// Otherwise increment the value in the hashmap
 					callOccuranceMap.put(funcName,callOccuranceMap.get(funcName)+1);
 				}
+				// First we pick out the function from the statistic map using the 'id'
+				
 		   		Statistic temp = statisticMap.get(id);
-		   		if(temp!=null){
-					result = funcNameWithSpaces;
-					result +=temp.dumpParse(callOccuranceMap.get(funcName)) + "\n";
-				}else{
-					// TODO: Put some error message here
+		   		System.out.println("ID:"+id);	
+				result += funcNameWithSpaces + "\n";
+				if(temp!=null){
+					result += temp.dumpParse(callOccuranceMap.get(funcName)) + "\n";
 				}
 			}
 			

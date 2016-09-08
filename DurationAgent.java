@@ -24,10 +24,10 @@ public class DurationAgent {
 
 	// Runs at the start of the program
 	public static void premain(String agentArgs, Instrumentation inst) {
-		System.out.println("===Started executing premain===");
+		System.out.println("===(DurationAgent.java) Started executing premain===");
 		ProfilingController.setup(classNamesToInstrument);
 		inst.addTransformer(new SleepingClassFileTransformer());
-		System.out.println("===Finished executing premain===");
+		System.out.println("===(DurationAgent.java) Finished executing premain===");
 	}
 
 }
