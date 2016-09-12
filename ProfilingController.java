@@ -93,33 +93,37 @@ public final class ProfilingController {
         // Instantiate our class names list        
         try{
        	    if(streamCallTreeWriter==null){
-    		streamCallTreeWriter = new PrintWriter(new BufferedWriter(new FileWriter("CallTreeStream.txt")));
+    			streamCallTreeWriter = new PrintWriter(new BufferedWriter(new FileWriter("CallTreeStream.txt")));
     	    }
-
     	    if(streamFunctionMapWriter==null){
-    		streamFunctionMapWriter = new PrintWriter(new BufferedWriter(new FileWriter("functionMap.txt")));
+    			streamFunctionMapWriter = new PrintWriter(new BufferedWriter(new FileWriter("functionMap.csv")));
             }
 
-            // Create a new buffered reader that takes in a list of classnames.
-            BufferedReader reader = new BufferedReader(new FileReader(fileName));
-            String line;
-            System.out.println("Trying stuff");
+            // Check that our file exists and is not a directory
+            File f = new File(fileName);
+            if(f.exists() && !f.isDirectory()){    
+	            // Create a new buffered reader that takes in a list of classnames.
+	            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+	            System.out.println("Trying stuff");
 
-            File temp = new File(fileName);
-            if(temp.exists()){
-            	System.out.println("File exists");
-            }else{
-            	System.out.println("File does not exist I guess dude?");
+				String line = reader.readLine();
+	            // Store each class in this list
+	            while(line != null){
+	                classNames.add(line);    
+	                System.out.println("Adding Class to Transform:"+line);  
+	                line = reader.readLine();  		
+	            }
             }
-
-            // Store each class in this list
-            while((line = reader.readLine()) != null){
-                classNames.add(line);    
-                System.out.println("Adding Class to Transform:"+line);        		
+            else{
+            	System.out.println("ProfilingController.setup() -- fileName does not exist!");
             }
         }catch(Exception ex){
 
         }
+
+        //classNames.add("Sleeping");
+        //classNames.add("TestInstrumentation");
+
     }
 
 	// Initialize the constructor
@@ -280,7 +284,7 @@ public final class ProfilingController {
 		// TODO: Write this to file
 		//System.out.println(result);
 		try{
-			PrintWriter writer = new PrintWriter("out.txt","UTF-8");
+			PrintWriter writer = new PrintWriter("printCallTree.txt","UTF-8");
 			writer.println(result);
 			writer.close();
 		}catch(Exception ex){
@@ -311,5 +315,24 @@ public final class ProfilingController {
 		streamFunctionMapWriter.flush();
 	}
 
+
+	/// Dumps the functionMap as a CSV File
+	public static synchronized void dumpFunctionMapCSV(){
+		if (functionMap==null){
+			System.out.println("dump is null, add a function first");
+			return;
+		}
+
+		streamFunctionMapWriter.write("functionMap("+functionMap.size()+") Dump of <key function name>,name, ,Total Runs, ,Runs Avg, ,ThreadID,Time1,ThreadID,Time2,ThreadID,Time3,ThreadID,Time4\n");
+
+		for(Integer i = 0; i < functionMap.size(); ++i){
+		    String functionName = functionMap.get(i).toString();  
+		    Statistic temp = statisticMap.get(i);
+		    String output = temp.dumpCSV();
+		    //System.out.println(i.toString() + " = " + value + statisticMap.get(i).dump());  
+		    streamFunctionMapWriter.write(i.toString()+","+functionName + ","+output+'\n');  
+		}
+		streamFunctionMapWriter.flush();
+	}
 
 }

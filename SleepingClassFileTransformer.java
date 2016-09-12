@@ -18,7 +18,6 @@ import java.io.*;
 */ 
 
 public class SleepingClassFileTransformer implements ClassFileTransformer {
- 
 
 /// This is the transformation that is called
 /// on every method.
@@ -49,7 +48,7 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
                                 // Special case for instrumenting our 'main' method
                                 // Note that we have to use 'getDeclaredMethod' here -- TODO: WHY use this?
                                 final CtBehavior mainmethod = cc.getDeclaredMethod("main");
-                                mainmethod.insertAfter("{ProfilingController.dump();ProfilingController.printCallTree();}");
+                                mainmethod.insertAfter("{ProfilingController.dumpFunctionMapCSV();ProfilingController.printCallTree();}");
                             }else{
                                 instrumentMethod(methods[i]);
                             }
@@ -78,6 +77,7 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
 
     // Useful function from how-to-avoid-javassist-cannotcompileexception-no-method-body
     // This is because we cannot instrument Native methods
+    // This method in particular looks for synchornized methods.
     public boolean isSynchronized(CtBehavior method){
         return Modifier.isSynchronized(method.getModifiers());
     }    

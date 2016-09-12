@@ -45,8 +45,26 @@ import java.util.*;
 				avg = avg / timeList.size();
 			}
 
-			return "Average of "+timeList.size()+" Runs = "+avg+ " Runs = {"+result+"}";
+			return "Average of "+timeList.size()+" Runs = "+avg+ ",Runs = {"+result+"}";
 		}
+
+		// Params: If CSV is true, then output comma separated list
+		public String dumpCSV(){
+			String result="";
+			long avg = 0;
+			// Output every time and the thread id
+			for(int i =0; i < timeList.size();i++){
+				result += threadIDList.get(i)+","+ timeList.get(i).toString()+",";
+				avg += timeList.get(i);
+			}
+
+			if(timeList.size()>0){
+				avg = avg / timeList.size();
+			}
+
+			return "Runs,"+timeList.size()+",Runs Avg,"+avg+ ",Runs,"+result+",";
+		}
+
 
 		// Output the statistic in a parsable way
 		// param: instance is the instance of data from the tree at one particular point.
