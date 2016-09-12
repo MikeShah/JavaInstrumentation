@@ -114,23 +114,12 @@ public final class ProfilingController {
 
             // Store each class in this list
             while((line = reader.readLine()) != null){
-            	if(	   line.indexOf("reflect")>0 
-            		|| line.indexOf("java.")>=0  
-            		|| line.indexOf("javax.")>=0 
-            		|| line.indexOf("sun.") >=0
-            	   ){
-            		// blah
-            	}else{
-                	classNames.add(line);            		
-            	}
+                classNames.add(line);    
+                System.out.println("Adding Class to Transform:"+line);        		
             }
         }catch(Exception ex){
 
         }
-        
-	// FIXME: Remove this because we do not want to have to manually add our classes
-        ProfilingController.classNames.add("Sleeping");
-        ProfilingController.classNames.add("TestInstrumentation");
     }
 
 	// Initialize the constructor

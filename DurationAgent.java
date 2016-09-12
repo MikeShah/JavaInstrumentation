@@ -21,7 +21,6 @@ public class DurationAgent {
 	//static String classNamesToInstrument = "/Users/michaelshah/Dropbox/school/GraduateSchool/Courses/Comp250VIS/TreeMap/PythonTools/sunflowInput.TXT.output.txt";
 	static String classNamesToInstrument = "./classNamesToInstrument.txt";
 
-
 	// Runs at the start of the program
 	public static void premain(String agentArgs, Instrumentation inst) {
 		System.out.println("===(DurationAgent.java) Started executing premain===");

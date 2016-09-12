@@ -1,9 +1,5 @@
 import subprocess
+import os
 
-subprocess.call(['python','run.py'])
-subprocess.call(['cd','./SampleProgram'])
-subprocess.call(['python','run.py'])
-subprocess.call(['cd','..'])
+os.system('python compile_and_run.py ; cd SampleProgram/ ; python compile_and_run.py ; cd ..')
 
-#os.system('python run.py')
-#python SampleProgram/run.py
