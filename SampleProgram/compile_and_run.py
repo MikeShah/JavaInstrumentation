@@ -13,19 +13,18 @@ os.system('python build.py')
 # os.system('java -jar TestInstrumentation.jar')
 
 
-
-
-
 # Run with instrumentation
 # NOTE, I have copied Agent.jar into the directory
 if KNOB_PLATFORM=="MAC":
 	JAVA='/Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home/bin/java'
 else:
 	#For Ubuntu just use java
-	JAVA='java'
+	JAVAC = 'javac'
+	JAR = 'jar'
+	JAVA = 'java'
+
 #os.system(JAVA+' -javaagent:../Agent.jar -jar '+JAR)
 # ========================= TEST SUITE 1 =========================
-
 
 #JARPATH is the classpath to the root directory containing the jar so packages are properly loaded up.
 JARPATH = "./"

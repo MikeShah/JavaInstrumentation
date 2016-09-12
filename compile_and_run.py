@@ -1,16 +1,21 @@
 import os
 
+# (0) Setup the Compiler
+JAVAC = 'javac'
+JAR = 'jar'
+JAVA = 'java'
+
 # (1) Setup the Agent
 # Compile the Agent
 javassistJARPath = '"./jboss-javassist-javassist-89c91fa/javassist.jar"'
-BUILD_AGENT_STRING='javac -cp '+javassistJARPath+':. *.java'
+BUILD_AGENT_STRING=JAVAC+' -cp '+javassistJARPath+':. *.java'
 print BUILD_AGENT_STRING
 os.system(BUILD_AGENT_STRING)
 
 # Run the program
 #os.system('java HelloWorld')
 # Build a .jar
-os.system('jar -cfm Agent.jar manifest.mf *.class')
+os.system(JAR+' -cfm Agent.jar manifest.mf *.class')
 # Run the .jar
 #os.system('java -cp HelloWorld.jar HelloWorld')
 
