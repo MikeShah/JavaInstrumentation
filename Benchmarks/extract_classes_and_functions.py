@@ -18,7 +18,8 @@ def cleanTokens(tokens):
 		s = s.replace(')','')
 		s = s.replace('[','')
 		s = s.replace(']','')
-		s = s.replace(' ','')
+		s = s.replace(' ','')	
+#		s = s.replace('.','/')
 		newLst.append(s)
 	return newLst
 
