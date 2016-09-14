@@ -18,12 +18,14 @@ import java.lang.instrument.Instrumentation;
 public class DurationAgent {
 
 	// A string to a file which contains a list of classes to instrument.
-	static String classNamesToInstrument = "/home/mshah08/Desktop/JavaDistribution/JavaInstrumentation/classNamesToInstrument.txt";
+	static String classNamesToInstrument = "/home/mshah08/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/ClassNames.txt";
+	static String functionsToInstrument  = "/home/mshah08/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/FunctionNames.txt";
 
 	// Runs at the start of the program
 	public static void premain(String agentArgs, Instrumentation inst) {
 		System.out.println("===(DurationAgent.java) Started executing premain===");
 		ProfilingController.setup(classNamesToInstrument);
+		ProfilingController.setFunctions(functionsToInstrument);
 		inst.addTransformer(new SleepingClassFileTransformer());
 		System.out.println("===(DurationAgent.java) Finished executing premain===");
 	}

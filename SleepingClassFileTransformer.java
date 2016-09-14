@@ -28,10 +28,10 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
         byte[] byteCode = classfileBuffer;
 
 	for(int x = 0; x < ProfilingController.classNames.size(); ++x){
-            /// Note that we have to use slashes here (i.e. org/something/something)
+            /// Note that we have to use slashes here (i.e. org/something/something) instead of the '.'
             if (className.equals(ProfilingController.classNames.get(x).replace('.','/'))) {
         	System.out.println("============= (SleepClassFileTransformer.java) Transforming and Instrumenting Classes ================== ");       
-	        System.out.println("Attempted transform(): "+ProfilingController.classNames.get(x));
+	        System.out.println("\tAttempted transform() on class: "+ProfilingController.classNames.get(x));
                 try {
                     final ClassPool cp = ClassPool.getDefault();
                     // The class here (i.e. org.something.something)
@@ -82,11 +82,21 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
         return Modifier.isSynchronized(method.getModifiers());
     }    
 
+
+
     // Updates a method such that it has a timer
     // This function actually modifies the method inserting code at each entry and exit.	 
     private void instrumentMethod(CtBehavior method) throws NotFoundException, CannotCompileException{
-        // Add a method to our final map
+        // Retrieve the method name
         String m_name = method.getName();
+        // Check if the method is in our functions that we want to instrument
+        if(!ProfilingController.isInFunctionNames(m_name)){
+            System.out.println(m_name+" is not in list of function names to be instrumented");
+            return;
+        }else{
+            System.out.println("\t\tStarting Instrumentation of function:"+m_name);  
+        }
+        // Add a method to our final map
         // Instrument the function by adding it to our Profiling HashMap
         ProfilingController.addFunc(m_name);
 

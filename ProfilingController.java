@@ -29,6 +29,8 @@ public final class ProfilingController {
 	public static ConcurrentHashMap<String,Integer> callOccuranceMap;
 	// Store all of the class names that we profile in our program
 	public static CopyOnWriteArrayList<String> classNames;
+	// Store all of the function names that we profile in our program
+	public static CopyOnWriteArrayList<String> functionNames;
 	// A stream that buffers and builds a Call Tree of the program.
 	public static PrintWriter streamCallTreeWriter;
 	// A stream that builds the funtion mapping list
@@ -41,8 +43,11 @@ public final class ProfilingController {
 
 	/// Add indentation before a function entry
 	public static void addEntry(){
-		for(int i=0;i<prettyPrint; ++i){
-			System.out.print(" ");
+		boolean outputSpaces = false;
+		if(outputSpaces){
+			for(int i=0;i<prettyPrint; ++i){
+				System.out.print(" ");
+			}
 		}
 		prettyPrint++;
 	}
@@ -50,9 +55,12 @@ public final class ProfilingController {
 	/// Add indentation before a function entry
 	public static void addExit(){
 		prettyPrint--;
-		for(int i=0;i<prettyPrint; ++i){
-			System.out.print(" ");
-		}	
+		boolean outputSpaces = false;
+		if(outputSpaces){
+			for(int i=0;i<prettyPrint; ++i){
+				System.out.print(" ");
+			}	
+		}
 	}
 
 	/// Immedietely write to our output file
@@ -104,7 +112,7 @@ public final class ProfilingController {
             if(f.exists() && !f.isDirectory()){    
 	            // Create a new buffered reader that takes in a list of classnames.
 	            BufferedReader reader = new BufferedReader(new FileReader(fileName));
-	            System.out.println("Trying stuff");
+	            System.out.println("Loading Classes");
 
 				String line = reader.readLine();
 	            // Store each class in this list
@@ -123,8 +131,53 @@ public final class ProfilingController {
 
         //classNames.add("Sleeping");
         //classNames.add("TestInstrumentation");
-
     }
+
+
+    ///@brief Store all of the Functions that we want to instrument in our program
+	///
+    /// The setup method loads all of the classes, and their associated methods
+    /// that need to be instrumente. This function sets all of the functions specifically
+    /// that we want to instrument. 
+    /// Note that setup must first be called!
+    public static void setFunctions(String fileName){
+    	// Check that our file exists and is not a directory
+    	try{
+			File f = new File(fileName);
+            if(f.exists() && !f.isDirectory()){    
+	            // Create a new buffered reader that takes in a list of classnames.
+	            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+	            System.out.println("Loading List of Functions to Instrument (Classes must be loaded first)");
+
+				String line = reader.readLine();
+	            // Store each class in this list
+	            while(line != null){
+	                functionNames.add(line);    
+	                System.out.println("Setting Function to Instrument:"+line);  
+	                line = reader.readLine();  		
+	            }
+            }
+            else{
+            	System.out.println("ProfilingController.setFunctions() -- fileName does not exist!");
+            }    		
+    	}catch(Exception ex){
+
+    	}
+            
+    }
+
+    /// @brief 
+    ///
+    /// Checks to see if a function is in the list of functions we want to instrument.
+    public static boolean isInFunctionNames(String s){
+    	for(int i =0; i < functionNames.size(); ++i){
+    		if (functionNames.get(i).equals(s)){
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+
 
 	// Initialize the constructor
 	// init() may also be called from other functions to ensure
@@ -146,6 +199,9 @@ public final class ProfilingController {
 		}
 		if(classNames   == null){
 			classNames 	 = new CopyOnWriteArrayList<String>();
+		}
+		if(functionNames== null){
+			functionNames = new CopyOnWriteArrayList<String>();
 		}
 		if(callOccuranceMap==null){
 			callOccuranceMap = new ConcurrentHashMap<String,Integer>();
@@ -224,73 +280,75 @@ public final class ProfilingController {
 	}
 
 	// Prints out the call as a single String
-	public static synchronized String printCallTree(){
+	public static synchronized void printCallTree(){
 		if(callOccuranceMap==null || statisticMap==null){
 			init();
 		}
 
-		String result="";//Runs|AVG time|{(ThreadID)time}\n";
-		for(int i =0; i < callTreeList.size();++i){
-			// First get the name of the function, then mark its position
-			String funcName = callTreeList.get(i).trim();
-			// function name with spaces preserved in front of it, so we can still parse our output
-			String funcNameWithSpaces = callTreeList.get(i).substring(0,callTreeList.get(i).length()-"__Entry".length());
-			// Setup the string that gets exported
-		   	if(funcName.contains("__Entry")){
-		   		// Remove __Entry from name
-				funcName = funcName.substring(0,funcName.length()-"__Entry".length());
-				funcName = removeLeadingNumeric(funcName);
-   				// Retrieve the ID of the function in our map to
-   				// update its values
-   				Integer id = 0;
-   				for(id=0; id < functionMap.size(); ++id){
+		FileWriter writer;	
+
+		try{
+			writer = new FileWriter("printCallTree.txt");
+
+			String result="";//Runs|AVG time|{(ThreadID)time}\n";
+			for(int i =0; i < callTreeList.size();++i){
+				// First get the name of the function, then mark its position
+				String funcName = callTreeList.get(i).trim();
+				// function name with spaces preserved in front of it, so we can still parse our output
+				String funcNameWithSpaces = callTreeList.get(i).substring(0,callTreeList.get(i).length()-"__Entry".length());
+				// Setup the string that gets exported
+			   	if(funcName.contains("__Entry")){
+			   		// Remove __Entry from name
+					funcName = funcName.substring(0,funcName.length()-"__Entry".length());
+					funcName = removeLeadingNumeric(funcName);
+	   				// Retrieve the ID of the function in our map to
+	   				// update its values
+	   				Integer id = 0;
+	   				for(id=0; id < functionMap.size(); ++id){
 		    			String functionName = functionMap.get(id).toString(); 
 		    			if(functionName.equals(funcName)){
 		    				break;
 		    			}
 		    		}
-				// If the id is not found, then output an error message
-				if(id >= functionMap.size()){
-					System.out.println("Function: \""+funcName+"\" has not been found!");
-					System.out.println("Available functions are:");
-					for(int j= 0; j < functionMap.size(); ++j){
-						System.out.println(functionMap.get(j).toString());
+					// If the id is not found, then output an error message
+					if(id >= functionMap.size()){
+						System.out.println("Function: \""+funcName+"\" has not been found!");
+						System.out.println("Available functions are:");
+						for(int j= 0; j < functionMap.size(); ++j){
+							System.out.println("----"+functionMap.get(j).toString());
+						}
 					}
+			    		// Update our occurance map, so that we output the correct
+			    		// values in our call tree.
+			    		// This occurance map is basically a one time use item
+			    		// for when we are outputting the call tree. It will ensure that
+			    		// for each function we are outputting a unique occurence of it
+			    		// in our resulting string, and that we get the appropriate instance
+			    		// from the statisticMap, using the dumpParse function.
+					if(!callOccuranceMap.containsKey(funcName)){
+						callOccuranceMap.put(funcName,0);
+					}else{
+						// Otherwise increment the value in the hashmap
+						callOccuranceMap.put(funcName,callOccuranceMap.get(funcName)+1);
+					}
+					// First we pick out the function from the statistic map using the 'id'
+				
+			   		Statistic temp = statisticMap.get(id);
+			   		//System.out.println("ID:"+id);	
+			   		writer.write(funcNameWithSpaces);
+					writer.write(temp.dumpParse(callOccuranceMap.get(funcName)) + "\n");
+					//}
 				}
-		    		// Update our occurance map, so that we output the correct
-		    		// values in our call tree.
-		    		// This occurance map is basically a one time use item
-		    		// for when we are outputting the call tree. It will ensure that
-		    		// for each function we are outputting a unique occurence of it
-		    		// in our resulting string, and that we get the appropriate instance
-		    		// from the statisticMap, using the dumpParse function.
-				if(!callOccuranceMap.containsKey(funcName)){
-					callOccuranceMap.put(funcName,0);
-				}else{
-					// Otherwise increment the value in the hashmap
-					callOccuranceMap.put(funcName,callOccuranceMap.get(funcName)+1);
-				}
-				// First we pick out the function from the statistic map using the 'id'
-			
-		   		Statistic temp = statisticMap.get(id);
-		   		//System.out.println("ID:"+id);	
-				result += funcNameWithSpaces;
-				//if(temp!=null){
-				result += temp.dumpParse(callOccuranceMap.get(funcName)) + "\n";
-				//}
+				
 			}
-			
-		}
-		// TODO: Write this to file
-		//System.out.println(result);
-		try{
-			PrintWriter writer = new PrintWriter("printCallTree.txt","UTF-8");
-			writer.println(result);
 			writer.close();
 		}catch(Exception ex){
 
 		}
-		return result;
+		finally{
+
+		}
+	
 	}
 
 	// Prints out all of the keys and function names.

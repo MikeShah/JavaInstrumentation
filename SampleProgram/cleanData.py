@@ -19,6 +19,7 @@ print "================Cleaning data=================="
 # and serve as a unique identifier.
 pos = 0
 methodName = ""
+totalEntries = len(lst)
 while(pos < len(lst)):
     if "__Entry" in lst[pos]:
         name = lst[pos]
@@ -29,8 +30,12 @@ while(pos < len(lst)):
                 if methodSearching == methodName:
                     lst[pos] = methodName + j[j.index("|"):]
                     lst.remove(j)
-                    print lst[pos],
-                    print len(lst)
+                    if len(lst) % 10000 == 0:
+                        print str(len(lst))+"of"+str(totalEntries)
+                    # Uncomment when we want to print the output
+		            # print lst[pos],
+                    # print len(lst)
+			
         pos = pos+1
     else:
         pos = pos + 1
