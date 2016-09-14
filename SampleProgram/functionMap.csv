@@ -1,9 +1,0 @@
-functionMap(8) Dump of <key function name>,name, ,Total Runs, ,Runs Avg, ,ThreadID,Time1,ThreadID,Time2,ThreadID,Time3,ThreadID,Time4
-0,add,Runs,1,Runs Avg,0,Runs,1,0,,
-1,RandomSleep,Runs,6,Runs Avg,626,Runs,1,694,1,521,1,728,1,624,1,587,1,605,,
-2,RandomSleep2,Runs,2,Runs Avg,771,Runs,1,989,1,553,,
-3,a,Runs,2,Runs Avg,1,Runs,1,1,1,1,,
-4,b,Runs,2,Runs Avg,1,Runs,1,1,1,1,,
-5,c,Runs,2,Runs Avg,0,Runs,1,0,1,0,,
-6,d,Runs,2,Runs Avg,1,Runs,1,1,1,1,,
-7,e,Runs,2,Runs Avg,1,Runs,1,1,1,1,,
