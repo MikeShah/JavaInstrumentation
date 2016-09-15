@@ -27,6 +27,10 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
 
         byte[] byteCode = classfileBuffer;
 
+        if(className.contains("$")){
+            return byteCode;
+        }
+
 	   for(int x = 0; x < ProfilingController.classNames.size(); ++x){
             /// Note that we have to use slashes here (i.e. org/something/something) instead of the '.'
             if (className.equals(ProfilingController.classNames.get(x).replace('.','/'))) {
@@ -49,7 +53,11 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
                                 // Special case for instrumenting our 'main' method
                                 // Note that we have to use 'getDeclaredMethod' here -- TODO: WHY use this?
                                 final CtBehavior mainmethod = cc.getDeclaredMethod("main");
-                                mainmethod.insertAfter("{ProfilingController.dumpFunctionMapCSV();ProfilingController.printCallTree();}");
+                                mainmethod.addLocalVariable("absoluteProgramTime", CtClass.longType);
+                                String startTime   = "absoluteProgramTime = System.nanoTime();";
+                                mainmethod.insertBefore(startTime);
+                                mainmethod.insertAfter("{ProfilingController.setAbsoluteTime(absoluteProgramTime);"
+                                                      +" ProfilingController.dumpFunctionMapCSV();ProfilingController.printCallTree();}");
                             }else{
                                 instrumentMethod(methods[i]);
                             }
@@ -124,13 +132,13 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
         
                            //+ "System.out.println(\"Thread ID: \"+mainThreadId);";
         //String printEntry  = "System.out.println(\""+m_name+"__Entry\");";
-        String startTime   = "elapsedTime = System.currentTimeMillis();";
+        String startTime   = "elapsedTime = System.nanoTime();";
 
         // Now continue entering code.
         method.insertBefore(getThreadID+buildCallTree+addEntry+startTime/*printEntry+*/);
 
         // Add tracing ability, so we know how many times a function was called.
-        method.insertAfter("{elapsedTime = System.currentTimeMillis() - elapsedTime;"
+        method.insertAfter("{elapsedTime = System.nanoTime() - elapsedTime;"
                          + "ProfilingController.log(\""+m_name+"\",elapsedTime,mainThreadId);"
                          + "ProfilingController.addExit();"
                          + "ProfilingController.addToCallTreeList(ProfilingController.getSpaces(false)+\""+m_name+"__Exit\" +\"|\"+elapsedTime+\"|\"+mainThreadId+\"|\"+"+synchronizedMethod+");}");

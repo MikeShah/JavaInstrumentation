@@ -1,0 +1,10 @@
+functionMap(7) Dump of <key function name>,name, ,Total Runs, ,Runs Avg(ns), ,ThreadID,Time1(ns),ThreadID,Time2(ns),ThreadID,Time3(ns),ThreadID,Time4(ns)
+0,RandomSleep,Runs,6,Runs Avg,880621413,Runs,1,811174607,1,881509182,1,989634294,1,667545362,1,1173554718,1,760310319,,
+1,RandomSleep2,Runs,2,Runs Avg,1009356787,Runs,1,884816880,1,1133896695,,
+2,a,Runs,2,Runs Avg,803688,Runs,1,1008582,1,598794,,
+3,b,Runs,2,Runs Avg,722724,Runs,1,904318,1,541130,,
+4,c,Runs,2,Runs Avg,162699,Runs,1,147666,1,177732,,
+5,d,Runs,2,Runs Avg,298621,Runs,1,390821,1,206422,,
+6,e,Runs,2,Runs Avg,79007,Runs,1,106813,1,51202,,
+AbsoluteProgramTime,7323835961
+Critical Section Time,7306575537

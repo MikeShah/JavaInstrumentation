@@ -31,14 +31,14 @@ JARPATH = "./"
 #JARFILE includes the actual .jar file as well as any arguments needed
 JARFILE = "TestInstrumentation.jar"
 ARGS=""
-#os.system(JAVA+' -cp .:../.:'+JARPATH+' -javaagent:../Agent.jar -jar '+JARPATH+JARFILE+" "+ARGS)
+os.system(JAVA+' -cp .:../.:'+JARPATH+' -javaagent:../Agent.jar -jar '+JARPATH+JARFILE+" "+ARGS)
 
 
 # ========================= TEST SUITE JYTHON ====================
 JARPATH = "../Benchmarks/"
 JARFILE = "jython-standalone-2.5.4-rc1.jar"
 ARGS 	= "../Benchmarks/test.py"
-os.system(JAVA+' -cp .:../.:'+JARPATH+' -javaagent:../Agent.jar -jar '+JARPATH+JARFILE+" "+ARGS)
+#os.system(JAVA+' -cp .:../.:'+JARPATH+' -javaagent:../Agent.jar -jar '+JARPATH+JARFILE+" "+ARGS)
 
 # ========================= TEST SUITE 2 =========================
 #JARPATH is the classpath to the root directory containing the jar so packages are properly loaded up.

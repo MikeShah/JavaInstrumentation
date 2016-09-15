@@ -35,11 +35,14 @@ public final class ProfilingController {
 	public static PrintWriter streamCallTreeWriter;
 	// A stream that builds the funtion mapping list
 	public static PrintWriter streamFunctionMapWriter; 
+	// Total time spent executing the program. This is computed by instrumenting "main"
+	public static Long absoluteProgramTime;
 	// The number of functions in the program.
 	// Also used as a unique ID for all functions in the program.
 	static int functionCount;
 	/// The indentation level for the call graph. This in general is the number of spaces before a function
 	static int prettyPrint = 0;
+
 
 	/// Add indentation before a function entry
 	public static void addEntry(){
@@ -375,6 +378,9 @@ public final class ProfilingController {
 		streamFunctionMapWriter.flush();
 	}
 
+	public static synchronized void setAbsoluteTime(long start){
+		absoluteProgramTime = System.nanoTime() - start;
+	}
 
 	/// Dumps the functionMap as a CSV File
 	public static synchronized void dumpFunctionMapCSV(){
@@ -383,15 +389,25 @@ public final class ProfilingController {
 			return;
 		}
 
-		streamFunctionMapWriter.write("functionMap("+functionMap.size()+") Dump of <key function name>,name, ,Total Runs, ,Runs Avg, ,ThreadID,Time1,ThreadID,Time2,ThreadID,Time3,ThreadID,Time4\n");
+		streamFunctionMapWriter.write("functionMap("+functionMap.size()+") Dump of <key function name>,name, ,Total Runs, ,Runs Avg(ns), ,ThreadID,Time1(ns),ThreadID,Time2(ns),ThreadID,Time3(ns),ThreadID,Time4(ns)\n");
 
+		// Total time spent in critical sections
+		long totalTimeInCriticalSections = 0L;
 		for(Integer i = 0; i < functionMap.size(); ++i){
 		    String functionName = functionMap.get(i).toString();  
 		    Statistic temp = statisticMap.get(i);
+		    for(int j =0; j < temp.timeList.size(); ++j){
+		    	totalTimeInCriticalSections+= temp.timeList.get(j);
+		    }
 		    String output = temp.dumpCSV();
 		    //System.out.println(i.toString() + " = " + value + statisticMap.get(i).dump());  
 		    streamFunctionMapWriter.write(i.toString()+","+functionName + ","+output+'\n');  
 		}
+		// Output the final Absolute Time
+		streamFunctionMapWriter.write("AbsoluteProgramTime,"+ProfilingController.absoluteProgramTime.toString()+'\n');  
+		// Time spent in only the Critical Sections
+		streamFunctionMapWriter.write("Critical Section Time,"+totalTimeInCriticalSections+'\n');  
+
 		streamFunctionMapWriter.flush();
 	}
 
