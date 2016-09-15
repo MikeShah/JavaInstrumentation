@@ -173,6 +173,7 @@ public final class ProfilingController {
     	for(int i =0; i < functionNames.size(); ++i){
     		if (functionNames.get(i).equals(s)){
     			System.out.println(functionNames.get(i)+" was found!!!!!!!!!!!!!!!!!!!!!!!1");
+    			System.out.flush();
     			return true;
     		}
     	}

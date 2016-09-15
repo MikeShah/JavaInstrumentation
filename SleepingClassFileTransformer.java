@@ -60,6 +60,7 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
                     cc.detach();
                 } catch (Exception ex) {
                     System.out.println(ex.toString());
+                    System.out.flush();
                     ex.printStackTrace();
                 }
             }
@@ -89,12 +90,12 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
         // Retrieve the method name
         String m_name = method.getName();
         // Check if the method is in our functions that we want to instrument
-        //if(!ProfilingController.isInFunctionNames(m_name)){
-        //    System.out.println(m_name+" is not in list of function names to be instrumented");
-        //    return;
-        //}else{
+        if(!ProfilingController.isInFunctionNames(m_name)){
+            System.out.println(m_name+" is not in list of function names to be instrumented");
+            return;
+        }else{
         System.out.println("\t\tStarting Instrumentation of function:"+m_name);  
-        //}
+        }
         // Add a method to our final map
         // Instrument the function by adding it to our Profiling HashMap
         ProfilingController.addFunc(m_name);
