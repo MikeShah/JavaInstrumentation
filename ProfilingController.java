@@ -118,12 +118,12 @@ public final class ProfilingController {
 	            // Store each class in this list
 	            while(line != null){
 	                classNames.add(line);    
-	                System.out.println("Adding Class to Transform:"+line);  
+	                // System.out.println("Adding Class to Transform:"+line);  
 	                line = reader.readLine();  		
 	            }
             }
             else{
-            	System.out.println("ProfilingController.setup() -- fileName does not exist!");
+            	System.out.println("ProfilingController.setup() -- fileName for classes does not exist!");
             }
         }catch(Exception ex){
 
@@ -153,12 +153,12 @@ public final class ProfilingController {
 	            // Store each class in this list
 	            while(line != null){
 	                functionNames.add(line);    
-	                System.out.println("Setting Function to Instrument:"+line);  
+	                //System.out.println("Setting Function to Instrument:"+line);  
 	                line = reader.readLine();  		
 	            }
             }
             else{
-            	System.out.println("ProfilingController.setFunctions() -- fileName does not exist!");
+            	System.out.println("ProfilingController.setFunctions() -- fileName for functions does not exist!");
             }    		
     	}catch(Exception ex){
 
@@ -172,6 +172,7 @@ public final class ProfilingController {
     public static boolean isInFunctionNames(String s){
     	for(int i =0; i < functionNames.size(); ++i){
     		if (functionNames.get(i).equals(s)){
+    			System.out.println(functionNames.get(i)+" was found!!!!!!!!!!!!!!!!!!!!!!!1");
     			return true;
     		}
     	}
