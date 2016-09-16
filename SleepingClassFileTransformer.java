@@ -139,10 +139,12 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
 
         // Add tracing ability, so we know how many times a function was called.
         method.insertAfter("{elapsedTime = System.nanoTime() - elapsedTime;"
+                         + "System.out.println(ProfilingController.getStackTrace());"
                          + "ProfilingController.log(\""+m_name+"\",elapsedTime,mainThreadId);"
                          + "ProfilingController.addExit();"
                          + "ProfilingController.addToCallTreeList(ProfilingController.getSpaces(false)+\""+m_name+"__Exit\" +\"|\"+elapsedTime+\"|\"+mainThreadId+\"|\"+"+synchronizedMethod+");}");
                          //+ "System.out.println(\""+m_name+"__Exit\");"
                          //+ "System.out.println(\""+m_name+" executed in ms: \" + elapsedTime);}");
     }
+
 }

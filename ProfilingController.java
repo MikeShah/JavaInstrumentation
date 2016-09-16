@@ -411,4 +411,10 @@ public final class ProfilingController {
 		streamFunctionMapWriter.flush();
 	}
 
+	public static String getStackTrace(){
+        System.out.print("\tCaller:"+Thread.currentThread().getStackTrace()[3].getMethodName());
+        //e.printStackTrace(pw);
+        return ""; // stack trace as a string
+    }
+
 }

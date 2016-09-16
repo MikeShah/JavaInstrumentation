@@ -1,10 +1,10 @@
 functionMap(7) Dump of <key function name>,name, ,Total Runs, ,Runs Avg(ns), ,ThreadID,Time1(ns),ThreadID,Time2(ns),ThreadID,Time3(ns),ThreadID,Time4(ns)
-0,RandomSleep,Runs,6,Runs Avg,880621413,Runs,1,811174607,1,881509182,1,989634294,1,667545362,1,1173554718,1,760310319,,
-1,RandomSleep2,Runs,2,Runs Avg,1009356787,Runs,1,884816880,1,1133896695,,
-2,a,Runs,2,Runs Avg,803688,Runs,1,1008582,1,598794,,
-3,b,Runs,2,Runs Avg,722724,Runs,1,904318,1,541130,,
-4,c,Runs,2,Runs Avg,162699,Runs,1,147666,1,177732,,
-5,d,Runs,2,Runs Avg,298621,Runs,1,390821,1,206422,,
-6,e,Runs,2,Runs Avg,79007,Runs,1,106813,1,51202,,
-AbsoluteProgramTime,7323835961
-Critical Section Time,7306575537
+0,RandomSleep,Runs,6,Runs Avg,993373701,Runs,1,938291186,1,958165675,1,951489745,1,1024404269,1,1169400686,1,918490649,,
+1,RandomSleep2,Runs,2,Runs Avg,967572138,Runs,1,1012915095,1,922229181,,
+2,a,Runs,2,Runs Avg,4965299,Runs,1,389467,1,9541131,,
+3,b,Runs,2,Runs Avg,4769016,Runs,1,327291,1,9210741,,
+4,c,Runs,2,Runs Avg,81891,Runs,1,45412,1,118371,,
+5,d,Runs,2,Runs Avg,266841,Runs,1,109840,1,423842,,
+6,e,Runs,2,Runs Avg,51020,Runs,1,20121,1,81920,,
+AbsoluteProgramTime,7920256974
+Critical Section Time,7915654622

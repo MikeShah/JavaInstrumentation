@@ -26,6 +26,7 @@ else:
 #os.system(JAVA+' -javaagent:../Agent.jar -jar '+JAR)
 # ========================= TEST SUITE 1 =========================
 
+
 #JARPATH is the classpath to the root directory containing the jar so packages are properly loaded up.
 JARPATH = "./"
 #JARFILE includes the actual .jar file as well as any arguments needed
@@ -44,8 +45,9 @@ ARGS 	= "../Benchmarks/test.py"
 #JARPATH is the classpath to the root directory containing the jar so packages are properly loaded up.
 JARPATH = "~/Dropbox/school/GraduateSchool/Courses/Comp250VIS/TreeMap/benchmarks/Sunflow/sunflow/"
 #JARFILE includes the actual .jar file as well as any arguments needed
-JARFILE = "sunflow.jar -nogui ~/Dropbox/school/GraduateSchool/Courses/Comp250VIS/TreeMap/benchmarks/Sunflow/examples/shader_examples/VerySimple.sc"
-#os.system(JAVA+' -cp .:../.:'+JARPATH+' -javaagent:../Agent.jar -jar '+JARPATH+JARFILE)
+JARFILE = "sunflow.jar"
+ARGS = "-nogui ~/Dropbox/school/GraduateSchool/Courses/Comp250VIS/TreeMap/benchmarks/Sunflow/examples/shader_examples/VerySimple.sc"
+#os.system(JAVA+' -cp .:../.:'+JARPATH+' -javaagent:../Agent.jar -jar '+JARPATH+JARFILE+" "+ARGS)
 #========================= TEST SUITE 2 =========================
 
 # Clean up whatever data was then output
