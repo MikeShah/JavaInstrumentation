@@ -18,8 +18,8 @@ import java.lang.instrument.Instrumentation;
 public class DurationAgent {
 
 	// A string to a file which contains a list of classes to instrument.
-	static String classNamesToInstrument = "/home/mike/Desktop/JavaDistribution/JavaInstrumentation/SampleProgram/ClassNames.txt";
-	static String functionsToInstrument  = "/home/mike/Desktop/JavaDistribution/JavaInstrumentation/SampleProgram/FunctionNames.txt";
+	static String classNamesToInstrument = "/home/mike/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/SampleProgram/ClassNames.txt";
+	static String functionsToInstrument  = "/home/mike/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/SampleProgram/FunctionNames.txt";
 
 	// Runs at the start of the program
 	public static void premain(String agentArgs, Instrumentation inst) {
