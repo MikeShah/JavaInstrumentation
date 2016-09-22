@@ -42,7 +42,8 @@ public final class ProfilingController {
 	static int functionCount;
 	/// The indentation level for the call graph. This in general is the number of spaces before a function
 	static int prettyPrint = 0;
-
+	// Maintains theh calling context (call stack) for threads.
+	public static CallingContextStack ccs;
 
 	/// Add indentation before a function entry
 	public static void addEntry(){
@@ -211,6 +212,9 @@ public final class ProfilingController {
 		if(callOccuranceMap==null){
 			callOccuranceMap = new ConcurrentHashMap<String,Integer>();
 		}
+		if(ccs==null){
+			ccs = new CallingContextStack();
+		}
 	}
 
 	// Default constructor
@@ -245,7 +249,7 @@ public final class ProfilingController {
 	}
 
 	// Increases the occurances of a function
-	public static synchronized void log(String functionName, long time, long threadID){
+	public static synchronized void log(String functionName, long time, long threadID, String caller){
 		if (functionMap==null){
 			System.out.println("attempted log1");
 			init();
@@ -266,7 +270,7 @@ public final class ProfilingController {
 			// 	Modify the occurance count
 			Statistic temp = statisticMap.get(id);
 			if(temp!=null){
-				temp.addTime(time,threadID);
+				temp.addTime(time,threadID,caller);
 				statisticMap.put(id,temp);
 			}
 		}else{
@@ -415,6 +419,12 @@ public final class ProfilingController {
         System.out.print("\tCaller:"+Thread.currentThread().getStackTrace()[3].getMethodName());
         //e.printStackTrace(pw);
         return ""; // stack trace as a string
+    }
+
+    public static String getCaller(){
+    	Long mainThreadID = 1L;
+    	String result = ccs.peekCaller(mainThreadID);
+    	return result;
     }
 
 }

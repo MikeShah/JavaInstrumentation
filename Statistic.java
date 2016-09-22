@@ -6,6 +6,7 @@ import java.util.*;
 	class Statistic{
 		ArrayList<Long> timeList; // How much time a method took to execute
 		ArrayList<Long> threadIDList; // The ID of the thread that exectued.
+		ArrayList<String> callerList; // The function caller of this function	
 
 		/// Initializer called from any constructor
 		private void init(){
@@ -16,19 +17,24 @@ import java.util.*;
 			if(threadIDList==null){
 				threadIDList = new ArrayList<Long>();
 			}
+
+			if(callerList==null){
+				callerList = new ArrayList<String>();
+			}
 		}
 		/// Default constructor
 		public Statistic(){
 			init();
 		}
 		// Adds a log of how long a method executed for.
-		public void addTime(Long t, Long id){
-			if(timeList==null || threadIDList==null){
+		public void addTime(Long t, Long id, String caller){
+			if(timeList==null || threadIDList==null || callerList==null){
 				init();
 			}
 
 			timeList.add(t);
 			threadIDList.add(id);
+			callerList.add(caller);
 		}
 
 		// Outputs the statistic in a nice way
@@ -37,7 +43,7 @@ import java.util.*;
 			long avg = 0;
 			// Output every time and the thread id
 			for(int i =0; i < timeList.size();i++){
-				result += "("+threadIDList.get(i)+")"+ timeList.get(i).toString()+",";
+				result += "("+threadIDList.get(i)+")("+callerList.get(i)+")"+ timeList.get(i).toString()+",";
 				avg += timeList.get(i);
 			}
 
@@ -54,7 +60,7 @@ import java.util.*;
 			long avg = 0;
 			// Output every time and the thread id
 			for(int i =0; i < timeList.size();i++){
-				result += threadIDList.get(i)+","+ timeList.get(i).toString()+",";
+				result += threadIDList.get(i)+","+callerList.get(i)+","+ timeList.get(i).toString()+",";
 				avg += timeList.get(i);
 			}
 
@@ -83,7 +89,7 @@ import java.util.*;
 			//long avg = 0;
 			// Output every time and the thread id
 			//for(int i =0; i < timeList.size();i++){
-				result += "("+threadIDList.get(instance)+")"+ timeList.get(instance).toString();
+				result += "("+threadIDList.get(instance)+")("+callerList.get(instance)+")"+ timeList.get(instance).toString();
 			//	avg += timeList.get(i);
 			//}
 

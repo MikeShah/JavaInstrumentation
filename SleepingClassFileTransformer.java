@@ -60,7 +60,11 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
                                                       +" ProfilingController.dumpFunctionMapCSV();ProfilingController.printCallTree();}");
                             }else{
                                 instrumentMethod(methods[i]);
+                                // We instrument all methods with call stack information such that we know who the caller is.
+                                //instrumentMethodWithCallStack(methods[i]);
                             }
+
+
                         }
                     }
                     // Modify the bytecode
@@ -92,6 +96,20 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
         return Modifier.isSynchronized(method.getModifiers());
     }    
 
+    // Here we instrument all methods such that when they are called
+    // their method name is added to the call stack.
+    private void instrumentMethodWithCallStack(CtBehavior method) throws NotFoundException, CannotCompileException{
+        
+        method.addLocalVariable("mainThreadId", CtClass.longType);
+        String getThreadID = "mainThreadId = Thread.currentThread().getId();";
+
+        method.insertBefore(getThreadID+"ProfilingController.ccs.push(mainThreadID,"+method.getName()+");");
+        method.insertAfter("ProfilingController.ccs.pop(mainThreadID);");
+    }
+
+
+
+
     // Updates a method such that it has a timer
     // This function actually modifies the method inserting code at each entry and exit.	 
     private void instrumentMethod(CtBehavior method) throws NotFoundException, CannotCompileException{
@@ -102,7 +120,7 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
             System.out.println(m_name+" is not in list of function names to be instrumented");
             return;
         }else{
-        System.out.println("\t\tStarting Instrumentation of function:"+m_name);  
+            System.out.println("\t\tStarting Instrumentation of function:"+m_name);  
         }
         // Add a method to our final map
         // Instrument the function by adding it to our Profiling HashMap
@@ -135,16 +153,37 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
         String startTime   = "elapsedTime = System.nanoTime();";
 
         // Now continue entering code.
-        method.insertBefore(getThreadID+buildCallTree+addEntry+startTime/*printEntry+*/);
+        method.insertBefore("String abcd = ProfilingController.getCaller();"+getThreadID+buildCallTree+addEntry+startTime/*printEntry+*/);
 
         // Add tracing ability, so we know how many times a function was called.
         method.insertAfter("{elapsedTime = System.nanoTime() - elapsedTime;"
-                         + "System.out.println(ProfilingController.getStackTrace());"
-                         + "ProfilingController.log(\""+m_name+"\",elapsedTime,mainThreadId);"
+                         //+ "System.out.println(ProfilingController.getStackTrace());"       // Note that we get the caller here
+                         + "ProfilingController.log(\""+m_name+"\",elapsedTime,mainThreadId,abcd);" // 
                          + "ProfilingController.addExit();"
                          + "ProfilingController.addToCallTreeList(ProfilingController.getSpaces(false)+\""+m_name+"__Exit\" +\"|\"+elapsedTime+\"|\"+mainThreadId+\"|\"+"+synchronizedMethod+");}");
                          //+ "System.out.println(\""+m_name+"__Exit\");"
                          //+ "System.out.println(\""+m_name+" executed in ms: \" + elapsedTime);}");
     }
+
+
+
+    // Modifies bytecode, such that it 
+    //  1.) Searches if a  
+    //  2.) 
+    //  3.) 
+    /*
+    public static void modifyByteCode(CtMethod cm) {
+
+        cm.instrument(
+            new ExprEditor() {
+                public void edit(MethodCall m) throws CannotCompileException{
+                    if (m.getClassName().equals("Point") && m.getMethodName().equals("move"))
+                        m.replace("{ $1 = 0; $_ = $proceed($$); }");
+                    }
+            });
+    }
+    */
+
+
 
 }
