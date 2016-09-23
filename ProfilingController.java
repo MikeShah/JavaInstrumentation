@@ -73,6 +73,7 @@ public final class ProfilingController {
 		callTreeList.add(s);
 		//if(s.contains("__Entry")){
 		streamCallTreeWriter.write(s+"\n");
+		streamCallTreeWriter.flush();
 		//}
 	}
 
@@ -176,7 +177,6 @@ public final class ProfilingController {
     public static boolean isInFunctionNames(String s){
     	for(int i =0; i < functionNames.size(); ++i){
     		if (functionNames.get(i).equals(s)){
-    			System.out.println(functionNames.get(i)+" was found!!!!!!!!!!!!!!!!!!!!!!!1");
     			System.out.flush();
     			return true;
     		}
@@ -235,6 +235,7 @@ public final class ProfilingController {
 		if(functionMap.contains(functionName)){
 			// Do something
 			// TODO: Add some sort of error message I suppose
+			System.out.println("Error -- function "+functionName+" already added");
 		}
 		else{
 			// Associate a unique key(function Count) to a function name
@@ -421,10 +422,29 @@ public final class ProfilingController {
         return ""; // stack trace as a string
     }
 
-    public static String getCaller(){
-    	Long mainThreadID = 1L;
-    	String result = ccs.peekCaller(mainThreadID);
+    public static synchronized String getCaller(long threadID){
+    	if(ccs==null){
+    		init();
+    	}
+
+    	String result = ccs.peek(threadID);
     	return result;
+    }
+    
+    public static synchronized void ccspush(long threadID, String funcName){
+    	if(ccs==null){
+    		init();
+    	}
+
+    	ccs.push(threadID,funcName);
+    }    
+
+    public static synchronized void ccspop(long threadID){
+    	if(ccs==null){
+    		init();
+    	}
+
+    	ccs.pop(threadID);
     }
 
 }

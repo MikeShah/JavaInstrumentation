@@ -21,8 +21,16 @@ public class DurationAgent {
 //	static String classNamesToInstrument = "/home/mike/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/SampleProgram/ClassNames.txt";
 //	static String functionsToInstrument  = "/home/mike/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/SampleProgram/FunctionNames.txt";
 
-	static String classNamesToInstrument = "/h/mshah08/Desktop/JavaInstrumentation/Benchmarks/SampleProgram/ClassNames.txt";
-	static String functionsToInstrument  = "/h/mshah08/Desktop/JavaInstrumentation/Benchmarks/SampleProgram/FunctionNames.txt";
+	// SampleProgram- Z Drive
+//	static String classNamesToInstrument = "/h/mshah08/Desktop/JavaInstrumentation/Benchmarks/SampleProgram/ClassNames.txt";
+//	static String functionsToInstrument  = "/h/mshah08/Desktop/JavaInstrumentation/Benchmarks/SampleProgram/FunctionNames.txt";
+	
+
+	// Jython - Laptop
+	static String classNamesToInstrument = "/home/mike/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/Jython/ClassNames.txt";
+	static String functionsToInstrument  = "/home/mike/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/Jython/FunctionNames.txt";
+
+
 	// Runs at the start of the program
 	public static void premain(String agentArgs, Instrumentation inst) {
 		System.out.println("===(DurationAgent.java) Started executing premain===");

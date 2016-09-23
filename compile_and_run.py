@@ -5,6 +5,11 @@ JAVAC = 'javac'
 JAR = 'jar'
 JAVA = 'java'
 
+# (0) Attempt to clean files out
+# Delete the old files (do a clean)
+# os.system("rm *.class")
+#os.system("rm Agent.jar")
+
 # (1) Setup the Agent
 # Compile the Agent
 javassistJARPath = '"./jboss-javassist-javassist-89c91fa/javassist.jar"'

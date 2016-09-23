@@ -17,7 +17,7 @@ public class TestInstrumentation {
 		s.RandomSleep();
 		s.RandomSleep();
 		s.RandomSleep();
-		s.add(3,4);
+		//s.add(3,4);
 		s.RandomSleep2();
 	}
 }

@@ -1,4 +1,0 @@
-functionMap(1) Dump of <key function name>,name, ,Total Runs, ,Runs Avg(ns), ,ThreadID,Time1(ns),ThreadID,Time2(ns),ThreadID,Time3(ns),ThreadID,Time4(ns)
-0,RandomSleep,Runs,0,Runs Avg,0,Runs,,
-AbsoluteProgramTime,6653424620
-Critical Section Time,0

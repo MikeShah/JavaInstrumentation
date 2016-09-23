@@ -96,15 +96,12 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
         return Modifier.isSynchronized(method.getModifiers());
     }    
 
+
     // Here we instrument all methods such that when they are called
     // their method name is added to the call stack.
     private void instrumentMethodWithCallStack(CtBehavior method) throws NotFoundException, CannotCompileException{
-        
-        method.addLocalVariable("mainThreadId", CtClass.longType);
-        String getThreadID = "mainThreadId = Thread.currentThread().getId();";
-
-        method.insertBefore(getThreadID+"ProfilingController.ccs.push(mainThreadID,"+method.getName()+");");
-        method.insertAfter("ProfilingController.ccs.pop(mainThreadID);");
+        method.insertBefore("ProfilingController.ccs.push(Thread.currentThread().getId(),"+method.getName()+");");
+        method.insertAfter("ProfilingController.ccs.pop(Thread.currentThread().getId());");
     }
 
 
@@ -144,23 +141,26 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
         method.addLocalVariable("mainThreadId", CtClass.longType);
 
         String getThreadID = "mainThreadId = Thread.currentThread().getId();";
-        String buildCallTree = "ProfilingController.addToCallTreeList(ProfilingController.getSpaces(false)+\""+m_name+"__Entry\");";
+        String buildCallTree = "ProfilingController.addToCallTreeList(ProfilingController.getSpaces(true)+\""+m_name+"__Entry\");";
                                 // "ProfilingController.callTreeList.add(ProfilingController.getSpaces()+\""+m_name+"\"__Entry\");";
         String addEntry    = "ProfilingController.addEntry();";
         
+
                            //+ "System.out.println(\"Thread ID: \"+mainThreadId);";
         //String printEntry  = "System.out.println(\""+m_name+"__Entry\");";
         String startTime   = "elapsedTime = System.nanoTime();";
+        String callStackStart = "ProfilingController.ccspush(mainThreadId,\""+m_name+"\");";
+        method.insertBefore(getThreadID+callStackStart+buildCallTree+addEntry+startTime/*printEntry+*/);
 
-        // Now continue entering code.
-        method.insertBefore("String abcd = ProfilingController.getCaller();"+getThreadID+buildCallTree+addEntry+startTime/*printEntry+*/);
+
 
         // Add tracing ability, so we know how many times a function was called.
         method.insertAfter("{elapsedTime = System.nanoTime() - elapsedTime;"
+                         + "ProfilingController.ccspop(mainThreadId);"
                          //+ "System.out.println(ProfilingController.getStackTrace());"       // Note that we get the caller here
-                         + "ProfilingController.log(\""+m_name+"\",elapsedTime,mainThreadId,abcd);" // 
+                         + "ProfilingController.log(\""+m_name+"\",elapsedTime,mainThreadId,ProfilingController.getCaller(mainThreadId));" // 
                          + "ProfilingController.addExit();"
-                         + "ProfilingController.addToCallTreeList(ProfilingController.getSpaces(false)+\""+m_name+"__Exit\" +\"|\"+elapsedTime+\"|\"+mainThreadId+\"|\"+"+synchronizedMethod+");}");
+                         + "ProfilingController.addToCallTreeList(ProfilingController.getSpaces(true)+\""+m_name+"__Exit\" +\"|\"+elapsedTime+\"|\"+mainThreadId+\"|\"+"+synchronizedMethod+");}");
                          //+ "System.out.println(\""+m_name+"__Exit\");"
                          //+ "System.out.println(\""+m_name+" executed in ms: \" + elapsedTime);}");
     }

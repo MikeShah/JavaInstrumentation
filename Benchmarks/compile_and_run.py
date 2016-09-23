@@ -8,6 +8,10 @@ KNOB_TEST="TEST1"
 # Compile the Test programs
 os.system('python build.py')
 
+# Remove old text files
+os.system('rm *.txt')
+
+
 # Simple Test Program
 # (Optional) Run the sample program without static instrumentation
 # os.system('java -jar TestInstrumentation.jar')
@@ -32,14 +36,14 @@ JARPATH = "./SampleProgram/"
 #JARFILE includes the actual .jar file as well as any arguments needed
 JARFILE = "TestInstrumentation.jar"
 ARGS=""
-os.system(JAVA+' -cp .:../.:'+JARPATH+' -javaagent:../Agent.jar -jar '+JARPATH+JARFILE+" "+ARGS)
+#os.system(JAVA+' -cp .:../.:'+JARPATH+' -javaagent:../Agent.jar -jar '+JARPATH+JARFILE+" "+ARGS)
 
 
 # ========================= TEST SUITE JYTHON ====================
-JARPATH = "./Benchmarks/Jython/"
+JARPATH = "./Jython/"
 JARFILE = "jython-standalone-2.5.4-rc1.jar"
-ARGS 	= "./Benchmarks/Jython/test01.py"
-#os.system(JAVA+' -cp .:../.:'+JARPATH+' -javaagent:../Agent.jar -jar '+JARPATH+JARFILE+" "+ARGS)
+ARGS 	= "./Jython/test01.py"
+os.system(JAVA+' -cp .:../.:'+JARPATH+' -javaagent:../Agent.jar -jar '+JARPATH+JARFILE+" "+ARGS)
 
 # ========================= TEST SUITE 2 =========================
 #JARPATH is the classpath to the root directory containing the jar so packages are properly loaded up.
