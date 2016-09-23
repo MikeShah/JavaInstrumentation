@@ -45,15 +45,20 @@ JARFILE = "jython-standalone-2.5.4-rc1.jar"
 ARGS 	= "./Jython/test01.py"
 #os.system(JAVA+' -cp .:../.:'+JARPATH+' -javaagent:../Agent.jar -jar '+JARPATH+JARFILE+" "+ARGS)
 
-# ========================= TEST SUITE 2 =========================
+# ========================= TEST SUITE Sunflow =========================
 #JARPATH is the classpath to the root directory containing the jar so packages are properly loaded up.
 JARPATH = "./Sunflow/sunflow/"
 #JARFILE includes the actual .jar file as well as any arguments needed
 JARFILE = "sunflow.jar"
-ARGS = "-nogui /Sunflow/sunflow/examples/shader_examples/VerySimple.sc"
-os.system(JAVA+' -cp .:../.:'+JARPATH+' -jar '+JARPATH+JARFILE+" "+ARGS)
-#os.system(JAVA+' -cp .:../.:'+JARPATH+' -javaagent:../Agent.jar -jar '+JARPATH+JARFILE+" "+ARGS)
-#========================= TEST SUITE 2 =========================
+ARGS = "-nogui /home/mshah08/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/Sunflow/examples/shader_examples/VerySimple.sc"
+
+# Run without agent 
+#command = JAVA+' -cp .:../.:'+JARPATH+' -jar '+JARPATH+JARFILE+" "+ARGS
+#os.system(command)
+# Run with Agent
+command=JAVA+' -cp .:../../.:../.:'+JARPATH+' -javaagent:../Agent.jar -jar '+JARPATH+JARFILE+" "+ARGS
+print command
+os.system(command)
 
 # Clean up whatever data was then output
 os.system('python cleanData.py')

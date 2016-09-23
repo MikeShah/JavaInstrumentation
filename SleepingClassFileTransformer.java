@@ -49,7 +49,8 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
                     for(int i =0; i < methods.length;i++){
                         // If the method is empty, then we do not need to instrument it.
                         if(methods[i].isEmpty()==false && isNative(methods[i])==false){
-                            if(methods[i].getName().equals("main")){
+                            // TODO: Figure out how to find the single entry point
+                            if(methods[i].getLongName().contains("main(")){
                                 // Special case for instrumenting our 'main' method
                                 // Note that we have to use 'getDeclaredMethod' here -- TODO: WHY use this?
                                 final CtBehavior mainmethod = cc.getDeclaredMethod("main");
@@ -63,8 +64,6 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
                                 // We instrument all methods with call stack information such that we know who the caller is.
                                 //instrumentMethodWithCallStack(methods[i]);
                             }
-
-
                         }
                     }
                     // Modify the bytecode
@@ -110,18 +109,23 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
     // Updates a method such that it has a timer
     // This function actually modifies the method inserting code at each entry and exit.	 
     private void instrumentMethod(CtBehavior method) throws NotFoundException, CannotCompileException{
+        
         // Retrieve the method name
-        String m_name = method.getName();
+        String m_name = method.getLongName();
         // Check if the method is in our functions that we want to instrument
         if(!ProfilingController.isInFunctionNames(m_name)){
             System.out.println(m_name+" is not in list of function names to be instrumented");
-            return;
+            //return;
         }else{
             System.out.println("\t\tStarting Instrumentation of function:"+m_name);  
         }
         // Add a method to our final map
         // Instrument the function by adding it to our Profiling HashMap
-        ProfilingController.addFunc(m_name);
+        boolean firstTimeInstrumented = ProfilingController.addFunc(m_name);
+        // If we've already instrumented the method, then do not move forward 
+        if(!firstTimeInstrumented){
+            return;
+        }
 
         // Return a one or zero if the method is synchronized.
         int synchronizedMethod = 0;
@@ -150,10 +154,12 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
         //String printEntry  = "System.out.println(\""+m_name+"__Entry\");";
         String startTime   = "elapsedTime = System.nanoTime();";
         String callStackStart = "ProfilingController.ccspush(mainThreadId,\""+m_name+"\");";
-        method.insertBefore(getThreadID+callStackStart+buildCallTree+addEntry+startTime/*printEntry+*/);
+        // method.insertBefore(getThreadID+callStackStart+buildCallTree+addEntry+startTime+printEntry);
+        method.insertBefore(getThreadID+startTime);
+//        method.insertBefore(getThreadID+callStackStart+buildCallTree+addEntry+startTime);
 
 
-
+/*
         // Add tracing ability, so we know how many times a function was called.
         method.insertAfter("{elapsedTime = System.nanoTime() - elapsedTime;"
                          + "ProfilingController.ccspop(mainThreadId);"
@@ -163,6 +169,9 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
                          + "ProfilingController.addToCallTreeList(ProfilingController.getSpaces(true)+\""+m_name+"__Exit\" +\"|\"+elapsedTime+\"|\"+mainThreadId+\"|\"+"+synchronizedMethod+");}");
                          //+ "System.out.println(\""+m_name+"__Exit\");"
                          //+ "System.out.println(\""+m_name+" executed in ms: \" + elapsedTime);}");
+*/
+      System.out.println("\tFinished Instrumentation of function:"+m_name);  
+        
     }
 
 

@@ -27,8 +27,12 @@ public class DurationAgent {
 	                            
 
 	// Jython - Laptop
-	static String classNamesToInstrument = "/home/mike/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/Jython/ClassNames.txt";
-	static String functionsToInstrument  = "/home/mike/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/Jython/FunctionNames.txt";
+//	static String classNamesToInstrument = "/home/mike/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/Jython/ClassNames.txt";
+//	static String functionsToInstrument  = "/home/mike/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/Jython/FunctionNames.txt";
+
+	// Sunflow - Ubunutu Desktop
+	static String classNamesToInstrument = "/home/mshah08/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/Sunflow/ClassNames.txt";
+	static String functionsToInstrument  = "/home/mshah08/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/Sunflow/FunctionNames.txt";
 
 
 	// Runs at the start of the program

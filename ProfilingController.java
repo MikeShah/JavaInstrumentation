@@ -98,7 +98,7 @@ public final class ProfilingController {
 	///
     /// The setup method loads all of the classes, and their associated methods
     /// that need to be instrumented.
-    public static void setup(String fileName){
+    public static synchronized void setup(String fileName){
     	if(classNames==null){
     		init();
     	}
@@ -145,7 +145,7 @@ public final class ProfilingController {
     /// that need to be instrumente. This function sets all of the functions specifically
     /// that we want to instrument. 
     /// Note that setup must first be called!
-    public static void setFunctions(String fileName){
+    public static synchronized void setFunctions(String fileName){
     	// Check that our file exists and is not a directory
     	try{
 			File f = new File(fileName);
@@ -174,7 +174,7 @@ public final class ProfilingController {
     /// @brief 
     ///
     /// Checks to see if a function is in the list of functions we want to instrument.
-    public static boolean isInFunctionNames(String s){
+    public static synchronized boolean isInFunctionNames(String s){
     	for(int i =0; i < functionNames.size(); ++i){
     		if (functionNames.get(i).equals(s)){
     			System.out.flush();
@@ -188,7 +188,7 @@ public final class ProfilingController {
 	// Initialize the constructor
 	// init() may also be called from other functions to ensure
 	// that the datastructures are created before using them.
-	private static void init(){
+	private static synchronized void init(){
 		// If our function map is null, then allocate memory for it.
 		if(functionMap == null){
 			//System.out.println("functionMap allocted");
@@ -226,16 +226,19 @@ public final class ProfilingController {
 	}
 
 	// Add a new method, and assign it a unique key
-	public static void addFunc(String functionName){
+	// Returns true if a success, and the function was added
+	public static synchronized boolean addFunc(String functionName){
 		if (functionMap==null){
 			//System.out.println("attempted addFunc");
 			init();
 		}
+		boolean result = false;
 
 		if(functionMap.contains(functionName)){
 			// Do something
 			// TODO: Add some sort of error message I suppose
 			System.out.println("Error -- function "+functionName+" already added");
+			result = false;
 		}
 		else{
 			// Associate a unique key(function Count) to a function name
@@ -243,9 +246,11 @@ public final class ProfilingController {
 			functionMap.put(functionCount,functionName);
 			statisticMap.put(functionCount,new Statistic());
 			functionCount++;
+			result = true;
 			// Allocate statistics for the function
 		}
 
+		return result;
 		//log(functionName);
 	}
 
@@ -432,11 +437,13 @@ public final class ProfilingController {
     }
     
     public static synchronized void ccspush(long threadID, String funcName){
+    	/*
     	if(ccs==null){
     		init();
     	}
 
     	ccs.push(threadID,funcName);
+    	*/
     }    
 
     public static synchronized void ccspop(long threadID){
@@ -444,7 +451,7 @@ public final class ProfilingController {
     		init();
     	}
 
-    	ccs.pop(threadID);
+    	//ccs.pop(threadID);
     }
 
 }
