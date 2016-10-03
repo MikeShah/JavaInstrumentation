@@ -18,12 +18,12 @@ import java.lang.instrument.Instrumentation;
 public class DurationAgent {
 
 	// A string to a file which contains a list of classes to instrument.
-//	static String classNamesToInstrument = "/home/mike/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/SampleProgram/ClassNames.txt";
-//	static String functionsToInstrument  = "/home/mike/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/SampleProgram/FunctionNames.txt";
+	static String classNamesToInstrument = "/home/mike/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/SampleProgram/ClassNames.txt";
+	static String functionsToInstrument  = "/home/mike/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/SampleProgram/FunctionNames.txt";
 
 	// SampleProgram- Z Drive
-	static String classNamesToInstrument = "/h/mshah08/Desktop/JavaInstrumentation/Benchmarks/SampleProgram/ClassNames.txt";
-	static String functionsToInstrument  = "/h/mshah08/Desktop/JavaInstrumentation/Benchmarks/SampleProgram/FunctionNames.txt";
+//	static String classNamesToInstrument = "/h/mshah08/Desktop/JavaInstrumentation/Benchmarks/SampleProgram/ClassNames.txt";
+//	static String functionsToInstrument  = "/h/mshah08/Desktop/JavaInstrumentation/Benchmarks/SampleProgram/FunctionNames.txt";
 	                            
 
 	// Jython - Laptop

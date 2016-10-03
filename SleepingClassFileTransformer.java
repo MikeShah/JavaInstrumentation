@@ -27,6 +27,17 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
 
         byte[] byteCode = classfileBuffer;
 
+        try{
+            if(className != null){
+                System.out.println("Adding:"+className);
+                ProfilingController.classNames.add(className);            
+            }            
+        }catch(Exception ex){
+            
+        }
+
+
+        // FIXME: See if there is a way to instrument inner classes
         if(className.contains("$")){
             return byteCode;
         }
@@ -50,6 +61,7 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
                         // If the method is empty, then we do not need to instrument it.
                         if(methods[i].isEmpty()==false && isNative(methods[i])==false){
                             // TODO: Figure out how to find the single entry point
+                            System.out.println(methods[i].getLongName());
                             if(methods[i].getLongName().contains("main")){
                                 // Special case for instrumenting our 'main' method
                                 // Note that we have to use 'getDeclaredMethod' here -- TODO: WHY use this?
@@ -124,6 +136,7 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
         boolean firstTimeInstrumented = ProfilingController.addFunc(m_name);
         // If we've already instrumented the method, then do not move forward 
         if(!firstTimeInstrumented){
+            System.out.println(m_name+" has already been instrumented!");
             return;
         }
 
