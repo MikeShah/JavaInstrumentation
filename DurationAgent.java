@@ -22,8 +22,8 @@ public class DurationAgent {
 //	static String functionsToInstrument  = "/home/mike/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/SampleProgram/FunctionNames.txt";
 
 	// SampleProgram- Z Drive
-//	static String classNamesToInstrument = "/h/mshah08/Desktop/JavaInstrumentation/Benchmarks/SampleProgram/ClassNames.txt";
-//	static String functionsToInstrument  = "/h/mshah08/Desktop/JavaInstrumentation/Benchmarks/SampleProgram/FunctionNames.txt";
+	static String classNamesToInstrument = "/h/mshah08/Desktop/JavaInstrumentation/Benchmarks/SampleProgram/ClassNames.txt";
+	static String functionsToInstrument  = "/h/mshah08/Desktop/JavaInstrumentation/Benchmarks/SampleProgram/FunctionNames.txt";
 	                            
 
 	// Jython - Laptop
@@ -31,8 +31,12 @@ public class DurationAgent {
 //	static String functionsToInstrument  = "/home/mike/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/Jython/FunctionNames.txt";
 
 	// Sunflow - Ubunutu Desktop
-	static String classNamesToInstrument = "/home/mshah08/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/Sunflow/ClassNames.txt";
-	static String functionsToInstrument  = "/home/mshah08/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/Sunflow/FunctionNames.txt";
+//	static String classNamesToInstrument = "/home/mshah08/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/Sunflow/ClassNames.txt";
+//	static String functionsToInstrument  = "/home/mshah08/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/Sunflow/FunctionNames.txt";
+
+	// Sunflow - ZDrive
+//	static String classNamesToInstrument = "/h/mshah08/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/Sunflow/ClassNames.txt";
+//	static String functionsToInstrument  = "/h/mshah08/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/Sunflow/FunctionNames.txt";
 
 
 	// Runs at the start of the program

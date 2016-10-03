@@ -50,7 +50,7 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
                         // If the method is empty, then we do not need to instrument it.
                         if(methods[i].isEmpty()==false && isNative(methods[i])==false){
                             // TODO: Figure out how to find the single entry point
-                            if(methods[i].getLongName().contains("main(")){
+                            if(methods[i].getLongName().contains("main")){
                                 // Special case for instrumenting our 'main' method
                                 // Note that we have to use 'getDeclaredMethod' here -- TODO: WHY use this?
                                 final CtBehavior mainmethod = cc.getDeclaredMethod("main");
@@ -156,10 +156,10 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
         String callStackStart = "ProfilingController.ccspush(mainThreadId,\""+m_name+"\");";
         // method.insertBefore(getThreadID+callStackStart+buildCallTree+addEntry+startTime+printEntry);
         method.insertBefore(getThreadID+startTime);
-//        method.insertBefore(getThreadID+callStackStart+buildCallTree+addEntry+startTime);
+        method.insertBefore(getThreadID+callStackStart+buildCallTree+addEntry+startTime);
 
 
-/*
+
         // Add tracing ability, so we know how many times a function was called.
         method.insertAfter("{elapsedTime = System.nanoTime() - elapsedTime;"
                          + "ProfilingController.ccspop(mainThreadId);"
@@ -169,7 +169,7 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
                          + "ProfilingController.addToCallTreeList(ProfilingController.getSpaces(true)+\""+m_name+"__Exit\" +\"|\"+elapsedTime+\"|\"+mainThreadId+\"|\"+"+synchronizedMethod+");}");
                          //+ "System.out.println(\""+m_name+"__Exit\");"
                          //+ "System.out.println(\""+m_name+" executed in ms: \" + elapsedTime);}");
-*/
+
       System.out.println("\tFinished Instrumentation of function:"+m_name);  
         
     }

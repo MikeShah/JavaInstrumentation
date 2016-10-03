@@ -1,8 +1,8 @@
-RandomSleep
-RandomSleep2
-a
-b
-c
-d
-e
-add
+Sleeping.RandomSleep()
+Sleeping.RandomSleep2()
+Sleeping.a()
+Sleeping.b()
+Sleeping.c()
+Sleeping.d()
+Sleeping.e()
+Sleeping.add()

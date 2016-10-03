@@ -36,7 +36,7 @@ JARPATH = "./SampleProgram/"
 #JARFILE includes the actual .jar file as well as any arguments needed
 JARFILE = "TestInstrumentation.jar"
 ARGS=""
-#os.system(JAVA+' -cp .:../.:'+JARPATH+' -javaagent:../Agent.jar -jar '+JARPATH+JARFILE+" "+ARGS)
+os.system(JAVA+' -cp .:../.:'+JARPATH+' -javaagent:../Agent.jar -jar '+JARPATH+JARFILE+" "+ARGS)
 
 
 # ========================= TEST SUITE JYTHON ====================
@@ -50,15 +50,15 @@ ARGS 	= "./Jython/test01.py"
 JARPATH = "./Sunflow/sunflow/"
 #JARFILE includes the actual .jar file as well as any arguments needed
 JARFILE = "sunflow.jar"
-ARGS = "-nogui /home/mshah08/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/Sunflow/examples/shader_examples/VerySimple.sc"
+ARGS = "-nogui /h/mshah08/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/Sunflow/examples/shader_examples/VerySimple.sc"
 
 # Run without agent 
 #command = JAVA+' -cp .:../.:'+JARPATH+' -jar '+JARPATH+JARFILE+" "+ARGS
 #os.system(command)
 # Run with Agent
 command=JAVA+' -cp .:../../.:../.:'+JARPATH+' -javaagent:../Agent.jar -jar '+JARPATH+JARFILE+" "+ARGS
-print command
-os.system(command)
+#print command
+#os.system(command)
 
 # Clean up whatever data was then output
 os.system('python cleanData.py')

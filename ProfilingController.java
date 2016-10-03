@@ -437,13 +437,13 @@ public final class ProfilingController {
     }
     
     public static synchronized void ccspush(long threadID, String funcName){
-    	/*
+    	
     	if(ccs==null){
     		init();
     	}
 
     	ccs.push(threadID,funcName);
-    	*/
+    	
     }    
 
     public static synchronized void ccspop(long threadID){
@@ -451,7 +451,7 @@ public final class ProfilingController {
     		init();
     	}
 
-    	//ccs.pop(threadID);
+    	ccs.pop(threadID);
     }
 
 }
