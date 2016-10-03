@@ -27,16 +27,6 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
 
         byte[] byteCode = classfileBuffer;
 
-        try{
-            if(className != null){
-                System.out.println("Adding:"+className);
-                ProfilingController.classNames.add(className);            
-            }            
-        }catch(Exception ex){
-            
-        }
-
-
         // FIXME: See if there is a way to instrument inner classes
         if(className.contains("$")){
             return byteCode;

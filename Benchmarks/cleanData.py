@@ -15,12 +15,14 @@ lst = f.readlines()
 print "================Cleaning data=================="
 
 
+newLst = []
+
 # We can get away with this method, because the indentation should match up
 # and serve as a unique identifier.
 pos = 0
 methodName = ""
 totalEntries = len(lst)
-while(pos < len(lst)):
+while(pos < totalEntries):
     if "__Entry" in lst[pos]:
         name = lst[pos]
         methodName = name[0:name.index("__Entry")]
@@ -28,14 +30,15 @@ while(pos < len(lst)):
             if "__Exit" in j:
                 methodSearching = j[0:j.index("__Exit")]
                 if methodSearching == methodName:
-                    lst[pos] = methodName + j[j.index("|"):]
-                    lst.remove(j)
-                    if len(lst) % 10000 == 0:
-                        print str(len(lst))+"of"+str(totalEntries)
+		    newLst.append(methodName+j[j.index("|"):])             
+		    lst[pos] = methodName + j[j.index("|"):]
+                    #lst.remove(j)
+                    if len(newLst) % 10000 == 0:
+                        print str(len(newLst))+" of "+str(totalEntries)
                     # Uncomment when we want to print the output
 		            # print lst[pos],
                     # print len(lst)
-			
+		    break			
         pos = pos+1
     else:
         pos = pos + 1
@@ -48,7 +51,7 @@ f2 = open("CleanCallTreeStream.txt",'w')
 print "Generating output for list of length:"+str(len(lst))
 print "Writing output to CleanCallTreeStream.txt"
 
-for i in lst:
+for i in newLst:
     # Only output the data that is complete with timing information
     if "|" in i:
         f2.write(i)
