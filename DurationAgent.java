@@ -44,7 +44,9 @@ public class DurationAgent {
 		System.out.println("===(DurationAgent.java) Started executing premain===");
 		ProfilingController.setup(classNamesToInstrument);
 		ProfilingController.setFunctions(functionsToInstrument);
+		// Find every class in the program and add it to the list of classes to be instrumented.
 		inst.addTransformer(new FindAllClassesTransformer());
+		// Instrument classes that we have found.
 		inst.addTransformer(new SleepingClassFileTransformer());
 		System.out.println("===(DurationAgent.java) Finished executing premain===");
 	}

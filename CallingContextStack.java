@@ -69,7 +69,7 @@ public class CallingContextStack {
 	public String peek(long threadID){
 		checkInit();
 		
-		String result = "(peek)main";
+		String result = "main";
 		if(threadCallStacks.containsKey(threadID)){
 			BlockingDeque<String> temp = threadCallStacks.get(threadID);
 			if(temp.size()>0){
@@ -82,7 +82,9 @@ public class CallingContextStack {
 	public String peekCaller(long threadID){
 		checkInit();
 		
-		String result = "(peekCaller)main";
+//		String result = "(peekCaller)main";
+		String result = "main";
+
 		if(threadCallStacks.containsKey(threadID)){
 			BlockingDeque<String> temp = threadCallStacks.get(threadID);
 			if(temp.size()>1){

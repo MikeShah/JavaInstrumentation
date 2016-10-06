@@ -43,7 +43,7 @@ import java.util.*;
 			long avg = 0;
 			// Output every time and the thread id
 			for(int i =0; i < timeList.size();i++){
-				result += "("+threadIDList.get(i)+")("+callerList.get(i)+")"+ timeList.get(i).toString()+",";
+				result += "("+threadIDList.get(i)+")("+callerList.get(i)+")"+ timeList.get(i).toString()+ProfilingController.DelimiterSymbol;
 				avg += timeList.get(i);
 			}
 
@@ -51,7 +51,7 @@ import java.util.*;
 				avg = avg / timeList.size();
 			}
 
-			return "Average of "+timeList.size()+" Runs = "+avg+ ",Runs = {"+result+"}";
+			return "Average of "+timeList.size()+" Runs = "+avg+ ProfilingController.DelimiterSymbol+"Runs = {"+result+"}";
 		}
 
 		// Params: If CSV is true, then output comma separated list
@@ -60,7 +60,7 @@ import java.util.*;
 			long avg = 0;
 			// Output every time and the thread id
 			for(int i =0; i < timeList.size();i++){
-				result += threadIDList.get(i)+","+callerList.get(i)+","+ timeList.get(i).toString()+",";
+				result += threadIDList.get(i)+ProfilingController.DelimiterSymbol+callerList.get(i)+ProfilingController.DelimiterSymbol+ timeList.get(i).toString()+ProfilingController.DelimiterSymbol;
 				avg += timeList.get(i);
 			}
 
@@ -68,7 +68,7 @@ import java.util.*;
 				avg = avg / timeList.size();
 			}
 
-			return "Runs,"+timeList.size()+",Runs Avg,"+avg+ ",Runs,"+result+",";
+			return "Runs"+ProfilingController.DelimiterSymbol+timeList.size()+ProfilingController.DelimiterSymbol+"Runs Avg"+ProfilingController.DelimiterSymbol+avg+ ProfilingController.DelimiterSymbol+"Runs"+ProfilingController.DelimiterSymbol+result+ProfilingController.DelimiterSymbol;
 		}
 
 

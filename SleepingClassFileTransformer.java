@@ -134,6 +134,9 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
         int synchronizedMethod = 0;
         if(isSynchronized(method)){
             synchronizedMethod=1;
+        }else{
+            // Only instrument the calling instructions
+            return;
         }
 
         // Add in an ArrayList that contains a set of floats

@@ -37,11 +37,15 @@ public class Sleeping {
 
 	public void d(){
 				System.out.println("Yaaaaa d");
-				e();
+				e(5);
 	}
-		public void e(){
-				System.out.println("Yaaaaa e");
-
+	
+	public synchronized void e(int a){
+				System.out.println("Yaaaaa e(int)");
+				e(2,7);
+	}
+	public synchronized void e(int a, int b){
+				System.out.println("Yaaaaa e(int,int)");
 	}
 
 }

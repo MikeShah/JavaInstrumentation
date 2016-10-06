@@ -44,6 +44,9 @@ public final class ProfilingController {
 	static int prettyPrint = 0;
 	// Maintains theh calling context (call stack) for threads.
 	public static CallingContextStack ccs;
+	// Delimeter symbol
+	public static String DelimiterSymbol="@";
+
 
 	/// Add indentation before a function entry
 	public static void addEntry(){
@@ -399,7 +402,8 @@ public final class ProfilingController {
 			return;
 		}
 
-		streamFunctionMapWriter.write("functionMap("+functionMap.size()+") Dump of <key function name>,name, ,Total Runs, ,Runs Avg(ns), ,ThreadID,Time1(ns),ThreadID,Time2(ns),ThreadID,Time3(ns),ThreadID,Time4(ns)\n");
+
+		streamFunctionMapWriter.write("functionMap("+functionMap.size()+") Dump of <key function name>"+DelimiterSymbol+"name"+DelimiterSymbol+" "+DelimiterSymbol+"Total Runs"+DelimiterSymbol+" "+DelimiterSymbol+"Runs Avg(ns)"+DelimiterSymbol+" "+DelimiterSymbol+"ThreadID"+DelimiterSymbol+"Time1(ns)"+DelimiterSymbol+"ThreadID"+DelimiterSymbol+"Time2(ns)"+DelimiterSymbol+"ThreadID"+DelimiterSymbol+"Time3(ns)"+DelimiterSymbol+"ThreadID"+DelimiterSymbol+"Time4(ns)\n");
 
 		// Total time spent in critical sections
 		long totalTimeInCriticalSections = 0L;
@@ -411,12 +415,12 @@ public final class ProfilingController {
 		    }
 		    String output = temp.dumpCSV();
 		    //System.out.println(i.toString() + " = " + value + statisticMap.get(i).dump());  
-		    streamFunctionMapWriter.write(i.toString()+","+functionName + ","+output+'\n');  
+		    streamFunctionMapWriter.write(i.toString()+DelimiterSymbol+functionName +DelimiterSymbol+output+'\n');  
 		}
 		// Output the final Absolute Time
-		streamFunctionMapWriter.write("AbsoluteProgramTime,"+ProfilingController.absoluteProgramTime.toString()+'\n');  
+		streamFunctionMapWriter.write("AbsoluteProgramTime"+DelimiterSymbol+ProfilingController.absoluteProgramTime.toString()+'\n');  
 		// Time spent in only the Critical Sections
-		streamFunctionMapWriter.write("Critical Section Time,"+totalTimeInCriticalSections+'\n');  
+		streamFunctionMapWriter.write("Critical Section Time"+DelimiterSymbol+totalTimeInCriticalSections+'\n');  
 
 		streamFunctionMapWriter.flush();
 	}
