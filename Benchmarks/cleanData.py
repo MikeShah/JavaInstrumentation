@@ -7,8 +7,11 @@
 #
 import sys
 
+
+ROOTDIR=sys.argv[1]
+
 # File we are going to open
-f = open("CallTreeStream.txt",'r')
+f = open("./"+ROOTDIR+"/CallTreeStream.txt",'r')
 # Load all of the lines into a list
 lst = f.readlines()
 
@@ -46,7 +49,7 @@ while(pos < totalEntries):
 
 
 # Output the file
-f2 = open("CleanCallTreeStream.txt",'w')
+f2 = open("./"+ROOTDIR+"/CleanCallTreeStream.txt",'w')
 
 print "Generating output for list of length:"+str(len(lst))
 print "Writing output to CleanCallTreeStream.txt"

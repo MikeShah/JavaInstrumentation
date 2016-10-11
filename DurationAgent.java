@@ -18,8 +18,8 @@ import java.lang.instrument.Instrumentation;
 public class DurationAgent {
 
 	// A string to a file which contains a list of classes to instrument.
-	static String classNamesToInstrument = "/home/mike/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/SampleProgram/ClassNames.txt";
-	static String functionsToInstrument  = "/home/mike/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/SampleProgram/FunctionNames.txt";
+	static String classNamesToInstrument = "./Benchmarks/SampleProgram/ClassNames.txt";
+	static String functionsToInstrument  = "./Benchmarks/SampleProgram/FunctionNames.txt";
 
 	// SampleProgram- Z Drive
 //	static String classNamesToInstrument = "/h/mshah08/Desktop/JavaInstrumentation/Benchmarks/SampleProgram/ClassNames.txt";
@@ -42,6 +42,8 @@ public class DurationAgent {
 	// Runs at the start of the program
 	public static void premain(String agentArgs, Instrumentation inst) {
 		System.out.println("===(DurationAgent.java) Started executing premain===");
+		System.out.println("Argumentstring="+agentArgs);
+		ProfilingController.setAgentArgs(agentArgs);
 		ProfilingController.setup(classNamesToInstrument);
 		ProfilingController.setFunctions(functionsToInstrument);
 		// Find every class in the program and add it to the list of classes to be instrumented.

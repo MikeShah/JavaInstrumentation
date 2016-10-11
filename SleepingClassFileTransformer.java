@@ -125,6 +125,7 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
         // Instrument the function by adding it to our Profiling HashMap
         boolean firstTimeInstrumented = ProfilingController.addFunc(m_name);
         // If we've already instrumented the method, then do not move forward 
+        // In theory, this should never ber called!
         if(!firstTimeInstrumented){
             System.out.println(m_name+" has already been instrumented!");
             return;
@@ -136,7 +137,7 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
             synchronizedMethod=1;
         }else{
             // Only instrument the calling instructions
-            return;
+            //return;
         }
 
         // Add in an ArrayList that contains a set of floats

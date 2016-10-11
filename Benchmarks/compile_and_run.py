@@ -30,27 +30,34 @@ else:
 #os.system(JAVA+' -javaagent:../Agent.jar -jar '+JAR)
 # ========================= TEST SUITE 1 =========================
 
-
 #JARPATH is the classpath to the root directory containing the jar so packages are properly loaded up.
 JARPATH = "./SampleProgram/"
 #JARFILE includes the actual .jar file as well as any arguments needed
+AGENTARGS="01_Microbenchmark1"
 JARFILE = "TestInstrumentation.jar"
 ARGS=""
-#os.system(JAVA+' -cp .:../.:'+JARPATH+' -javaagent:../Agent.jar -jar '+JARPATH+JARFILE+" "+ARGS)
+command=JAVA+' -cp .:../.:'+JARPATH+' -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
+os.system(command)
+# Clean up whatever data was then output
+os.system('python cleanData.py '+AGENTARGS)
 
 
 # ========================= TEST SUITE JYTHON ====================
 JARPATH = "./Jython/"
 JARFILE = "jython-standalone-2.5.4-rc1.jar"
+AGENTARGS="02_Jython"
 ARGS 	= "./Jython/test01.py"
-command	= JAVA+' -cp .:../.:'+JARPATH+' -javaagent:../Agent.jar -jar '+JARPATH+JARFILE+" "+ARGS
-#os.system(command)
+command	= JAVA+' -cp .:../.:'+JARPATH+' -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
+os.system(command)
+# Clean up whatever data was then output
+os.system('python cleanData.py '+AGENTARGS)
 
 # ========================= TEST SUITE Sunflow =========================
 #JARPATH is the classpath to the root directory containing the jar so packages are properly loaded up.
 JARPATH = "./Sunflow/sunflow/"
 #JARFILE includes the actual .jar file as well as any arguments needed
 JARFILE = "sunflow.jar"
+AGENTARGS="03_Sunflow"
 #ARGS = "-nogui /h/mshah08/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/Sunflow/examples/shader_examples/VerySimple.sc"
 ARGS = "-nogui /home/mike/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/Sunflow/examples/shader_examples/VerySimple.sc"
 
@@ -59,9 +66,8 @@ ARGS = "-nogui /home/mike/Desktop/JavaDistribution/JavaInstrumentation/Benchmark
 #command = JAVA+' -cp .:../.:'+JARPATH+' -jar '+JARPATH+JARFILE+" "+ARGS
 #os.system(command)
 # Run with Agent
-command=JAVA+' -cp .:../../.:../.:'+JARPATH+' -javaagent:../Agent.jar -jar '+JARPATH+JARFILE+" "+ARGS
+command=JAVA+' -cp .:../../.:../.:'+JARPATH+' -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
 #print command
 os.system(command)
-
 # Clean up whatever data was then output
-os.system('python cleanData.py')
+os.system('python cleanData.py '+AGENTARGS)

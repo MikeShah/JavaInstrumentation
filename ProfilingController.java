@@ -46,6 +46,19 @@ public final class ProfilingController {
 	public static CallingContextStack ccs;
 	// Delimeter symbol
 	public static String DelimiterSymbol="@";
+	// The Java agent arguments string passed in when the agent first runs
+	public static String agentargs="NO_ARGUMENTS_DEFAULT";
+	// The default output directory for every file
+	public static String outputDIR="dump";
+
+	// Sets the agent arguments in our internal profiling controller.
+	// By default the java agent only takes in a string, so if we need to parse it
+	// that work can be done here to separate out differnt command line parameters.
+	public static void setAgentArgs(String s){
+		agentargs = s;
+		outputDIR="./"+agentargs;
+		new File(outputDIR).mkdirs();
+	}
 
 
 	/// Add indentation before a function entry
@@ -109,10 +122,10 @@ public final class ProfilingController {
         // Instantiate our class names list        
         try{
        	    if(streamCallTreeWriter==null){
-    			streamCallTreeWriter = new PrintWriter(new BufferedWriter(new FileWriter("CallTreeStream.txt")));
+    			streamCallTreeWriter = new PrintWriter(new BufferedWriter(new FileWriter(outputDIR+"/CallTreeStream.txt")));
     	    }
     	    if(streamFunctionMapWriter==null){
-    			streamFunctionMapWriter = new PrintWriter(new BufferedWriter(new FileWriter("functionMap.csv")));
+    			streamFunctionMapWriter = new PrintWriter(new BufferedWriter(new FileWriter(outputDIR+"/functionMap.csv")));
             }
 
             // Check that our file exists and is not a directory
@@ -306,7 +319,7 @@ public final class ProfilingController {
 		FileWriter writer;	
 
 		try{
-			writer = new FileWriter("printCallTree.txt");
+			writer = new FileWriter(outputDIR+"/printCallTree.txt");
 
 			String result="";//Runs|AVG time|{(ThreadID)time}\n";
 			for(int i =0; i < callTreeList.size();++i){
@@ -403,22 +416,26 @@ public final class ProfilingController {
 		}
 
 
-		streamFunctionMapWriter.write("functionMap("+functionMap.size()+") Dump of <key function name>"+DelimiterSymbol+"name"+DelimiterSymbol+" "+DelimiterSymbol+"Total Runs"+DelimiterSymbol+" "+DelimiterSymbol+"Runs Avg(ns)"+DelimiterSymbol+" "+DelimiterSymbol+"ThreadID"+DelimiterSymbol+"Time1(ns)"+DelimiterSymbol+"ThreadID"+DelimiterSymbol+"Time2(ns)"+DelimiterSymbol+"ThreadID"+DelimiterSymbol+"Time3(ns)"+DelimiterSymbol+"ThreadID"+DelimiterSymbol+"Time4(ns)\n");
+		streamFunctionMapWriter.write("functionMap("+functionMap.size()+") Dump of <key function name>"+DelimiterSymbol+"name"+DelimiterSymbol+"Total Runs"+DelimiterSymbol+"Runs Avg(ns)"+DelimiterSymbol+"Max(ns)"+DelimiterSymbol+"Min(ns)"+DelimiterSymbol+"Std Dev"+DelimiterSymbol+"ThreadID"+DelimiterSymbol+"Caller"+DelimiterSymbol+"Time(ns)\n");
 
 		// Total time spent in critical sections
 		long totalTimeInCriticalSections = 0L;
+		// Iteratoe through i# of functions in the function map.
 		for(Integer i = 0; i < functionMap.size(); ++i){
 		    String functionName = functionMap.get(i).toString();  
 		    Statistic temp = statisticMap.get(i);
+		    // Add up the time spent in each execution
 		    for(int j =0; j < temp.timeList.size(); ++j){
 		    	totalTimeInCriticalSections+= temp.timeList.get(j);
 		    }
 		    String output = temp.dumpCSV();
 		    //System.out.println(i.toString() + " = " + value + statisticMap.get(i).dump());  
-		    streamFunctionMapWriter.write(i.toString()+DelimiterSymbol+functionName +DelimiterSymbol+output+'\n');  
+		    streamFunctionMapWriter.write(i.toString()+DelimiterSymbol+functionName + output+'\n');  
 		}
 		// Output the final Absolute Time
-		streamFunctionMapWriter.write("AbsoluteProgramTime"+DelimiterSymbol+ProfilingController.absoluteProgramTime.toString()+'\n');  
+		streamFunctionMapWriter.write('\n');
+		streamFunctionMapWriter.write(DelimiterSymbol+"total functions profiled"+'\n');
+		streamFunctionMapWriter.write("\n\nAbsoluteProgramTime"+DelimiterSymbol+ProfilingController.absoluteProgramTime.toString()+'\n');  
 		// Time spent in only the Critical Sections
 		streamFunctionMapWriter.write("Critical Section Time"+DelimiterSymbol+totalTimeInCriticalSections+'\n');  
 

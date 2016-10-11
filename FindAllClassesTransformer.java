@@ -22,6 +22,7 @@ public class FindAllClassesTransformer implements ClassFileTransformer {
 
         try{
             if(className != null && !className.contains("java") && !className.contains("sun") && !className.contains("jdk") && !className.contains("ProfilingController") && !className.contains("$") && !className.contains("_") ){
+//            if(className != null){
                 System.out.println("Adding:"+className);
                 ProfilingController.classNames.add(className.replace('/','.'));            
             }            

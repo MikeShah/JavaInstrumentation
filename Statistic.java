@@ -57,20 +57,63 @@ import java.util.*;
 		// Params: If CSV is true, then output comma separated list
 		public String dumpCSV(){
 			String result="";
-			long avg = 0;
+			
 			// Output every time and the thread id
 			for(int i =0; i < timeList.size();i++){
 				result += threadIDList.get(i)+ProfilingController.DelimiterSymbol+callerList.get(i)+ProfilingController.DelimiterSymbol+ timeList.get(i).toString()+ProfilingController.DelimiterSymbol;
+				
+			}
+
+			// Outputs the total number of executions, Average execution time, and then individual runs
+			return ProfilingController.DelimiterSymbol+timeList.size()+ProfilingController.DelimiterSymbol+getAvg()+ProfilingController.DelimiterSymbol+getMax()+ProfilingController.DelimiterSymbol+getMin()+ProfilingController.DelimiterSymbol+getStdDev()+ProfilingController.DelimiterSymbol+result+ProfilingController.DelimiterSymbol;
+		}
+
+
+		// Some helper math functions
+		private long getAvg(){
+			long avg = 0;
+
+			for(int i =0; i < timeList.size();i++){
 				avg += timeList.get(i);
 			}
 
 			if(timeList.size()>0){
 				avg = avg / timeList.size();
 			}
-
-			return "Runs"+ProfilingController.DelimiterSymbol+timeList.size()+ProfilingController.DelimiterSymbol+"Runs Avg"+ProfilingController.DelimiterSymbol+avg+ ProfilingController.DelimiterSymbol+"Runs"+ProfilingController.DelimiterSymbol+result+ProfilingController.DelimiterSymbol;
+			return avg;
 		}
 
+
+		// Highest runtime
+		private long getMax(){
+			long max = Long.MIN_VALUE;
+
+			for(int i =0; i < timeList.size();i++){
+				if(timeList.get(i)>max){
+					max = timeList.get(i);
+				}
+			}
+
+			return max;
+		}
+
+		// Lowest runtime
+		private long getMin(){
+			long min = Long.MAX_VALUE;
+			for(int i =0; i < timeList.size();i++){
+				if(timeList.get(i)<min){
+					min = timeList.get(i);
+				}
+			}
+			return min;
+		}
+
+		// Calculate standard deviation
+		private long getStdDev(){
+			long stddev = 0;
+
+			return stddev;
+		}
 
 		// Output the statistic in a parsable way
 		// param: instance is the instance of data from the tree at one particular point.
