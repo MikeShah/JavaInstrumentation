@@ -70,8 +70,8 @@ import java.util.*;
 
 
 		// Some helper math functions
-		private long getAvg(){
-			long avg = 0;
+		private double getAvg(){
+			double avg = 0;
 
 			for(int i =0; i < timeList.size();i++){
 				avg += timeList.get(i);
@@ -109,8 +109,24 @@ import java.util.*;
 		}
 
 		// Calculate standard deviation
-		private long getStdDev(){
-			long stddev = 0;
+		private double getStdDev(){
+			double stddev = -1.0;
+			// (1) Compute the average
+			double avg = getAvg();
+			// (2) Compute the variances
+			ArrayList<Double> varianceAverages = new ArrayList<Double>(); 
+			for(int i =0; i < timeList.size();i++){
+				double variance = (timeList.get(i)-avg)*(timeList.get(i)-avg);
+				varianceAverages.add(variance);
+			}
+			// (3) Get average of variances
+			double variance_mean = 0;
+			for(int i =0; i < varianceAverages.size();i++){
+				variance_mean += varianceAverages.get(i);
+			}
+			variance_mean = variance_mean/varianceAverages.size();
+			// (4) Take square root
+			stddev = Math.sqrt(variance_mean);
 
 			return stddev;
 		}

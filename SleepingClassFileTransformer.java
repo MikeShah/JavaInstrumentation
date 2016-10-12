@@ -136,8 +136,10 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
         if(isSynchronized(method)){
             synchronizedMethod=1;
         }else{
-            // Only instrument the calling instructions
-            //return;
+            // If KNOB_INSTRUMENT_ONLY_CRITICAL_SECTIONS==true then we return if it is not a critical section
+            if(ProfilingController.KNOB_INSTRUMENT_ONLY_CRITICAL_SECTIONS){
+                return;
+            }
         }
  
         // Add in an ArrayList that contains a set of floats
