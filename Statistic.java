@@ -64,8 +64,21 @@ import java.util.*;
 				
 			}
 
+			ArrayList<Integer> divergingPoints = bestFitLine();
+			String divergingPointsList = "";
+			for(int i = 0; i < divergingPoints.size(); ++ i){
+				divergingPointsList += divergingPoints.get(i)+",";
+			}
+
 			// Outputs the total number of executions, Average execution time, and then individual runs
-			return ProfilingController.DelimiterSymbol+timeList.size()+ProfilingController.DelimiterSymbol+getAvg()+ProfilingController.DelimiterSymbol+getMax()+ProfilingController.DelimiterSymbol+getMin()+ProfilingController.DelimiterSymbol+getStdDev()+ProfilingController.DelimiterSymbol+result+ProfilingController.DelimiterSymbol;
+			return 	ProfilingController.DelimiterSymbol+timeList.size()+
+					ProfilingController.DelimiterSymbol+getAvg()+
+					ProfilingController.DelimiterSymbol+getMax()+
+					ProfilingController.DelimiterSymbol+getMin()+
+					ProfilingController.DelimiterSymbol+getStdDev()+
+					ProfilingController.DelimiterSymbol+divergingPointsList+
+					ProfilingController.DelimiterSymbol+result+
+					ProfilingController.DelimiterSymbol;
 		}
 
 
@@ -129,6 +142,65 @@ import java.util.*;
 			stddev = Math.sqrt(variance_mean);
 
 			return stddev;
+		}
+
+		// Computes the best fit line
+		// X-axis is the number of the execution (time in program)
+		// Y-axis is the total execution time.
+		/*
+			// Variables used to create line equation
+			xsum - The sum of all the values in the x column.
+			ysum - The sum of all the values in the y column.
+			xysum - The sum of the products of the xn and yn that are recorded at the same time (vertical on this chart).
+			x2sum - The total of each value in the x column squared and then added together.
+			y2sum - The total of each value in the y column squared and then added together.
+			N - The total number of elements (or trials in your experiment).
+
+			m = 
+				(Nxysum) - (xsumysum)
+				(Nx2sum) - (xsumxsum)
+
+			b = 
+				(x2sumysum) - (xsumxysum)
+				(Nx2sum) - (xsumxsum)
+
+			The purpose of this function is to find where the function
+			diverges. 
+
+			Based off: http://sciencefair.math.iit.edu/analysis/linereg/hand/
+		*/
+		public ArrayList<Integer> bestFitLine(){
+
+			ArrayList<Integer> divergingPoints = new ArrayList<Integer>();
+
+			double xsum  = timeList.size();	// In the future this could time in the program execution
+			double ysum  =  getAvg()*timeList.size();
+			double xysum = 0;
+			double x2sum = 0;
+			double y2sum = 0;
+			for(int i =0; i < timeList.size(); ++i){
+				xysum += (i+1)*timeList.get(i);
+				x2sum += (i+1);
+				y2sum += timeList.get(i);
+			}
+
+			double N 	 = timeList.size();
+
+			double m = ((N*xysum) - (xsum*ysum)) / ((N*x2sum) -(xsum*xsum));
+			double b = ((N*x2sum)-(xsum*xsum)) / ((N*x2sum)-(xsum*xsum));
+
+			// Equation of a line then becomes y=mx + b
+			// We then use this to find all points that are greater than
+			// the standard deviation.
+			double stddev = getStdDev();
+			for(int i =0; i < timeList.size(); ++i){
+				double y = m*i+b;
+				if(Math.abs(y - timeList.get(i)) > stddev){
+					
+				}
+			}
+
+			return divergingPoints;
 		}
 
 		// Output the statistic in a parsable way

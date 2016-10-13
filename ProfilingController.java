@@ -418,7 +418,17 @@ public final class ProfilingController {
 		}
 
 
-		streamFunctionMapWriter.write("functionMap("+functionMap.size()+") Dump of <key function name>"+DelimiterSymbol+"name"+DelimiterSymbol+"Total Runs"+DelimiterSymbol+"Runs Avg(ns)"+DelimiterSymbol+"Max(ns)"+DelimiterSymbol+"Min(ns)"+DelimiterSymbol+"Std Dev"+DelimiterSymbol+"ThreadID"+DelimiterSymbol+"Caller"+DelimiterSymbol+"Time(ns)\n");
+		streamFunctionMapWriter.write("functionMap("+functionMap.size()+") Dump of <key function name>"+
+										DelimiterSymbol+"name"+
+										DelimiterSymbol+"Total Runs"+
+										DelimiterSymbol+"Runs Avg(ns)"+
+										DelimiterSymbol+"Max(ns)"+
+										DelimiterSymbol+"Min(ns)"+
+										DelimiterSymbol+"Std Dev"+
+										DelimiterSymbol+"Diverging Points"+
+										DelimiterSymbol+"ThreadID"+
+										DelimiterSymbol+"Caller"+
+										DelimiterSymbol+"Time(ns)\n");
 
 		// Total time spent in critical sections
 		long totalTimeInCriticalSections = 0L;
