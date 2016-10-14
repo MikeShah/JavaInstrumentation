@@ -52,7 +52,7 @@ ARGS=""
 command=JAVA+' -cp .:../.:'+JARPATH+' -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
 # Run without the java agent
 command_noagent=JAVA+' -cp .:../.:'+JARPATH+' -jar '+JARPATH+JARFILE+" "+ARGS
-runTest(AGENTARGS,command, command_noagent)
+#runTest(AGENTARGS,command, command_noagent)
 
 
 
@@ -63,7 +63,7 @@ AGENTARGS="02_Jython"
 ARGS 	= "./Jython/test01.py"
 command	= JAVA+' -cp .:../.:'+JARPATH+' -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
 command_noagent=JAVA+' -cp .:../.:'+JARPATH+' -jar '+JARPATH+JARFILE+" "+ARGS
-runTest(AGENTARGS,command, command_noagent)
+#runTest(AGENTARGS,command, command_noagent)
 
 # ========================= TEST SUITE Sunflow =========================
 #JARPATH is the classpath to the root directory containing the jar so packages are properly loaded up.
@@ -80,5 +80,15 @@ ARGS = "-nogui /home/mike/Desktop/JavaDistribution/JavaInstrumentation/Benchmark
 # Run with Agent
 command=JAVA+' -cp .:../../.:../.:'+JARPATH+' -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
 #print command
+command_noagent=JAVA+' -cp .:../.:'+JARPATH+' -jar '+JARPATH+JARFILE+" "+ARGS
+#runTest(AGENTARGS,command, command_noagent)
+
+
+# ========================= TEST SUITE AVORA ====================
+JARPATH = "./Avrora/"
+JARFILE = "avrora-beta-1.7.117.jar"
+AGENTARGS="04_Avrora"
+ARGS 	= "-simulate simple.c"
+command	= JAVA+' -cp .:../.:'+JARPATH+' -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
 command_noagent=JAVA+' -cp .:../.:'+JARPATH+' -jar '+JARPATH+JARFILE+" "+ARGS
 runTest(AGENTARGS,command, command_noagent)
