@@ -51,7 +51,7 @@ public final class ProfilingController {
 	// The default output directory for every file
 	public static String outputDIR="dump";
 	// Knob to determine if we collect only critical section information
-	public static Boolean KNOB_INSTRUMENT_ONLY_CRITICAL_SECTIONS = false;
+	public static Boolean KNOB_INSTRUMENT_ONLY_CRITICAL_SECTIONS = true;
 
 	// Sets the agent arguments in our internal profiling controller.
 	// By default the java agent only takes in a string, so if we need to parse it
@@ -425,7 +425,8 @@ public final class ProfilingController {
 										DelimiterSymbol+"Max(ns)"+
 										DelimiterSymbol+"Min(ns)"+
 										DelimiterSymbol+"Std Dev"+
-										DelimiterSymbol+"Diverging Points"+
+										DelimiterSymbol+"% of Diverging Executions"+
+										DelimiterSymbol+"Diverging Execution"+
 										DelimiterSymbol+"ThreadID"+
 										DelimiterSymbol+"Caller"+
 										DelimiterSymbol+"Time(ns)\n");

@@ -12,7 +12,7 @@ JAVA = 'java'
 
 # (1) Setup the Agent
 # Compile the Agent
-javassistJARPath = '"./jboss-javassist-javassist-89c91fa/javassist.jar"'
+javassistJARPath = '"./javassist-3.21.0/javassist.jar"'
 BUILD_AGENT_STRING=JAVAC+' -cp '+javassistJARPath+':. *.java'
 print BUILD_AGENT_STRING
 os.system(BUILD_AGENT_STRING)

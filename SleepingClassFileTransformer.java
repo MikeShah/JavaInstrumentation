@@ -52,7 +52,7 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
                         if(methods[i].isEmpty()==false && isNative(methods[i])==false){
                             // TODO: Figure out how to find the single entry point
                             System.out.println(methods[i].getLongName());
-                            if(methods[i].getLongName().contains("main")){
+                            if(methods[i].getLongName().contains("main") || methods[i].getLongName().contains("Event.WINDOW_DESTROY") ){
                                 // Special case for instrumenting our 'main' method
                                 // Note that we have to use 'getDeclaredMethod' here -- TODO: WHY use this?
                                 final CtBehavior mainmethod = cc.getDeclaredMethod("main");
@@ -60,7 +60,7 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
                                 String startTime   = "absoluteProgramTime = System.nanoTime();";
                                 mainmethod.insertBefore(startTime);
                                 mainmethod.insertAfter("{ProfilingController.setAbsoluteTime(absoluteProgramTime);"
-                                                      +" ProfilingController.dumpFunctionMapCSV();ProfilingController.printCallTree();}");
+                                                      +"ProfilingController.dumpFunctionMapCSV();ProfilingController.printCallTree();}");
                             }else{
                                 instrumentMethod(methods[i]);
                                 // We instrument all methods with call stack information such that we know who the caller is.
@@ -72,9 +72,11 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
                     byteCode = cc.toBytecode();
                     cc.detach();
                 } catch (Exception ex) {
-                    System.out.println(ex.toString());
+                    System.out.println("Uh OH:"+ex.toString());
                     System.out.flush();
                     ex.printStackTrace();
+                } finally{
+                    return byteCode;
                 }
             }
         }
@@ -201,7 +203,4 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
             });
     }
     */
-
-
-
 }

@@ -65,6 +65,7 @@ import java.util.*;
 			}
 
 			ArrayList<Integer> divergingPoints = bestFitLine();
+			double percentageOfDivergingPoints = (double)divergingPoints.size()/(double)timeList.size();
 			String divergingPointsList = "";
 			for(int i = 0; i < divergingPoints.size(); ++ i){
 				divergingPointsList += divergingPoints.get(i)+",";
@@ -76,6 +77,7 @@ import java.util.*;
 					ProfilingController.DelimiterSymbol+getMax()+
 					ProfilingController.DelimiterSymbol+getMin()+
 					ProfilingController.DelimiterSymbol+getStdDev()+
+					ProfilingController.DelimiterSymbol+percentageOfDivergingPoints+
 					ProfilingController.DelimiterSymbol+divergingPointsList+
 					ProfilingController.DelimiterSymbol+result+
 					ProfilingController.DelimiterSymbol;
@@ -196,7 +198,7 @@ import java.util.*;
 			for(int i =0; i < timeList.size(); ++i){
 				double y = m*i+b;
 				if(Math.abs(y - timeList.get(i)) > stddev){
-					
+					divergingPoints.add(i);
 				}
 			}
 
