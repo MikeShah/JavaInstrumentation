@@ -1,0 +1,12 @@
+name,Total Runs,Runs Avg(ns),Max(ns),Min(ns),Std Dev
+avrora.syntax.Module.addInstruction,40,4085830.83,123902565,476168,19264101.79
+avrora.arch.legacy.LegacyRegister,35,295.66,6847,80,1125.25
+avrora.syntax.objdump.ObjDumpReformatter.append,19,1558.32,12988,504,2719.18
+avrora.sim.AtmelInterpreter.writeRegisterWord,19,677953.95,787595,625463,43564.06
+avrora.syntax.Item.itemSize(),14,1103.43,13426,120,3417.86
+cck.util.Options.newOption,10,97162.40,674841,17193,193508.79
+avrora.syntax.objdump.ObjDumpParser.InstrGPRGPR(),8,20589549.63,126339840,3644629,39979235.82
+avrora.sim.state.AbstractRegisterView.notify,7,7371.14,43849,131,15070.77
+avrora.sim.mcu.RegisterLayout.eat,6,3526852.50,20645102,95880,7655515.70
+avrora.sim.mcu.Timer16Bit.installTickers(),2,439538.50,874529,4548,434990.50
+avrora.sim.Interpreter.getSimulator(),2,186.50,195,178,8.50
