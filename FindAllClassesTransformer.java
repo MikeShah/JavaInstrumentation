@@ -21,9 +21,23 @@ public class FindAllClassesTransformer implements ClassFileTransformer {
         byte[] byteCode = classfileBuffer;
 
         try{
-            if(className != null && !className.contains("java") && !className.contains("sun") && !className.contains("jdk") && !className.contains("ProfilingController") && !className.contains("$") && !className.contains("_") ){
+            if(className != null 
+                && !className.contains("java") 
+                && !className.contains("sun") 
+                && !className.contains("jdk") 
+                && !className.contains("reflect") 
+                && !className.contains("ProfilingController") 
+                && !className.contains("Statistic")
+                && !className.contains("DurationAgent") 
+                && !className.contains("FindAllClassesTransformer") 
+                && !className.contains("SleepingClassFileTransformer")
+                && !className.contains("CallingContextStack")  
+                && !className.contains("ThreadData") 
+                && !className.contains("$") 
+                && !className.contains("_") 
+            ){
 //            if(className != null){
-                System.out.println("Adding:"+className);
+                System.out.println("--------------Adding:"+className);
                 ProfilingController.classNames.add(className.replace('/','.'));            
             }            
         }catch(Exception ex){

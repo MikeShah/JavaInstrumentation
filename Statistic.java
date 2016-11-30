@@ -3,7 +3,7 @@ import java.util.*;
 	// Statistic is a Piece of Data (POD) used
 	// in the hashmap for a function.
 	// The hashmap of 'functionMap'  and 'statisticMap' in the Profiling Controller match each other 
-	class Statistic{
+	public class Statistic{
 		ArrayList<Long> timeList; // How much time a method took to execute
 		ArrayList<Long> threadIDList; // The ID of the thread that exectued.
 		ArrayList<String> callerList; // The function caller of this function	

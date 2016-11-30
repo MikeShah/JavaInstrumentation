@@ -1,23 +1,44 @@
 import os
 import time
+import threading
 # Configuration options for the build.
 # These are knobs the user can change
 KNOB_PLATFORM="LINUX" # Could also be MAC
 KNOB_TEST="TEST1"
 INSTRUMENTATION="ON" # If this is set to OFF, then run without instrumentation, but output time of execution
+THREADING="OFF" #If this is set to ON, then all tests are run. Warning, this should be disabled for final test results
 
+threads = []
+if INSTRUMENTATION=="ON":
+	print "INSTRUMENTION=ON"
+if THREADING=="ON":
+	print "WARNING, THREADING IS ON, if you're collecting real data, turn this OFF!"
 
+time.sleep(3)
+
+# Calls a test.
+# If KNOBS for INSTRUMENTATION are on or off, a report is given back
 def runTest(benchmark,command, command_noagent):
 	if INSTRUMENTATION=="ON":
+		print command
 		os.system(command)
 		# Clean up whatever data was then output
 		os.system('python cleanData.py '+AGENTARGS)
 	else:
+		print command_noagent
 		start_time = time.time();
 		os.system(command_noagent)
 		elapsed_time = time.time()-start_time
 		print "==============================elapsed Time for"+AGENTARGS+": "+str(elapsed_time)+" seconds"
 
+# Calls runTest in a thread
+def runThreadingTest(benchmark,command, command_noagent):
+	if THREADING=="ON":
+		thread1 = threading.Thread(target=runTest,args=(AGENTARGS,command, command_noagent))
+		thread1.daemon = True
+		thread1.start()
+	else:
+		runTest(AGENTARGS,command, command_noagent)
 
 # Compile the Test programs
 #os.system('python build.py')
@@ -33,12 +54,12 @@ def runTest(benchmark,command, command_noagent):
 # Run with instrumentation
 # NOTE, I have copied Agent.jar into the directory
 if KNOB_PLATFORM=="MAC":
-	JAVA='/Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home/bin/java'
+	JAVA='/Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home/bin/java -XX:CompileThreshold=1 '
 else:
 	#For Ubuntu just use java
 	JAVAC = 'javac'
 	JAR = 'jar'
-	JAVA = 'java'
+	JAVA = 'java -XX:CompileThreshold=1 '
 
 #os.system(JAVA+' -javaagent:../Agent.jar -jar '+JAR)
 # ========================= TEST SUITE 1 =========================
@@ -52,8 +73,8 @@ ARGS=""
 command=JAVA+' -cp .:../.:'+JARPATH+' -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
 # Run without the java agent
 command_noagent=JAVA+' -cp .:../.:'+JARPATH+' -jar '+JARPATH+JARFILE+" "+ARGS
-runTest(AGENTARGS,command, command_noagent)
-
+# Special recompile for the benchmark
+runThreadingTest(AGENTARGS,command, command_noagent)
 # ========================= TEST SUITE JYTHON ====================
 JARPATH = "./Jython/"
 JARFILE = "jython-standalone-2.5.4-rc1.jar"
@@ -61,8 +82,7 @@ AGENTARGS="02_Jython"
 ARGS 	= "./Jython/test01.py"
 command	= JAVA+' -cp .:../.:'+JARPATH+' -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
 command_noagent=JAVA+' -cp .:../.:'+JARPATH+' -jar '+JARPATH+JARFILE+" "+ARGS
-runTest(AGENTARGS,command, command_noagent)
-
+#####runThreadingTest(AGENTARGS,command, command_noagent)
 # ========================= TEST SUITE Sunflow =========================
 #JARPATH is the classpath to the root directory containing the jar so packages are properly loaded up.
 JARPATH = "./Sunflow/sunflow/"
@@ -79,8 +99,7 @@ ARGS = "-nogui /home/mike/Desktop/JavaDistribution/JavaInstrumentation/Benchmark
 command=JAVA+' -cp .:../../.:../.:'+JARPATH+' -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
 #print command
 command_noagent=JAVA+' -cp .:../.:'+JARPATH+' -jar '+JARPATH+JARFILE+" "+ARGS
-runTest(AGENTARGS,command, command_noagent)
-
+#####runThreadingTest(AGENTARGS,command, command_noagent)
 # ========================= TEST SUITE AVORA ====================
 JARPATH = "./Avrora/"
 JARFILE = "avrora-beta-1.7.117.jar"
@@ -88,8 +107,7 @@ AGENTARGS="04_Avrora"
 ARGS 	= "-simulate ./Avrora/simple.od"
 command	= JAVA+' -cp .:../.:'+JARPATH+' -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
 command_noagent=JAVA+' -cp .:../.:'+JARPATH+' -jar '+JARPATH+JARFILE+" "+ARGS
-runTest(AGENTARGS,command, command_noagent)
-
+#####runThreadingTest(AGENTARGS,command, command_noagent)
 # ========================= TEST SUITE PAW-SERVER ====================
 JARPATH = "./Paw/"
 JARFILE = "paw-server.jar"
@@ -98,8 +116,7 @@ ARGS 	= ""
 TIMEOUT = "timeout 5"
 command	= TIMEOUT+" "+JAVA+' -cp '+JARPATH+'sax2.jar:.:../.:'+JARPATH+' -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
 command_noagent=TIMEOUT+" "+JAVA+' -cp .:../.:'+JARPATH+' -jar '+JARPATH+JARFILE+" "+ARGS
-runTest(AGENTARGS,command, command_noagent)
-
+#####runThreadingTest(AGENTARGS,command, command_noagent)
 # ========================= TEST SUITE Batik-rasterizer====================
 JARPATH = "./Batik/"
 JARFILE = "batik-rasterizer.jar"
@@ -107,18 +124,16 @@ AGENTARGS="06_Batik"
 ARGS 	= "./Batik/samples/batikFX.svg"
 command	= TIMEOUT+" "+JAVA+' -cp :.:../.:'+JARPATH+' -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
 command_noagent=TIMEOUT+" "+JAVA+' -cp .:../.:'+JARPATH+' -jar '+JARPATH+JARFILE+" "+ARGS
-runTest(AGENTARGS,command, command_noagent)
-
+#####runThreadingTest(AGENTARGS,command, command_noagent)
 # ========================= TEST SUITE H2====================
 JARPATH = "./H2/"
 JARFILE = "./bin/h2-1.3.174.jar"
 AGENTARGS="07_H2"
 ARGS 	= "-pg"
 TIMEOUT = "timeout 5"
-command	= TIMEOUT+" "+JAVA+' -cp .:../.:'+JARPATH+' -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
+command	= TIMEOUT+" "+JAVA+' -cp .:../.:'+JARPATH+':./H2/bin/:./H2/bin/org/:./H2/bin/:./H2/bin/org/h2/ -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
 command_noagent=TIMEOUT+" "+JAVA+' -cp .:../.:'+JARPATH+' -jar '+JARPATH+JARFILE+" "+ARGS
-runTest(AGENTARGS,command, command_noagent)
-
+#####runThreadingTest(AGENTARGS,command, command_noagent)
 # ========================= TEST SUITE YCad====================
 JARPATH = "./ycad/"
 JARFILE = "lib/ycad.jar"
@@ -127,8 +142,27 @@ ARGS 	= "com.ysystems.ycad.app.ycadtest.YcadTest"
 TIMEOUT = "timeout 5"
 command = " "+JAVA+" -cp "+JARPATH+JARFILE+" com.ysystems.ycad.app.ycadtest.YcadTest -javaagent:../Agent.jar="+AGENTARGS
 command_noagent=TIMEOUT+" "+JAVA+" -cp "+JARPATH+JARFILE+" com.ysystems.ycad.app.ycadtest.YcadTest"
-runTest(AGENTARGS,command, command_noagent)
-
+#####runThreadingTest(AGENTARGS,command, command_noagent)
+# ========================= TEST SUITE FOP====================
+# java -cp .:../.:./fop/:./../../../javassist-3.21.0:./../../../javassist-3.21.0/javassist.jar:./../../../../Agent.jar -javaagent:Agent.jar=09_fop -jar fop.jar
+JARPATH = "./fop/"
+JARFILE = "build/fop.jar"
+AGENTARGS="09_fop"
+ARGS 	= "-fo ./fop/examples/fo/advanced/barcode.fo -pdf foo.pdf"
+TIMEOUT = ""
+command	= JAVA+' -cp '+JARPATH+":../Agent.jar:../javassist-3.21.0/javassist.jar:"+JARPATH+JARFILE+' -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
+command_noagent=JAVA+' -cp .:../.:'+JARPATH+":./build/"+' -jar '+JARPATH+JARFILE+" "+ARGS
+#####runThreadingTest(AGENTARGS,command, command_noagent)
+# ========================= TEST SUITE PMD====================
+# java -cp ./lib/pmd-4.2.4.jar:./lib/jaxen-1.1.1.jar:./lib/asm-3.1.jar net.sourceforge.pmd.PMD ./src/net/sourceforge/pmd/ html unusedcode -javaagent:./../../../Agent.jar="010_pmd"
+JARPATH = "./pmd-4.2.4/"
+JARFILE = "lib/pmd-4.2.4.jar"
+AGENTARGS="010_pmd"
+ARGS 	= "./pmd/pmd-4.2.4/src/net/sourceforge/pmd/ html unusedcode"
+TIMEOUT = ""
+command	= JAVA+' -verbose:class -cp '+JARPATH+'lib/pmd-4.2.4.jar:'+JARPATH+'lib/jaxen-1.1.1.jar:'+JARPATH+'lib/asm-3.1.jar:./pmd-4.2.4:./pmd-4.2.4/src net.sourceforge.pmd.PMD -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
+command_noagent=JAVA+' -cp .:../.:'+JARPATH+":./build/"+' -jar '+JARPATH+JARFILE+" "+ARGS
+#####runThreadingTest(AGENTARGS,command, command_noagent)
 
 
 

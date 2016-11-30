@@ -1,3 +1,4 @@
 CommentFromMike: This is the manifest for the agent
 Premain-Class: DurationAgent
-Boot-Class-Path: jboss-javassist-javassist-89c91fa/javassist.jar
+Boot-Class-Path: javassist-3.21.0/javassist.jar Agent.jar
+Can-Redefine-Classes: true

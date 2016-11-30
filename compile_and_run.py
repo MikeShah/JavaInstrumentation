@@ -5,6 +5,10 @@ JAVAC = 'javac'
 JAR = 'jar'
 JAVA = 'java'
 
+JAVAC7='/usr/lib/jvm/java-7-oracle/bin/javac'
+JAR7='/usr/lib/jvm/java-7-oracle/bin/jar'
+JAVA7='/usr/lib/jvm/java-7-oracle/bin/java'
+
 # (0) Attempt to clean files out
 # Delete the old files (do a clean)
 # os.system("rm *.class")
@@ -20,7 +24,7 @@ os.system(BUILD_AGENT_STRING)
 # Run the program
 #os.system('java HelloWorld')
 # Build a .jar
-os.system(JAR+' -cfm Agent.jar manifest.mf *.class')
+os.system(JAR+' -cfm Agent.jar manifest.mf *.class javassist-3.21.0')
 # Run the .jar
 #os.system('java -cp HelloWorld.jar HelloWorld')
 

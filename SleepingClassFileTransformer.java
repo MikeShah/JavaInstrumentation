@@ -51,16 +51,19 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
                         // If the method is empty, then we do not need to instrument it.
                         if(methods[i].isEmpty()==false && isNative(methods[i])==false){
                             // TODO: Figure out how to find the single entry point
-                            System.out.println(methods[i].getLongName());
+                            System.out.println("Found: "+methods[i].getLongName());
                             if(methods[i].getLongName().contains("main") || methods[i].getLongName().contains("Event.WINDOW_DESTROY") ){
+                                System.out.println("\n*(&#@%(&#@%_(#%)(#@*%)(#@*%)(#@*%)#@*%()@#*%)(#@%*)(*%\n");
                                 // Special case for instrumenting our 'main' method
                                 // Note that we have to use 'getDeclaredMethod' here -- TODO: WHY use this?
-                                final CtBehavior mainmethod = cc.getDeclaredMethod("main");
+                                final CtBehavior mainmethod = cc.getDeclaredMethod(methods[i].getName());
                                 mainmethod.addLocalVariable("absoluteProgramTime", CtClass.longType);
                                 String startTime   = "absoluteProgramTime = System.nanoTime();";
                                 mainmethod.insertBefore(startTime);
                                 mainmethod.insertAfter("{ProfilingController.setAbsoluteTime(absoluteProgramTime);"
-                                                      +"ProfilingController.dumpFunctionMapCSV();ProfilingController.printCallTree();}");
+                                                      + "ProfilingController.dumpFunctionMapCSV();"
+                                                      + "ProfilingController.printCallTree();}"
+                                                      );
                             }else{
                                 instrumentMethod(methods[i]);
                                 // We instrument all methods with call stack information such that we know who the caller is.
@@ -108,8 +111,6 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
     }
 
 
-
-
     // Updates a method such that it has a timer
     // This function actually modifies the method inserting code at each entry and exit.	 
     private void instrumentMethod(CtBehavior method) throws NotFoundException, CannotCompileException{
@@ -118,10 +119,10 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
         String m_name = method.getLongName();
         // Check if the method is in our functions that we want to instrument
         if(!ProfilingController.isInFunctionNames(m_name)){
-            System.out.println(m_name+" is not in list of function names to be instrumented");
-            //return;
+//          System.out.println(m_name+" is not in list of function names to be instrumented");
+//          return;
         }else{
-            System.out.println("\t\tStarting Instrumentation of function:"+m_name);  
+//          System.out.println("\t\tStarting Instrumentation of function:"+m_name);  
         }
         // Add a method to our final map
         // Instrument the function by adding it to our Profiling HashMap
@@ -134,13 +135,11 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
         }
 
         // Return a one or zero if the method is synchronized.
-        int synchronizedMethod = 0;
-        if(isSynchronized(method)){
-            synchronizedMethod=1;
-        }else{
-            // If KNOB_INSTRUMENT_ONLY_CRITICAL_SECTIONS==true then we return if it is not a critical section
-            if(ProfilingController.KNOB_INSTRUMENT_ONLY_CRITICAL_SECTIONS){
-                return;
+        int synchronizedMethod = isSynchronized(method) ? 1 : 0;
+        // If KNOB_INSTRUMENT_ONLY_CRITICAL_SECTIONS==true then we return if it is not a critical section
+        if(ProfilingController.KNOB_INSTRUMENT_ONLY_CRITICAL_SECTIONS){
+            if(synchronizedMethod==0){
+                //return;
             }
         }
  
@@ -156,7 +155,7 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
         method.addLocalVariable("mainThreadId", CtClass.longType);
 
         String getThreadID = "mainThreadId = Thread.currentThread().getId();";
-        String buildCallTree = "ProfilingController.addToCallTreeList(ProfilingController.getSpaces(true)+\""+m_name+"__Entry\");";
+        String addToCallTreeListEntry = "ProfilingController.addToCallTreeList(ProfilingController.getSpaces(true)+\""+m_name+"__Entry\");";
                                 // "ProfilingController.callTreeList.add(ProfilingController.getSpaces()+\""+m_name+"\"__Entry\");";
         String addEntry    = "ProfilingController.addEntry();";
         
@@ -165,26 +164,51 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
         //String printEntry  = "System.out.println(\""+m_name+"__Entry\");";
         String startTime   = "elapsedTime = System.nanoTime();";
         String callStackStart = "ProfilingController.ccspush(mainThreadId,\""+m_name+"\");";
-        // method.insertBefore(getThreadID+callStackStart+buildCallTree+addEntry+startTime+printEntry);
-        method.insertBefore(getThreadID+startTime);
-        method.insertBefore(getThreadID+callStackStart+buildCallTree+addEntry+startTime);
+        // method.insertBefore(getThreadID+callStackStart+addToCallTreeListEntry+addEntry+startTime+printEntry);
 
+        method.insertBefore(    getThreadID
+                            +   startTime
+                            );
 
+/*
+        method.insertBefore(    getThreadID
+                            +   callStackStart
+                            +   addToCallTreeListEntry
+                            +   addEntry
+                            +   startTime
+                            );
+*/
 
         // Add tracing ability, so we know how many times a function was called.
-        method.insertAfter("{elapsedTime = System.nanoTime() - elapsedTime;"
-                         + "ProfilingController.ccspop(mainThreadId);"
-                         //+ "System.out.println(ProfilingController.getStackTrace());"       // Note that we get the caller here
-                         + "ProfilingController.log(\""+m_name+"\",elapsedTime,mainThreadId,ProfilingController.getCaller(mainThreadId));" // 
-                         + "ProfilingController.addExit();"
-                         + "ProfilingController.addToCallTreeList(ProfilingController.getSpaces(true)+\""+m_name+"__Exit\" +\"|\"+elapsedTime+\"|\"+mainThreadId+\"|\"+"+synchronizedMethod+");}");
+        String calculateElapsedTime = "elapsedTime = System.nanoTime() - elapsedTime;";
+        String ccsPop = "ProfilingController.ccspop(mainThreadId);";
+        String getStackTrace = "System.out.println(ProfilingController.getStackTrace());";       // Note that we get the caller here
+        String log = "ProfilingController.log(\""+m_name+"\",elapsedTime,mainThreadId,ProfilingController.getCaller(mainThreadId));";
+        String addExit = "ProfilingController.addExit();";
+        String addToCallTreeListExit = "ProfilingController.addToCallTreeList(ProfilingController.getSpaces(true)+\""+m_name+"__Exit\" +\"|\"+elapsedTime+\"|\"+mainThreadId+\"|\"+"+synchronizedMethod+");";
+
+        method.insertAfter("{"
+                         + calculateElapsedTime
+                         + log // 
+                         + "}");
                          //+ "System.out.println(\""+m_name+"__Exit\");"
                          //+ "System.out.println(\""+m_name+" executed in ms: \" + elapsedTime);}");
 
+/*
+        method.insertAfter("{"
+                         + calculateElapsedTime
+                         + ccsPop
+                    //   +   getStackTrace
+                         + log // 
+                           + addExit
+                         + addToCallTreeListExit
+                         + "}");
+                         //+ "System.out.println(\""+m_name+"__Exit\");"
+                         //+ "System.out.println(\""+m_name+" executed in ms: \" + elapsedTime);}");
+*/
       System.out.println("\tFinished Instrumentation of function:"+m_name);  
         
     }
-
 
 
     // Modifies bytecode, such that it 

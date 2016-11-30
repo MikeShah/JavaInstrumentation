@@ -14,7 +14,8 @@ import java.io.*;
 
 public final class ProfilingController {
 
-	// Maps a unique key to a function
+	// functionMapIDs maps the function name to the unique integer
+	public static ConcurrentHashMap<String, Integer> functionMapIDs;
 	// The functionMap maps an integer to a name
 	public static ConcurrentHashMap<Integer,String> functionMap;
 	// The statisticMap maps a Key of a function to statistics about how
@@ -156,7 +157,6 @@ public final class ProfilingController {
         //classNames.add("TestInstrumentation");
     }
 
-
     ///@brief Store all of the Functions that we want to instrument in our program
 	///
     /// The setup method loads all of the classes, and their associated methods
@@ -207,6 +207,10 @@ public final class ProfilingController {
 	// init() may also be called from other functions to ensure
 	// that the datastructures are created before using them.
 	private static synchronized void init(){
+		if(functionMapIDs==null){
+			functionMapIDs = new ConcurrentHashMap<String, Integer>();
+		}
+
 		// If our function map is null, then allocate memory for it.
 		if(functionMap == null){
 			//System.out.println("functionMap allocted");
@@ -246,13 +250,13 @@ public final class ProfilingController {
 	// Add a new method, and assign it a unique key
 	// Returns true if a success, and the function was added
 	public static synchronized boolean addFunc(String functionName){
-		if (functionMap==null){
+		if (functionMap==null || functionMapIDs==null){
 			//System.out.println("attempted addFunc");
 			init();
 		}
 		boolean result = false;
 
-		if(functionMap.contains(functionName)){
+		if(functionMapIDs.containsKey(functionName)){
 			// Do something
 			// TODO: Add some sort of error message I suppose
 			System.out.println("Error -- function "+functionName+" already added");
@@ -260,7 +264,8 @@ public final class ProfilingController {
 		}
 		else{
 			// Associate a unique key(function Count) to a function name
-			// Note that the functionmap and statisticMap share ID's
+			// Note that the functionmap and statisticMap share ID's, and functionMapIDs maps the function name to a unique id for quick lookup
+			functionMapIDs.put(functionName,functionCount);
 			functionMap.put(functionCount,functionName);
 			statisticMap.put(functionCount,new Statistic());
 			functionCount++;
@@ -274,13 +279,17 @@ public final class ProfilingController {
 
 	// Increases the occurances of a function
 	public static synchronized void log(String functionName, long time, long threadID, String caller){
-		if (functionMap==null){
+		if (functionMap==null || functionMapIDs==null || statisticMap==null){
 			System.out.println("attempted log1");
 			init();
 		}
 
 		// Based on the functionName, get the key, and update the values.
+		int id = functionMapIDs.get(functionName);
+		/*
+		// Iterative algorithm for finding the function Name -- TODO Remove me, functionMapIDs should have fixed this
 		int id = 0;
+		
 		for (Integer keyType: functionMap.keySet()){
             		String value = functionMap.get(keyType).toString();  
             		if(value.equals(functionName)){
@@ -288,17 +297,14 @@ public final class ProfilingController {
             			break;
             		}		  
 	            id++;
-		} 
+		}
+		*/
 
-		if(statisticMap!=null){
-			// 	Modify the occurance count
-			Statistic temp = statisticMap.get(id);
-			if(temp!=null){
-				temp.addTime(time,threadID,caller);
-				statisticMap.put(id,temp);
-			}
-		}else{
-			init();
+		// 	Modify the occurance count
+		Statistic temp = statisticMap.get(id);
+		if(temp!=null){
+			temp.addTime(time,threadID,caller);
+			statisticMap.put(id,temp);
 		}
 
 	}
@@ -336,6 +342,9 @@ public final class ProfilingController {
 					funcName = removeLeadingNumeric(funcName);
 	   				// Retrieve the ID of the function in our map to
 	   				// update its values
+	   				Integer id = functionMapIDs.get(funcName);
+	   				/*
+	   				// Old iterative code
 	   				Integer id = 0;
 	   				for(id=0; id < functionMap.size(); ++id){
 		    			String functionName = functionMap.get(id).toString(); 
@@ -343,6 +352,7 @@ public final class ProfilingController {
 		    				break;
 		    			}
 		    		}
+		    		*/
 					// If the id is not found, then output an error message
 					if(id >= functionMap.size()){
 						System.out.println("Function: \""+funcName+"\" has not been found!");
@@ -381,12 +391,12 @@ public final class ProfilingController {
 		finally{
 
 		}
-	
+		
 	}
 
 	// Prints out all of the keys and function names.
 	public static synchronized void dump(){
-		if (functionMap==null){
+		if (functionMap==null || functionMapIDs==null){
 			System.out.println("dump is null, add a function first");
 			return;
 		}
@@ -399,8 +409,12 @@ public final class ProfilingController {
 		    String functionName = functionMap.get(i).toString();  
 		    Statistic temp = statisticMap.get(i);
 		    String output = temp.dump();
-		    //System.out.println(i.toString() + " = " + value + statisticMap.get(i).dump());  
-		    streamFunctionMapWriter.write(i.toString()+" "+functionName + " Statistics-"+output+'\n');  
+		    
+		    // Only write out information for functions that ran
+		    if(temp.timeList.size()>0){
+		    	//System.out.println(i.toString() + " = " + value + statisticMap.get(i).dump());  
+		    	streamFunctionMapWriter.write(i.toString()+" "+functionName + " Statistics-"+output+'\n');  
+			}
 		}
 		streamFunctionMapWriter.write("============================================================================\n");
 		streamFunctionMapWriter.flush();
@@ -411,12 +425,23 @@ public final class ProfilingController {
 	}
 
 	/// Dumps the functionMap as a CSV File
+	/// Concise - 	Only outputs functions that have run more than once
+	///  			Note that this is toggled in "mainmethod.insertAfter"
 	public static synchronized void dumpFunctionMapCSV(){
-		if (functionMap==null){
+		boolean concise = true;
+		if (functionMap==null || functionMapIDs==null){
 			System.out.println("dump is null, add a function first");
 			return;
 		}
-
+		System.out.println("====================================================");
+		System.out.println("=================dumpFunctionMapCSV=================");
+		System.out.println("=================dumpFunctionMapCSV=================");
+		System.out.println("=================dumpFunctionMapCSV=================");
+		System.out.println("=================dumpFunctionMapCSV=================");
+		System.out.println("=================dumpFunctionMapCSV=================");
+		System.out.println("=================dumpFunctionMapCSV=================");
+		System.out.println("=================dumpFunctionMapCSV=================");
+		System.out.println("====================================================");
 
 		streamFunctionMapWriter.write("functionMap("+functionMap.size()+") Dump of <key function name>"+
 										DelimiterSymbol+"name"+
@@ -443,7 +468,15 @@ public final class ProfilingController {
 		    }
 		    String output = temp.dumpCSV();
 		    //System.out.println(i.toString() + " = " + value + statisticMap.get(i).dump());  
-		    streamFunctionMapWriter.write(i.toString()+DelimiterSymbol+functionName + output+'\n');  
+		    if(concise){
+		    	// Only write out information for functions that ran at least once
+			    if(temp.timeList.size()>0){
+			    	streamFunctionMapWriter.write(i.toString()+DelimiterSymbol+functionName + output+'\n');  
+				}
+			}else
+			{
+				streamFunctionMapWriter.write(i.toString()+DelimiterSymbol+functionName + output+'\n');  
+			}
 		}
 		// Output the final Absolute Time
 		streamFunctionMapWriter.write('\n');
@@ -451,7 +484,7 @@ public final class ProfilingController {
 		streamFunctionMapWriter.write("\n\nAbsoluteProgramTime"+DelimiterSymbol+ProfilingController.absoluteProgramTime.toString()+'\n');  
 		// Time spent in only the Critical Sections
 		streamFunctionMapWriter.write("Critical Section Time"+DelimiterSymbol+totalTimeInCriticalSections+'\n');  
-
+		// Ensure that everything gets written.
 		streamFunctionMapWriter.flush();
 	}
 
