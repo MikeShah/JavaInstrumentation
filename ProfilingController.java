@@ -302,7 +302,6 @@ public final class ProfilingController {
 			System.out.println("attempted log1");
 			init();
 		}
-		ProfilingController.dumpFunctionMapCSV();
 		// Based on the functionName, get the key, and update the values.
 		int id = functionMapIDs.get(functionName);
 		/*
@@ -461,7 +460,6 @@ public final class ProfilingController {
 		System.out.println("=================dumpFunctionMapCSV=================");
 		System.out.println("=================dumpFunctionMapCSV=================");
 		System.out.println("====================================================");
-
 
 
 		// Total time spent in critical sections

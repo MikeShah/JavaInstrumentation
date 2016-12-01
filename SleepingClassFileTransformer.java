@@ -140,9 +140,9 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
             if(ProfilingController.KNOB_VERBOSE_OUTPUT){
                 System.out.println(m_name+" is not in list of function names to be instrumented");
             }
-            return;
+//              return;
         }else{
-//          System.out.println("\t\tStarting Instrumentation of function:"+m_name);  
+          System.out.println("\t\tStarting Instrumentation of function:"+m_name);  
         }
         // Add a method to our final map
         // Instrument the function by adding it to our Profiling HashMap
@@ -153,7 +153,7 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
             if(ProfilingController.KNOB_VERBOSE_OUTPUT){
                 System.out.println(m_name+" has already been instrumented!");
             }
-            return;
+//            return;
         }
 
         // Return a one or zero if the method is synchronized.

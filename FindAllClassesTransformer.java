@@ -22,7 +22,7 @@ public class FindAllClassesTransformer implements ClassFileTransformer {
 
         try{
             if(className != null 
-                 //&& !className.contains("java") 
+                 && !className.contains("java") 
                  && !className.contains("sun") 
                  && !className.contains("jdk") 
                  && !className.contains("reflect") 
