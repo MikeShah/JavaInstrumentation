@@ -44,31 +44,49 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
 
                     // Modify all of the classes methods
                     CtBehavior[] methods = cc.getDeclaredBehaviors();
-                    System.out.println("\tInstrumenting: "+methods.length+" methods in class "+cc.getName());
-                    System.out.flush();
+
+                    if(ProfilingController.KNOB_VERBOSE_OUTPUT){
+                        System.out.println("\tInstrumenting: "+methods.length+" methods in class "+cc.getName());
+                        System.out.flush();
+                    }
                     // Loop that instruments all of the methods
                     for(int i =0; i < methods.length;i++){
                         // If the method is empty, then we do not need to instrument it.
                         if(methods[i].isEmpty()==false && isNative(methods[i])==false){
-                            // TODO: Figure out how to find the single entry point
-                            System.out.println("Found: "+methods[i].getLongName());
-                            if(methods[i].getLongName().contains("main") || methods[i].getLongName().contains("Event.WINDOW_DESTROY") ){
-                                System.out.println("\n*(&#@%(&#@%_(#%)(#@*%)(#@*%)(#@*%)#@*%()@#*%)(#@%*)(*%\n");
-                                // Special case for instrumenting our 'main' method
-                                // Note that we have to use 'getDeclaredMethod' here -- TODO: WHY use this?
-                                final CtBehavior mainmethod = cc.getDeclaredMethod(methods[i].getName());
-                                mainmethod.addLocalVariable("absoluteProgramTime", CtClass.longType);
-                                String startTime   = "absoluteProgramTime = System.nanoTime();";
-                                mainmethod.insertBefore(startTime);
-                                mainmethod.insertAfter("{ProfilingController.setAbsoluteTime(absoluteProgramTime);"
-                                                      + "ProfilingController.dumpFunctionMapCSV();"
-                                                      + "ProfilingController.printCallTree();}"
-                                                      );
-                            }else{
-                                instrumentMethod(methods[i]);
-                                // We instrument all methods with call stack information such that we know who the caller is.
-                                //instrumentMethodWithCallStack(methods[i]);
+                            if(ProfilingController.KNOB_VERBOSE_OUTPUT){
+                                System.out.println("Found: "+methods[i].getLongName());
                             }
+                            // TODO: Figure out how to find the single entry point
+                                    if(     methods[i].getLongName().contains(".main") 
+                                        ||  methods[i].getLongName().contains("Event.WINDOW_DESTROY")  
+                                        ||  methods[i].getLongName().contains("org.python.util.jython.main")
+                                        ||  methods[i].getName().contains("org.python.util.jython.main")
+                                        ){
+                                        System.out.println("\n"+methods[i].getLongName()+"\n"+methods[i].getName()+"*(&#@%(&#@%_(#%)(#@*%)(#@*%)(#@*%)#@*%()@#*%)(#@%*)(*%\n");
+                                        // Special case for instrumenting our 'main' method
+                                        // Note that we have to use 'getDeclaredMethod' here -- TODO: WHY use this?
+                                        final CtBehavior mainmethod = cc.getDeclaredMethod("main");
+                                        System.out.println("Indeed, found:"+mainmethod.getLongName());
+                                        mainmethod.addLocalVariable("absoluteProgramTime", CtClass.longType);
+                                        String startTime   = "absoluteProgramTime = System.nanoTime();";
+                                        String startMessage =   "System.out.println(\"vvvvvvvvvvvvvvHello from mainvvvvvvvvvvvvvvvvvvvvv\");";
+                                        String endMessage   =   "System.out.println(\"^^^^^^^^^^^^^^Goodbye from main^^^^^^^^^^^^^^^^^^^\");";
+
+                                        mainmethod.insertBefore(startTime+startMessage);
+                                        //mainmethod.insertAfter("ProfilingController.setAbsoluteTime(absoluteProgramTime);"
+                                        //                      + "ProfilingController.dumpFunctionMapCSV();"
+                                        //                      + "ProfilingController.printCallTree();"
+                                        //                      + "ProfilingController.dumpFunctionMapCSV();"
+                                        //                      + "ProfilingController.printCallTree();"
+                                        //                      );
+                                        mainmethod.insertAfter(endMessage+"{ProfilingController.setAbsoluteTime(absoluteProgramTime);"
+                                                              +" ProfilingController.dumpFunctionMapCSV();"
+                                                              +  "ProfilingController.printCallTree();}");
+                                    }else{
+                                        instrumentMethod(methods[i]);
+                                        // We instrument all methods with call stack information such that we know who the caller is.
+                                        //instrumentMethodWithCallStack(methods[i]);
+                                    }
                         }
                     }
                     // Modify the bytecode
@@ -119,8 +137,10 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
         String m_name = method.getLongName();
         // Check if the method is in our functions that we want to instrument
         if(!ProfilingController.isInFunctionNames(m_name)){
-//          System.out.println(m_name+" is not in list of function names to be instrumented");
-//          return;
+            if(ProfilingController.KNOB_VERBOSE_OUTPUT){
+                System.out.println(m_name+" is not in list of function names to be instrumented");
+            }
+            return;
         }else{
 //          System.out.println("\t\tStarting Instrumentation of function:"+m_name);  
         }
@@ -130,7 +150,9 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
         // If we've already instrumented the method, then do not move forward 
         // In theory, this should never ber called!
         if(!firstTimeInstrumented){
-            System.out.println(m_name+" has already been instrumented!");
+            if(ProfilingController.KNOB_VERBOSE_OUTPUT){
+                System.out.println(m_name+" has already been instrumented!");
+            }
             return;
         }
 
@@ -139,7 +161,7 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
         // If KNOB_INSTRUMENT_ONLY_CRITICAL_SECTIONS==true then we return if it is not a critical section
         if(ProfilingController.KNOB_INSTRUMENT_ONLY_CRITICAL_SECTIONS){
             if(synchronizedMethod==0){
-                //return;
+                return;
             }
         }
  
@@ -206,8 +228,10 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
                          //+ "System.out.println(\""+m_name+"__Exit\");"
                          //+ "System.out.println(\""+m_name+" executed in ms: \" + elapsedTime);}");
 */
-      System.out.println("\tFinished Instrumentation of function:"+m_name);  
-        
+        if(ProfilingController.KNOB_VERBOSE_OUTPUT){
+            System.out.println("\tFinished Instrumentation of function:"+m_name);  
+        }
+      
     }
 
 

@@ -53,6 +53,10 @@ public final class ProfilingController {
 	public static String outputDIR="dump";
 	// Knob to determine if we collect only critical section information
 	public static Boolean KNOB_INSTRUMENT_ONLY_CRITICAL_SECTIONS = true;
+	// Output more information
+	public static Boolean KNOB_VERBOSE_OUTPUT = false;
+	// Has main been instrumented already?
+	public static Boolean mainInstrumented = false; //
 
 	// Sets the agent arguments in our internal profiling controller.
 	// By default the java agent only takes in a string, so if we need to parse it
@@ -118,6 +122,7 @@ public final class ProfilingController {
     /// The setup method loads all of the classes, and their associated methods
     /// that need to be instrumented.
     public static synchronized void setup(String fileName){
+    	System.out.println("Executing: ProfilingController.setup()");
     	if(classNames==null){
     		init();
     	}
@@ -129,8 +134,21 @@ public final class ProfilingController {
     	    }
     	    if(streamFunctionMapWriter==null){
     			streamFunctionMapWriter = new PrintWriter(new BufferedWriter(new FileWriter(outputDIR+"/functionMap.csv")));
-            }
 
+				streamFunctionMapWriter.write("functionMap("+functionMap.size()+") Dump of <key function name>"+
+								DelimiterSymbol+"name"+
+								DelimiterSymbol+"Total Runs"+
+								DelimiterSymbol+"Runs Avg(ns)"+
+								DelimiterSymbol+"Max(ns)"+
+								DelimiterSymbol+"Min(ns)"+
+								DelimiterSymbol+"Std Dev"+
+								DelimiterSymbol+"% of Diverging Executions"+
+								DelimiterSymbol+"Diverging Execution"+
+								DelimiterSymbol+"ThreadID"+
+								DelimiterSymbol+"Caller"+
+								DelimiterSymbol+"Time(ns)\n");
+            }
+			/*
             // Check that our file exists and is not a directory
             File f = new File(fileName);
             if(f.exists() && !f.isDirectory()){    
@@ -142,13 +160,14 @@ public final class ProfilingController {
 	            // Store each class in this list
 	            while(line != null){
 	                classNames.add(line);    
-	                // System.out.println("Adding Class to Transform:"+line);  
+	                System.out.println("Adding Class to Transform:"+line);  
 	                line = reader.readLine();  		
 	            }
             }
             else{
             	System.out.println("ProfilingController.setup() -- fileName for classes does not exist!");
             }
+            */
         }catch(Exception ex){
 
         }
@@ -283,7 +302,7 @@ public final class ProfilingController {
 			System.out.println("attempted log1");
 			init();
 		}
-
+		ProfilingController.dumpFunctionMapCSV();
 		// Based on the functionName, get the key, and update the values.
 		int id = functionMapIDs.get(functionName);
 		/*
@@ -443,18 +462,7 @@ public final class ProfilingController {
 		System.out.println("=================dumpFunctionMapCSV=================");
 		System.out.println("====================================================");
 
-		streamFunctionMapWriter.write("functionMap("+functionMap.size()+") Dump of <key function name>"+
-										DelimiterSymbol+"name"+
-										DelimiterSymbol+"Total Runs"+
-										DelimiterSymbol+"Runs Avg(ns)"+
-										DelimiterSymbol+"Max(ns)"+
-										DelimiterSymbol+"Min(ns)"+
-										DelimiterSymbol+"Std Dev"+
-										DelimiterSymbol+"% of Diverging Executions"+
-										DelimiterSymbol+"Diverging Execution"+
-										DelimiterSymbol+"ThreadID"+
-										DelimiterSymbol+"Caller"+
-										DelimiterSymbol+"Time(ns)\n");
+
 
 		// Total time spent in critical sections
 		long totalTimeInCriticalSections = 0L;

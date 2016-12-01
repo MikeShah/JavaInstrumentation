@@ -60,6 +60,7 @@ else:
 	JAVAC = 'javac'
 	JAR = 'jar'
 	JAVA = 'java -XX:CompileThreshold=1 '
+	# Uncomment this to use java7 JAVA = '/usr/lib/jvm/java-7-oracle/bin/java -XX:CompileThreshold=1 '
 
 #os.system(JAVA+' -javaagent:../Agent.jar -jar '+JAR)
 # ========================= TEST SUITE 1 =========================
@@ -74,15 +75,16 @@ command=JAVA+' -cp .:../.:'+JARPATH+' -javaagent:../Agent.jar='+AGENTARGS+' -jar
 # Run without the java agent
 command_noagent=JAVA+' -cp .:../.:'+JARPATH+' -jar '+JARPATH+JARFILE+" "+ARGS
 # Special recompile for the benchmark
-runThreadingTest(AGENTARGS,command, command_noagent)
+#####runThreadingTest(AGENTARGS,command, command_noagent)
 # ========================= TEST SUITE JYTHON ====================
 JARPATH = "./Jython/"
 JARFILE = "jython-standalone-2.5.4-rc1.jar"
 AGENTARGS="02_Jython"
 ARGS 	= "./Jython/test01.py"
-command	= JAVA+' -cp .:../.:'+JARPATH+' -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
+TONS_OF_JRES = "/usr/lib/jvm/java-8-oracle/jre/lib:/usr/lib/jvm/java-8-oracle/lib:"
+command	= JAVA+' -cp '+TONS_OF_JRES+'.:../.:'+JARPATH+' -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
 command_noagent=JAVA+' -cp .:../.:'+JARPATH+' -jar '+JARPATH+JARFILE+" "+ARGS
-#####runThreadingTest(AGENTARGS,command, command_noagent)
+runThreadingTest(AGENTARGS,command, command_noagent)
 # ========================= TEST SUITE Sunflow =========================
 #JARPATH is the classpath to the root directory containing the jar so packages are properly loaded up.
 JARPATH = "./Sunflow/sunflow/"
