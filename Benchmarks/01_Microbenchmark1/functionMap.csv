@@ -1,15 +1,7 @@
-functionMap(8) Dump of <key function name>@name@Total Runs@Runs Avg(ns)@Max(ns)@Min(ns)@Std Dev@ThreadID@Caller@Time(ns)
-0@Sleeping.RandomSleep()@6@879125104@1166521426@568461204@0@1@main@953107190@1@main@965486575@1@main@577544778@1@main@1166521426@1@main@568461204@1@main@1043629452@@
-1@Sleeping.RandomSleep2()@2@758834065@823174372@694493759@0@1@main@823174372@1@main@694493759@@
-2@Sleeping.a()@2@1459968@1560421@1359515@0@1@Sleeping.RandomSleep2()@1560421@1@Sleeping.RandomSleep2()@1359515@@
-3@Sleeping.b()@2@1263365@1340706@1186024@0@1@Sleeping.a()@1340706@1@Sleeping.a()@1186024@@
-4@Sleeping.c()@2@87801@103693@71910@0@1@Sleeping.b()@103693@1@Sleeping.b()@71910@@
-5@Sleeping.d()@2@682119@704520@659718@0@1@Sleeping.b()@704520@1@Sleeping.b()@659718@@
-6@Sleeping.e(int)@2@397064@399846@394283@0@1@Sleeping.d()@399846@1@Sleeping.d()@394283@@
-7@Sleeping.e(int,int)@2@65879@73845@57913@0@1@Sleeping.e(int)@57913@1@Sleeping.e(int)@73845@@
+functionMap(0) Dump of <key function name>@name@Total Runs@Runs Avg(ns)@Max(ns)@Min(ns)@Std Dev@% of Diverging Executions@Diverging Execution@ThreadID@Caller@Time(ns)
 
 @total functions profiled
 
 
-AbsoluteProgramTime@6819282144
-Critical Section Time@6800331150
+AbsoluteProgramTime@6715447552
+Critical Section Time@0

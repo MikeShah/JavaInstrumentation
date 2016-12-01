@@ -14,7 +14,7 @@ public class Sleeping {
 		Thread.sleep(randomSleepDuration);
 	}
 
-	public void RandomSleep2() throws InterruptedException {
+	public synchronized void RandomSleep2() throws InterruptedException {
 		// Randomly sleeps between 500ms and 1200ms
 		long randomSleepDuration = (long)(500 + Math.random()*700);
 		System.out.printf("RandomSleep2(): Sleeping for %d ms..\n",randomSleepDuration);

@@ -1,8 +1,0 @@
-org.h2.Driver.load()|1462612|1|1
-org.h2.Driver.load()|1815|1|1
-org.h2.util.NetUtils.getLocalAddress()|3527926|1|1
-org.h2.util.NetUtils.getLocalAddress()|468|1|1
-org.h2.util.MathUtils.getSecureRandom()|6704063|10|1
-org.h2.util.MathUtils.getSecureRandom()|144|10|1
-org.h2.server.pg.PgServer.remove(org.h2.server.pg.PgServerThread)|12581|13|1
-org.h2.server.pg.PgServer.remove(org.h2.server.pg.PgServerThread)|3027|14|1
