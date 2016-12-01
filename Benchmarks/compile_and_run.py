@@ -131,7 +131,7 @@ command_noagent=TIMEOUT+" "+JAVA+' -cp .:../.:'+JARPATH+' -jar '+JARPATH+JARFILE
 JARPATH = "./H2/"
 JARFILE = "./bin/h2-1.3.174.jar"
 AGENTARGS="07_H2"
-ARGS 	= "-pg"
+ARGS 	= "-tcp"
 TIMEOUT = "timeout 5"
 command	= TIMEOUT+" "+JAVA+' -cp .:../.:'+JARPATH+':./H2/bin/:./H2/bin/org/:./H2/bin/:./H2/bin/org/h2/ -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
 command_noagent=TIMEOUT+" "+JAVA+' -cp .:../.:'+JARPATH+' -jar '+JARPATH+JARFILE+" "+ARGS
