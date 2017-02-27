@@ -55,6 +55,8 @@ public final class ProfilingController {
 	public static Boolean KNOB_INSTRUMENT_ONLY_CRITICAL_SECTIONS = true;
 	// Output more information
 	public static Boolean KNOB_VERBOSE_OUTPUT = false;
+	// Get call Stack information
+	public static Boolean KNOB_CALL_STACK_INFO = true;
 	// Has main been instrumented already?
 	public static Boolean mainInstrumented = false; //
 

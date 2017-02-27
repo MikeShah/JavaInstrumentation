@@ -188,18 +188,21 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
         String callStackStart = "ProfilingController.ccspush(mainThreadId,\""+m_name+"\");";
         // method.insertBefore(getThreadID+callStackStart+addToCallTreeListEntry+addEntry+startTime+printEntry);
 
-        method.insertBefore(    getThreadID
-                            +   startTime
-                            );
 
-/*
-        method.insertBefore(    getThreadID
-                            +   callStackStart
-                            +   addToCallTreeListEntry
-                            +   addEntry
-                            +   startTime
-                            );
-*/
+        if(ProfilingController.KNOB_CALL_STACK_INFO){
+            method.insertBefore(    getThreadID
+                                +   callStackStart
+                                +   addToCallTreeListEntry
+                                +   addEntry
+                                +   startTime
+                                );
+        }
+        else{
+            method.insertBefore(   getThreadID
+                                +  startTime
+                                );
+        }
+
 
         // Add tracing ability, so we know how many times a function was called.
         String calculateElapsedTime = "elapsedTime = System.nanoTime() - elapsedTime;";
@@ -209,25 +212,28 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
         String addExit = "ProfilingController.addExit();";
         String addToCallTreeListExit = "ProfilingController.addToCallTreeList(ProfilingController.getSpaces(true)+\""+m_name+"__Exit\" +\"|\"+elapsedTime+\"|\"+mainThreadId+\"|\"+"+synchronizedMethod+");";
 
-        method.insertAfter("{"
-                         + calculateElapsedTime
-                         + log // 
-                         + "}");
-                         //+ "System.out.println(\""+m_name+"__Exit\");"
-                         //+ "System.out.println(\""+m_name+" executed in ms: \" + elapsedTime);}");
 
-/*
-        method.insertAfter("{"
-                         + calculateElapsedTime
-                         + ccsPop
-                    //   +   getStackTrace
-                         + log // 
-                           + addExit
-                         + addToCallTreeListExit
-                         + "}");
-                         //+ "System.out.println(\""+m_name+"__Exit\");"
-                         //+ "System.out.println(\""+m_name+" executed in ms: \" + elapsedTime);}");
-*/
+        if(ProfilingController.KNOB_CALL_STACK_INFO){
+                method.insertAfter("{"
+                                 + calculateElapsedTime
+                                 + ccsPop
+                                 + getStackTrace
+                                 + log // 
+                                 + addExit
+                                 + addToCallTreeListExit
+                                 + "}");
+                                 //+ "System.out.println(\""+m_name+"__Exit\");"
+                                 //+ "System.out.println(\""+m_name+" executed in ms: \" + elapsedTime);}");
+        }
+        else{
+                method.insertAfter("{"
+                                 + calculateElapsedTime
+                                 + log // 
+                                 + "}");
+                                 //+ "System.out.println(\""+m_name+"__Exit\");"
+                                 //+ "System.out.println(\""+m_name+" executed in ms: \" + elapsedTime);}");
+        }
+
         if(ProfilingController.KNOB_VERBOSE_OUTPUT){
             System.out.println("\tFinished Instrumentation of function:"+m_name);  
         }

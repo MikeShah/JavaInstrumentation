@@ -101,7 +101,7 @@ ARGS = "-nogui /home/mike/Desktop/JavaDistribution/JavaInstrumentation/Benchmark
 command=JAVA+' -cp .:../../.:../.:'+JARPATH+' -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
 #print command
 command_noagent=JAVA+' -cp .:../.:'+JARPATH+' -jar '+JARPATH+JARFILE+" "+ARGS
-runThreadingTest(AGENTARGS,command, command_noagent)
+#####runThreadingTest(AGENTARGS,command, command_noagent)
 # ========================= TEST SUITE AVORA ====================
 JARPATH = "./Avrora/"
 JARFILE = "avrora-beta-1.7.117.jar"
@@ -109,7 +109,7 @@ AGENTARGS="04_Avrora"
 ARGS 	= "-simulate ./Avrora/simple.od"
 command	= JAVA+' -cp .:../.:'+JARPATH+' -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
 command_noagent=JAVA+' -cp .:../.:'+JARPATH+' -jar '+JARPATH+JARFILE+" "+ARGS
-runThreadingTest(AGENTARGS,command, command_noagent)
+#####runThreadingTest(AGENTARGS,command, command_noagent)
 # ========================= TEST SUITE PAW-SERVER ====================
 JARPATH = "./Paw/"
 JARFILE = "paw-server.jar"
@@ -135,7 +135,7 @@ ARGS 	= "-tcp"
 TIMEOUT = "timeout 5"
 command	= TIMEOUT+" "+JAVA+' -cp .:../.:'+JARPATH+':./H2/bin/:./H2/bin/org/:./H2/bin/:./H2/bin/org/h2/ -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
 command_noagent=TIMEOUT+" "+JAVA+' -cp .:../.:'+JARPATH+' -jar '+JARPATH+JARFILE+" "+ARGS
-runThreadingTest(AGENTARGS,command, command_noagent)
+#####runThreadingTest(AGENTARGS,command, command_noagent)
 # ========================= TEST SUITE YCad====================
 JARPATH = "./ycad/"
 JARFILE = "lib/ycad.jar"
@@ -165,7 +165,15 @@ TIMEOUT = ""
 command	= JAVA+' -verbose:class -cp '+JARPATH+'lib/pmd-4.2.4.jar:'+JARPATH+'lib/jaxen-1.1.1.jar:'+JARPATH+'lib/asm-3.1.jar:./pmd-4.2.4:./pmd-4.2.4/src net.sourceforge.pmd.PMD -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
 command_noagent=JAVA+' -cp .:../.:'+JARPATH+":./build/"+' -jar '+JARPATH+JARFILE+" "+ARGS
 #####runThreadingTest(AGENTARGS,command, command_noagent)
-
+# ========================= TEST SUITE MICROBENCHMARK 2====================
+JARPATH = "./Microbenchmark2/"
+JARFILE = "benchmark.jar"
+AGENTARGS="011_Microbenchmark2"
+ARGS 	= ""
+TIMEOUT = ""
+command	= JAVA+' -cp '+JARPATH+':.'+' -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
+command_noagent=JAVA+' -cp .:../.:'+JARPATH+":./"+' -jar '+JARPATH+JARFILE+" "+ARGS
+runThreadingTest(AGENTARGS,command, command_noagent)
 
 
 '''
