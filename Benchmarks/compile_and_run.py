@@ -4,6 +4,7 @@ import threading
 import csv
 from matplotlib import pyplot
 import glob
+import numpy
 
 print("Executing compile_and_run")
 print("Getting ready to run benchmarks")
@@ -56,7 +57,7 @@ def buildHistograms(AGENTARGS):
 			reader = csv.reader(csvfile,delimiter=",")
 			dataList = list(reader)
 
-			fig,yscatterPlot = pyplot.subplots(figsize=(5.5,5.5))
+			fig,yscatterPlot = pyplot.subplots()
 			# x-dimension is the number of runs
 			x = range(1,len(dataList[0])+1)
 			# Setup a grid
@@ -65,7 +66,14 @@ def buildHistograms(AGENTARGS):
 			yscatterPlot.scatter(x,dataList)
 			# Show it to the user
 			yscatterPlot.plot()
-			pyplot.savefig(f+".png")
+			pyplot.title(str(f))
+			pyplot.savefig(f+"_scatter_"+".png")
+
+			fig,histogramPlot = pyplot.subplots()
+			dataListAsFloat=numpy.array(dataList[0]).astype(numpy.float)
+			histogramPlot.hist(dataListAsFloat,histtype='bar',bins=20)
+			pyplot.savefig(f+"_hist_"+".png")
+
 
 
 # Compile the Test programs
@@ -202,7 +210,7 @@ ARGS 	= ""
 TIMEOUT = ""
 command	= JAVA+' -cp '+JARPATH+':.'+' -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
 command_noagent=JAVA+' -cp .:../.:'+JARPATH+":./"+' -jar '+JARPATH+JARFILE+" "+ARGS
-runThreadingTest(AGENTARGS,command, command_noagent)
+#####runThreadingTest(AGENTARGS,command, command_noagent)
 
 
 '''
