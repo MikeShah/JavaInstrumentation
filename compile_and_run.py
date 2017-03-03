@@ -16,6 +16,8 @@ JAVA7='/usr/lib/jvm/java-7-oracle/bin/java'
 
 # (1) Setup the Agent
 # Compile the Agent
+print("Executing compile_and_run")
+print("Building the agent")
 javassistJARPath = '"./javassist-3.21.0/javassist.jar"'
 BUILD_AGENT_STRING=JAVAC+' -cp '+javassistJARPath+':. *.java'
 print BUILD_AGENT_STRING
@@ -24,6 +26,7 @@ os.system(BUILD_AGENT_STRING)
 # Run the program
 #os.system('java HelloWorld')
 # Build a .jar
+print("Building Agent.jar")
 os.system(JAR+' -cfm Agent.jar manifest.mf *.class javassist-3.21.0')
 # Run the .jar
 #os.system('java -cp HelloWorld.jar HelloWorld')

@@ -1,6 +1,13 @@
 import os
 import time
 import threading
+import csv
+from matplotlib import pyplot
+import glob
+
+print("Executing compile_and_run")
+print("Getting ready to run benchmarks")
+
 # Configuration options for the build.
 # These are knobs the user can change
 KNOB_PLATFORM="LINUX" # Could also be MAC
@@ -39,6 +46,27 @@ def runThreadingTest(benchmark,command, command_noagent):
 		thread1.start()
 	else:
 		runTest(AGENTARGS,command, command_noagent)
+
+# TODO possibly save to a .pdf or svg to get better resolution for papers
+def buildHistograms(AGENTARGS):
+	path = AGENTARGS+"/IndividualFunctionData/"
+	files = glob.glob(path+"*.csv")
+	for f in files:
+		with open(f,'r') as csvfile:
+			reader = csv.reader(csvfile,delimiter=",")
+			dataList = list(reader)
+
+			fig,yscatterPlot = pyplot.subplots(figsize=(5.5,5.5))
+			# x-dimension is the number of runs
+			x = range(1,len(dataList[0])+1)
+			# Setup a grid
+			yscatterPlot.grid(True)
+			# Build our data plot
+			yscatterPlot.scatter(x,dataList)
+			# Show it to the user
+			yscatterPlot.plot()
+			pyplot.savefig(f+".png")
+
 
 # Compile the Test programs
 #os.system('python build.py')
@@ -94,7 +122,7 @@ AGENTARGS="03_Sunflow"
 #ARGS = "-nogui /h/mshah08/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/Sunflow/examples/shader_examples/VerySimple.sc"
 ARGS = "-nogui /home/mike/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/Sunflow/examples/shader_examples/VerySimple.sc"
 
-# Run without agent 
+# Run without agent
 #command = JAVA+' -cp .:../.:'+JARPATH+' -jar '+JARPATH+JARFILE+" "+ARGS
 #os.system(command)
 # Run with Agent
@@ -135,7 +163,8 @@ ARGS 	= "-tcp"
 TIMEOUT = "timeout 5"
 command	= TIMEOUT+" "+JAVA+' -cp .:../.:'+JARPATH+':./H2/bin/:./H2/bin/org/:./H2/bin/:./H2/bin/org/h2/ -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
 command_noagent=TIMEOUT+" "+JAVA+' -cp .:../.:'+JARPATH+' -jar '+JARPATH+JARFILE+" "+ARGS
-#####runThreadingTest(AGENTARGS,command, command_noagent)
+runThreadingTest(AGENTARGS,command, command_noagent)
+buildHistograms(AGENTARGS)
 # ========================= TEST SUITE YCad====================
 JARPATH = "./ycad/"
 JARFILE = "lib/ycad.jar"

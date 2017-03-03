@@ -1,6 +1,6 @@
 /*
 
-		Purpose: This is a singleton class accessible by all of the 
+		Purpose: This is a singleton class accessible by all of the
 				 classes, and keeps a record of all of the instrumentation
 				 done in the program.
 
@@ -35,7 +35,7 @@ public final class ProfilingController {
 	// A stream that buffers and builds a Call Tree of the program.
 	public static PrintWriter streamCallTreeWriter;
 	// A stream that builds the funtion mapping list
-	public static PrintWriter streamFunctionMapWriter; 
+	public static PrintWriter streamFunctionMapWriter;
 	// Total time spent executing the program. This is computed by instrumenting "main"
 	public static Long absoluteProgramTime;
 	// The number of functions in the program.
@@ -88,7 +88,7 @@ public final class ProfilingController {
 		if(outputSpaces){
 			for(int i=0;i<prettyPrint; ++i){
 				System.out.print(" ");
-			}	
+			}
 		}
 	}
 
@@ -129,7 +129,7 @@ public final class ProfilingController {
     		init();
     	}
 
-        // Instantiate our class names list        
+        // Instantiate our class names list
         try{
        	    if(streamCallTreeWriter==null){
     			streamCallTreeWriter = new PrintWriter(new BufferedWriter(new FileWriter(outputDIR+"/CallTreeStream.txt")));
@@ -153,7 +153,7 @@ public final class ProfilingController {
 			/*
             // Check that our file exists and is not a directory
             File f = new File(fileName);
-            if(f.exists() && !f.isDirectory()){    
+            if(f.exists() && !f.isDirectory()){
 	            // Create a new buffered reader that takes in a list of classnames.
 	            BufferedReader reader = new BufferedReader(new FileReader(fileName));
 	            System.out.println("Loading Classes");
@@ -161,9 +161,9 @@ public final class ProfilingController {
 				String line = reader.readLine();
 	            // Store each class in this list
 	            while(line != null){
-	                classNames.add(line);    
-	                System.out.println("Adding Class to Transform:"+line);  
-	                line = reader.readLine();  		
+	                classNames.add(line);
+	                System.out.println("Adding Class to Transform:"+line);
+	                line = reader.readLine();
 	            }
             }
             else{
@@ -182,13 +182,13 @@ public final class ProfilingController {
 	///
     /// The setup method loads all of the classes, and their associated methods
     /// that need to be instrumente. This function sets all of the functions specifically
-    /// that we want to instrument. 
+    /// that we want to instrument.
     /// Note that setup must first be called!
     public static synchronized void setFunctions(String fileName){
     	// Check that our file exists and is not a directory
     	try{
 			File f = new File(fileName);
-            if(f.exists() && !f.isDirectory()){    
+            if(f.exists() && !f.isDirectory()){
 	            // Create a new buffered reader that takes in a list of classnames.
 	            BufferedReader reader = new BufferedReader(new FileReader(fileName));
 	            System.out.println("Loading List of Functions to Instrument (Classes must be loaded first)");
@@ -196,21 +196,21 @@ public final class ProfilingController {
 				String line = reader.readLine();
 	            // Store each class in this list
 	            while(line != null){
-	                functionNames.add(line);    
-	                //System.out.println("Setting Function to Instrument:"+line);  
-	                line = reader.readLine();  		
+	                functionNames.add(line);
+	                //System.out.println("Setting Function to Instrument:"+line);
+	                line = reader.readLine();
 	            }
             }
             else{
             	System.out.println("ProfilingController.setFunctions() -- fileName for functions does not exist!");
-            }    		
+            }
     	}catch(Exception ex){
 
     	}
-            
+
     }
 
-    /// @brief 
+    /// @brief
     ///
     /// Checks to see if a function is in the list of functions we want to instrument.
     public static synchronized boolean isInFunctionNames(String s){
@@ -309,13 +309,13 @@ public final class ProfilingController {
 		/*
 		// Iterative algorithm for finding the function Name -- TODO Remove me, functionMapIDs should have fixed this
 		int id = 0;
-		
+
 		for (Integer keyType: functionMap.keySet()){
-            		String value = functionMap.get(keyType).toString();  
+            		String value = functionMap.get(keyType).toString();
             		if(value.equals(functionName)){
             			//System.out.println("Found: "+value+"=="+functionName+" at id:"+id);
             			break;
-            		}		  
+            		}
 	            id++;
 		}
 		*/
@@ -332,9 +332,9 @@ public final class ProfilingController {
 	private static synchronized String removeLeadingNumeric(String s){
 		int i = 0;
 		while(s.charAt(i)>=48 && s.charAt(i) <= 57){
-			++i;			
+			++i;
 		}
-		
+
 		return s.substring(i);
 	}
 
@@ -344,7 +344,7 @@ public final class ProfilingController {
 			init();
 		}
 
-		FileWriter writer;	
+		FileWriter writer;
 
 		try{
 			writer = new FileWriter(outputDIR+"/printCallTree.txt");
@@ -367,7 +367,7 @@ public final class ProfilingController {
 	   				// Old iterative code
 	   				Integer id = 0;
 	   				for(id=0; id < functionMap.size(); ++id){
-		    			String functionName = functionMap.get(id).toString(); 
+		    			String functionName = functionMap.get(id).toString();
 		    			if(functionName.equals(funcName)){
 		    				break;
 		    			}
@@ -395,14 +395,14 @@ public final class ProfilingController {
 						callOccuranceMap.put(funcName,callOccuranceMap.get(funcName)+1);
 					}
 					// First we pick out the function from the statistic map using the 'id'
-				
+
 			   		Statistic temp = statisticMap.get(id);
-			   		//System.out.println("ID:"+id);	
+			   		//System.out.println("ID:"+id);
 			   		writer.write(funcNameWithSpaces);
 					writer.write(temp.dumpParse(callOccuranceMap.get(funcName)) + "\n");
 					//}
 				}
-				
+
 			}
 			writer.close();
 		}catch(Exception ex){
@@ -411,7 +411,7 @@ public final class ProfilingController {
 		finally{
 
 		}
-		
+
 	}
 
 	// Prints out all of the keys and function names.
@@ -426,14 +426,14 @@ public final class ProfilingController {
 		streamFunctionMapWriter.write("============================================================================\n");
 
 		for(Integer i = 0; i < functionMap.size(); ++i){
-		    String functionName = functionMap.get(i).toString();  
+		    String functionName = functionMap.get(i).toString();
 		    Statistic temp = statisticMap.get(i);
 		    String output = temp.dump();
-		    
+
 		    // Only write out information for functions that ran
 		    if(temp.timeList.size()>0){
-		    	//System.out.println(i.toString() + " = " + value + statisticMap.get(i).dump());  
-		    	streamFunctionMapWriter.write(i.toString()+" "+functionName + " Statistics-"+output+'\n');  
+		    	//System.out.println(i.toString() + " = " + value + statisticMap.get(i).dump());
+		    	streamFunctionMapWriter.write(i.toString()+" "+functionName + " Statistics-"+output+'\n');
 			}
 		}
 		streamFunctionMapWriter.write("============================================================================\n");
@@ -468,32 +468,71 @@ public final class ProfilingController {
 		long totalTimeInCriticalSections = 0L;
 		// Iteratoe through i# of functions in the function map.
 		for(Integer i = 0; i < functionMap.size(); ++i){
-		    String functionName = functionMap.get(i).toString();  
+		    String functionName = functionMap.get(i).toString();
 		    Statistic temp = statisticMap.get(i);
 		    // Add up the time spent in each execution
 		    for(int j =0; j < temp.timeList.size(); ++j){
 		    	totalTimeInCriticalSections+= temp.timeList.get(j);
 		    }
 		    String output = temp.dumpCSV();
-		    //System.out.println(i.toString() + " = " + value + statisticMap.get(i).dump());  
+		    //System.out.println(i.toString() + " = " + value + statisticMap.get(i).dump());
 		    if(concise){
 		    	// Only write out information for functions that ran at least once
 			    if(temp.timeList.size()>0){
-			    	streamFunctionMapWriter.write(i.toString()+DelimiterSymbol+functionName + output+'\n');  
+			    	streamFunctionMapWriter.write(i.toString()+DelimiterSymbol+functionName + output+'\n');
 				}
 			}else
 			{
-				streamFunctionMapWriter.write(i.toString()+DelimiterSymbol+functionName + output+'\n');  
+				streamFunctionMapWriter.write(i.toString()+DelimiterSymbol+functionName + output+'\n');
 			}
 		}
 		// Output the final Absolute Time
 		streamFunctionMapWriter.write('\n');
 		streamFunctionMapWriter.write(DelimiterSymbol+"total functions profiled"+'\n');
-		streamFunctionMapWriter.write("\n\nAbsoluteProgramTime"+DelimiterSymbol+ProfilingController.absoluteProgramTime.toString()+'\n');  
+		streamFunctionMapWriter.write("\n\nAbsoluteProgramTime"+DelimiterSymbol+ProfilingController.absoluteProgramTime.toString()+'\n');
 		// Time spent in only the Critical Sections
-		streamFunctionMapWriter.write("Critical Section Time"+DelimiterSymbol+totalTimeInCriticalSections+'\n');  
+		streamFunctionMapWriter.write("Critical Section Time"+DelimiterSymbol+totalTimeInCriticalSections+'\n');
 		// Ensure that everything gets written.
 		streamFunctionMapWriter.flush();
+	}
+
+	// This function dumps a histogram of a functions execution times
+	public static void dumpFunctionHistograms(){
+		System.out.println("========================================================");
+		System.out.println("=================dumpFunctionHistograms=================");
+		System.out.println("========================================================");
+				try{
+						// Iterate through i# of functions in the function map.
+						for(Integer i = 0; i < functionMap.size(); ++i){
+									String functionName = functionMap.get(i).toString();
+									String pathDir = outputDIR+"/IndividualFunctionData/";
+									if(statisticMap.get(i).timeList.size()>0){
+											// Make the new directory structure
+											File dir = new File(pathDir);
+											dir.mkdirs();
+											// Create a FileWriter to write our data too.
+											PrintWriter streamFunctionHistogramWriter = new PrintWriter(new BufferedWriter(new FileWriter(pathDir+functionName+".csv")));
+											// Get the functions stats
+											Statistic temp = statisticMap.get(i);
+											// Write to a comma separated .csv file such that time spent in execution can easily be processed.
+											for(int j =0; j < temp.timeList.size(); ++j){
+													streamFunctionHistogramWriter.write(temp.timeList.get(j).toString());
+													if(j < temp.timeList.size()-1){
+														streamFunctionHistogramWriter.write(",");
+													}
+											}
+											streamFunctionHistogramWriter.close();
+									}
+							}
+				}
+				catch(Exception e){
+
+				}
+				finally{
+				}
+
+
+
 	}
 
 	public static String getStackTrace(){
@@ -502,31 +541,31 @@ public final class ProfilingController {
         return ""; // stack trace as a string
     }
 
-    public static synchronized String getCaller(long threadID){
-    	if(ccs==null){
-    		init();
-    	}
+  public static synchronized String getCaller(long threadID){
+  	if(ccs==null){
+  		init();
+  	}
 
-    	String result = ccs.peek(threadID);
-    	return result;
-    }
-    
-    public static synchronized void ccspush(long threadID, String funcName){
-    	
-    	if(ccs==null){
-    		init();
-    	}
+  	String result = ccs.peek(threadID);
+  	return result;
+  }
 
-    	ccs.push(threadID,funcName);
-    	
-    }    
+  public static synchronized void ccspush(long threadID, String funcName){
 
-    public static synchronized void ccspop(long threadID){
-    	if(ccs==null){
-    		init();
-    	}
+  	if(ccs==null){
+  		init();
+  	}
 
-    	ccs.pop(threadID);
-    }
+  	ccs.push(threadID,funcName);
+
+  }
+
+  public static synchronized void ccspop(long threadID){
+  	if(ccs==null){
+  		init();
+  	}
+
+  	ccs.pop(threadID);
+  }
 
 }

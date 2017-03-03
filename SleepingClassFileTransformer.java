@@ -1,4 +1,4 @@
-// Import instrumentation classes 
+// Import instrumentation classes
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.lang.instrument.*;
@@ -11,11 +11,11 @@ import javassist.*;
 
 import java.util.*;
 import java.io.*;
- 
+
 /*
     Purpose: This class implements 'ClassFileTransformer' which is required
              in order to manipulate .class files.
-*/ 
+*/
 
 public class SleepingClassFileTransformer implements ClassFileTransformer {
 
@@ -35,12 +35,12 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
 	   for(int x = 0; x < ProfilingController.classNames.size(); ++x){
             /// Note that we have to use slashes here (i.e. org/something/something) instead of the '.'
             if (className.equals(ProfilingController.classNames.get(x).replace('.','/'))) {
-        	//System.out.println("============= (SleepClassFileTransformer.java) Transforming and Instrumenting Classes ================== ");       
+        	//System.out.println("============= (SleepClassFileTransformer.java) Transforming and Instrumenting Classes ================== ");
 	        //System.out.println("\tAttempted transform() on class: "+ProfilingController.classNames.get(x));
                 try {
                     final ClassPool cp = ClassPool.getDefault();
                     // The class here (i.e. org.something.something)
-                    final CtClass cc = cp.get(ProfilingController.classNames.get(x));             
+                    final CtClass cc = cp.get(ProfilingController.classNames.get(x));
 
                     // Modify all of the classes methods
                     CtBehavior[] methods = cc.getDeclaredBehaviors();
@@ -57,8 +57,8 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
                                 System.out.println("Found: "+methods[i].getLongName());
                             }
                             // TODO: Figure out how to find the single entry point
-                                    if(     methods[i].getLongName().contains(".main") 
-                                        ||  methods[i].getLongName().contains("Event.WINDOW_DESTROY")  
+                                    if(     methods[i].getLongName().contains(".main")
+                                        ||  methods[i].getLongName().contains("Event.WINDOW_DESTROY")
                                         ||  methods[i].getLongName().contains("org.python.util.jython.main")
                                         ||  methods[i].getName().contains("org.python.util.jython.main")
                                         ){
@@ -80,8 +80,9 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
                                         //                      + "ProfilingController.printCallTree();"
                                         //                      );
                                         mainmethod.insertAfter(endMessage+"{ProfilingController.setAbsoluteTime(absoluteProgramTime);"
-                                                              +" ProfilingController.dumpFunctionMapCSV();"
-                                                              +  "ProfilingController.printCallTree();}");
+                                                              + "ProfilingController.dumpFunctionMapCSV();"
+                                                              + "ProfilingController.dumpFunctionHistograms();"
+                                                              + "ProfilingController.printCallTree();}");
                                     }else{
                                         instrumentMethod(methods[i]);
                                         // We instrument all methods with call stack information such that we know who the caller is.
@@ -102,8 +103,8 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
             }
         }
 
-	//System.out.println("============= (SleepClassFileTransformer.java) Transforming and Instrumenting Classes ================== "); 
-        
+	//System.out.println("============= (SleepClassFileTransformer.java) Transforming and Instrumenting Classes ================== ");
+
         return byteCode;
     }
 
@@ -118,7 +119,7 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
     // This method in particular looks for synchornized methods.
     public boolean isSynchronized(CtBehavior method){
         return Modifier.isSynchronized(method.getModifiers());
-    }    
+    }
 
 
     // Here we instrument all methods such that when they are called
@@ -130,9 +131,9 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
 
 
     // Updates a method such that it has a timer
-    // This function actually modifies the method inserting code at each entry and exit.	 
+    // This function actually modifies the method inserting code at each entry and exit.
     private void instrumentMethod(CtBehavior method) throws NotFoundException, CannotCompileException{
-        
+
         // Retrieve the method name
         String m_name = method.getLongName();
         // Check if the method is in our functions that we want to instrument
@@ -142,12 +143,12 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
             }
 //              return;
         }else{
-          System.out.println("\t\tStarting Instrumentation of function:"+m_name);  
+          System.out.println("\t\tStarting Instrumentation of function:"+m_name);
         }
         // Add a method to our final map
         // Instrument the function by adding it to our Profiling HashMap
         boolean firstTimeInstrumented = ProfilingController.addFunc(m_name);
-        // If we've already instrumented the method, then do not move forward 
+        // If we've already instrumented the method, then do not move forward
         // In theory, this should never ber called!
         if(!firstTimeInstrumented){
             if(ProfilingController.KNOB_VERBOSE_OUTPUT){
@@ -164,11 +165,11 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
                 return;
             }
         }
- 
+
         // Add in an ArrayList that contains a set of floats
        //     CtClass arrListClass = ClassPool.getDefault().get("java.util.ArrayList");
        //     CtField f = new CtField(arrListClass,"AverageTime",CtClass.floatType);
-            
+
         // TODO: Need to log thread entry and thread exit in a separate thread? Perhaps even the indentation
         //       Perhaps the ThreadID is the key?
 
@@ -180,7 +181,7 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
         String addToCallTreeListEntry = "ProfilingController.addToCallTreeList(ProfilingController.getSpaces(true)+\""+m_name+"__Entry\");";
                                 // "ProfilingController.callTreeList.add(ProfilingController.getSpaces()+\""+m_name+"\"__Entry\");";
         String addEntry    = "ProfilingController.addEntry();";
-        
+
 
                            //+ "System.out.println(\"Thread ID: \"+mainThreadId);";
         //String printEntry  = "System.out.println(\""+m_name+"__Entry\");";
@@ -218,7 +219,7 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
                                  + calculateElapsedTime
                                  + ccsPop
                                  + getStackTrace
-                                 + log // 
+                                 + log //
                                  + addExit
                                  + addToCallTreeListExit
                                  + "}");
@@ -228,23 +229,23 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
         else{
                 method.insertAfter("{"
                                  + calculateElapsedTime
-                                 + log // 
+                                 + log //
                                  + "}");
                                  //+ "System.out.println(\""+m_name+"__Exit\");"
                                  //+ "System.out.println(\""+m_name+" executed in ms: \" + elapsedTime);}");
         }
 
         if(ProfilingController.KNOB_VERBOSE_OUTPUT){
-            System.out.println("\tFinished Instrumentation of function:"+m_name);  
+            System.out.println("\tFinished Instrumentation of function:"+m_name);
         }
-      
+
     }
 
 
-    // Modifies bytecode, such that it 
-    //  1.) Searches if a  
-    //  2.) 
-    //  3.) 
+    // Modifies bytecode, such that it
+    //  1.) Searches if a
+    //  2.)
+    //  3.)
     /*
     public static void modifyByteCode(CtMethod cm) {
 
