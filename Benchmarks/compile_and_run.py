@@ -48,6 +48,9 @@ def runThreadingTest(benchmark,command, command_noagent):
 	else:
 		runTest(AGENTARGS,command, command_noagent)
 
+def IQR(dist):
+	return numpy.percentile(dist,75) - numpy.percentile(dist,25)
+
 # TODO possibly save to a .pdf or svg to get better resolution for papers
 def buildHistograms(AGENTARGS):
 	path = AGENTARGS+"/IndividualFunctionData/"
@@ -71,7 +74,14 @@ def buildHistograms(AGENTARGS):
 
 			fig,histogramPlot = pyplot.subplots()
 			dataListAsFloat=numpy.array(dataList[0]).astype(numpy.float)
-			histogramPlot.hist(dataListAsFloat,histtype='bar',bins=20)
+			binwidth = (2*IQR(dataListAsFloat))/ ((len(dataListAsFloat))**(1./3.))
+			print "bins:"+str(binwidth)
+			print "len:"+str(len(dataListAsFloat))
+			if binwidth <= 0.0:
+				histogramPlot.hist(dataListAsFloat,histtype='bar',bins=5)
+			else:
+				histogramPlot.hist(dataListAsFloat,histtype='bar',bins=numpy.arange(min(dataListAsFloat),max(dataListAsFloat)+binwidth,binwidth))
+			#histogramPlot.hist(dataListAsFloat,histtype='bar',bins=20)
 			pyplot.savefig(f+"_hist_"+".png")
 
 
@@ -171,7 +181,7 @@ ARGS 	= "-tcp"
 TIMEOUT = "timeout 5"
 command	= TIMEOUT+" "+JAVA+' -cp .:../.:'+JARPATH+':./H2/bin/:./H2/bin/org/:./H2/bin/:./H2/bin/org/h2/ -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
 command_noagent=TIMEOUT+" "+JAVA+' -cp .:../.:'+JARPATH+' -jar '+JARPATH+JARFILE+" "+ARGS
-runThreadingTest(AGENTARGS,command, command_noagent)
+#####runThreadingTest(AGENTARGS,command, command_noagent)
 buildHistograms(AGENTARGS)
 # ========================= TEST SUITE YCad====================
 JARPATH = "./ycad/"
