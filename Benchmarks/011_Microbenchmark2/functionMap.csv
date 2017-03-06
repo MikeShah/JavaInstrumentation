@@ -1,0 +1,51 @@
+functionMap(0) Dump of <key function name>@name@Total Runs@Runs Avg(ns)@Max(ns)@Min(ns)@Std Dev@% of Diverging Executions@Diverging Execution@ThreadID@Caller@Time(ns)
+12@arithmetic.add(int)@10@360.6@1589@164@411.41127840641417@0.8@0,3,4,5,6,7,8,9,@1@main@1589@1@main@217@1@main@249@1@main@238@1@main@232@1@main@206@1@main@207@1@main@320@1@main@164@1@main@184@@
+13@arithmetic.sub(int)@10@237640.2@2374335@181@712231.6006304128@0.6@3,4,5,7,8,9,@1@main@269@1@main@232@1@main@249@1@main@276@1@main@243@1@main@226@1@main@2374335@1@main@193@1@main@181@1@main@198@@
+15@appendToList.append()@10@760.1@4959@272@1399.781443654687@0.5@0,6,7,8,9,@1@main@4959@1@main@344@1@main@272@1@main@295@1@main@302@1@main@278@1@main@274@1@main@281@1@main@287@1@main@309@@
+16@appendToList.remove()@10@2468.4@17468@748@5000.023383945319@0.3@0,8,9,@1@main@17468@1@main@891@1@main@802@1@main@748@1@main@847@1@main@816@1@main@771@1@main@792@1@main@779@1@main@770@@
+18@hashmapTest.append(int,int)@10@3213.7@22287@989@6358.702069605086@0.4@0,7,8,9,@1@main@22287@1@main@1391@1@main@1042@1@main@1096@1@main@1135@1@main@1018@1@main@1078@1@main@989@1@main@998@1@main@1103@@
+19@hashmapTest.remove(int)@10@2750.4@11091@1722@2783.778410721658@0.8@0,3,4,5,6,7,8,9,@1@main@11091@1@main@1985@1@main@1733@1@main@1757@1@main@1722@1@main@1722@1@main@1746@1@main@2184@1@main@1796@1@main@1768@@
+21@AllocationTest.append()@10@132002.0@1315253@476@394417.0055357654@0.1@0,@1@main@1315253@1@main@719@1@main@502@1@main@507@1@main@542@1@main@521@1@main@477@1@main@511@1@main@476@1@main@512@@
+22@AllocationTest.remove()@10@2021.9@6753@773@1788.5897489362953@0.8@0,3,4,5,6,7,8,9,@1@main@6753@1@main@1360@1@main@1237@1@main@1186@1@main@1286@1@main@3973@1@main@1230@1@main@1245@1@main@1176@1@main@773@@
+25@StringTest.append()@10@5411.8@41317@440@12218.60513151972@0.4@0,6,7,8,@1@main@41317@1@main@573@1@main@497@1@main@496@1@main@543@1@main@518@1@main@473@1@main@505@1@main@440@1@main@8756@@
+27@SortLinkedListTest.addRandom4LetterWord()@10@37228.6@298618@5600@87279.0870703859@0.1@0,@1@main@298618@1@main@7845@1@main@5700@1@main@5600@1@main@5823@1@main@6104@1@main@23277@1@main@6105@1@main@7061@1@main@6153@@
+28@SortLinkedListTest.sortList()@1@148655.0@148655@148655@0.0@0.0@@1@main@148655@@
+30@SortArrayListTest.addRandom4LetterWord()@10@9279.3@25929@5252@6694.782909848534@0.8@0,3,4,5,6,7,8,9,@1@main@25929@1@main@5570@1@main@18360@1@main@7691@1@main@7233@1@main@6142@1@main@5656@1@main@5504@1@main@5456@1@main@5252@@
+31@SortArrayListTest.sortList()@1@23020.0@23020@23020@0.0@0.0@@1@main@23020@@
+33@StackTest.add()@10@1454.1@6419@841@1655.3359447556256@0.8@0,3,4,5,6,7,8,9,@1@main@6419@1@main@976@1@main@883@1@main@891@1@main@880@1@main@841@1@main@893@1@main@937@1@main@928@1@main@893@@
+34@StackTest.remove()@10@1777.8@5452@1238@1229.8594065989819@0.8@0,3,4,5,6,7,8,9,@1@main@5452@1@main@1545@1@main@1618@1@main@1337@1@main@1301@1@main@1333@1@main@1304@1@main@1307@1@main@1238@1@main@1343@@
+36@ArrayDataLocalityTest.setup()@1@9775946.0@9775946@9775946@0.0@0.0@@1@main@9775946@@
+37@ArrayDataLocalityTest.increment()@10@4053059.4@11327786@1986122@3236691.561341185@0.9@0,1,3,4,5,6,7,8,9,@1@main@11327786@1@main@8699010@1@main@5851294@1@main@2401270@1@main@2140657@1@main@1998915@1@main@1986122@1@main@2117699@1@main@2020949@1@main@1986892@@
+39@ArrayListOfArraylistTest.setup()@1@2.2072157E7@22072157@22072157@0.0@0.0@@1@main@22072157@@
+40@ArrayListOfArraylistTest.increment()@10@1.28092064E7@40325366@5373144@1.1582170557473589E7@1.0@0,1,2,3,4,5,6,7,8,9,@1@main@16948016@1@main@40325366@1@main@7506088@1@main@6247562@1@main@5853829@1@main@5373144@1@main@28445516@1@main@6288434@1@main@5563574@1@main@5540535@@
+
+@total functions profiled
+
+
+AbsoluteProgramTime@274478338
+Critical Section Time@205006125
+12@arithmetic.add(int)@10@360.6@1589@164@411.41127840641417@0.8@0,3,4,5,6,7,8,9,@1@main@1589@1@main@217@1@main@249@1@main@238@1@main@232@1@main@206@1@main@207@1@main@320@1@main@164@1@main@184@@
+13@arithmetic.sub(int)@10@237640.2@2374335@181@712231.6006304128@0.6@3,4,5,7,8,9,@1@main@269@1@main@232@1@main@249@1@main@276@1@main@243@1@main@226@1@main@2374335@1@main@193@1@main@181@1@main@198@@
+15@appendToList.append()@10@760.1@4959@272@1399.781443654687@0.5@0,6,7,8,9,@1@main@4959@1@main@344@1@main@272@1@main@295@1@main@302@1@main@278@1@main@274@1@main@281@1@main@287@1@main@309@@
+16@appendToList.remove()@10@2468.4@17468@748@5000.023383945319@0.3@0,8,9,@1@main@17468@1@main@891@1@main@802@1@main@748@1@main@847@1@main@816@1@main@771@1@main@792@1@main@779@1@main@770@@
+18@hashmapTest.append(int,int)@10@3213.7@22287@989@6358.702069605086@0.4@0,7,8,9,@1@main@22287@1@main@1391@1@main@1042@1@main@1096@1@main@1135@1@main@1018@1@main@1078@1@main@989@1@main@998@1@main@1103@@
+19@hashmapTest.remove(int)@10@2750.4@11091@1722@2783.778410721658@0.8@0,3,4,5,6,7,8,9,@1@main@11091@1@main@1985@1@main@1733@1@main@1757@1@main@1722@1@main@1722@1@main@1746@1@main@2184@1@main@1796@1@main@1768@@
+21@AllocationTest.append()@10@132002.0@1315253@476@394417.0055357654@0.1@0,@1@main@1315253@1@main@719@1@main@502@1@main@507@1@main@542@1@main@521@1@main@477@1@main@511@1@main@476@1@main@512@@
+22@AllocationTest.remove()@10@2021.9@6753@773@1788.5897489362953@0.8@0,3,4,5,6,7,8,9,@1@main@6753@1@main@1360@1@main@1237@1@main@1186@1@main@1286@1@main@3973@1@main@1230@1@main@1245@1@main@1176@1@main@773@@
+25@StringTest.append()@10@5411.8@41317@440@12218.60513151972@0.4@0,6,7,8,@1@main@41317@1@main@573@1@main@497@1@main@496@1@main@543@1@main@518@1@main@473@1@main@505@1@main@440@1@main@8756@@
+27@SortLinkedListTest.addRandom4LetterWord()@10@37228.6@298618@5600@87279.0870703859@0.1@0,@1@main@298618@1@main@7845@1@main@5700@1@main@5600@1@main@5823@1@main@6104@1@main@23277@1@main@6105@1@main@7061@1@main@6153@@
+28@SortLinkedListTest.sortList()@1@148655.0@148655@148655@0.0@0.0@@1@main@148655@@
+30@SortArrayListTest.addRandom4LetterWord()@10@9279.3@25929@5252@6694.782909848534@0.8@0,3,4,5,6,7,8,9,@1@main@25929@1@main@5570@1@main@18360@1@main@7691@1@main@7233@1@main@6142@1@main@5656@1@main@5504@1@main@5456@1@main@5252@@
+31@SortArrayListTest.sortList()@1@23020.0@23020@23020@0.0@0.0@@1@main@23020@@
+33@StackTest.add()@10@1454.1@6419@841@1655.3359447556256@0.8@0,3,4,5,6,7,8,9,@1@main@6419@1@main@976@1@main@883@1@main@891@1@main@880@1@main@841@1@main@893@1@main@937@1@main@928@1@main@893@@
+34@StackTest.remove()@10@1777.8@5452@1238@1229.8594065989819@0.8@0,3,4,5,6,7,8,9,@1@main@5452@1@main@1545@1@main@1618@1@main@1337@1@main@1301@1@main@1333@1@main@1304@1@main@1307@1@main@1238@1@main@1343@@
+36@ArrayDataLocalityTest.setup()@1@9775946.0@9775946@9775946@0.0@0.0@@1@main@9775946@@
+37@ArrayDataLocalityTest.increment()@10@4053059.4@11327786@1986122@3236691.561341185@0.9@0,1,3,4,5,6,7,8,9,@1@main@11327786@1@main@8699010@1@main@5851294@1@main@2401270@1@main@2140657@1@main@1998915@1@main@1986122@1@main@2117699@1@main@2020949@1@main@1986892@@
+39@ArrayListOfArraylistTest.setup()@1@2.2072157E7@22072157@22072157@0.0@0.0@@1@main@22072157@@
+40@ArrayListOfArraylistTest.increment()@10@1.28092064E7@40325366@5373144@1.1582170557473589E7@1.0@0,1,2,3,4,5,6,7,8,9,@1@main@16948016@1@main@40325366@1@main@7506088@1@main@6247562@1@main@5853829@1@main@5373144@1@main@28445516@1@main@6288434@1@main@5563574@1@main@5540535@@
+
+@total functions profiled
+
+
+AbsoluteProgramTime@281540496
+Critical Section Time@205006125

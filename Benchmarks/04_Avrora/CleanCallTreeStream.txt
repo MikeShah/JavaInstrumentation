@@ -1,0 +1,9 @@
+avrora.Defaults.addActions()|24353002|1|1
+avrora.Defaults.addSimulations()|2023587|1|1
+avrora.Defaults.addMonitors()|18856058|1|1
+avrora.Defaults.addInputFormats()|4545265|1|1
+avrora.arch.ArchitectureRegistry.addArchitectures()|2795359|1|1
+avrora.Defaults.addMicrocontrollers()|846213|1|1
+avrora.sim.Simulation.createNode(avrora.sim.platform.PlatformFactory,avrora.core.LoadableProgram)|202435|1|1
+avrora.sim.Simulation.start()|126094141|1|1
+avrora.sim.Simulation.join()|368875|1|1

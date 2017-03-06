@@ -1,16 +1,16 @@
 functionMap(0) Dump of <key function name>@name@Total Runs@Runs Avg(ns)@Max(ns)@Min(ns)@Std Dev@% of Diverging Executions@Diverging Execution@ThreadID@Caller@Time(ns)
-191@avrora.Defaults.addMonitors()@1@1.3953601E7@13953601@13953601@0.0@0.0@@1@main@13953601@@
-193@avrora.Defaults.addInputFormats()@1@4060536.0@4060536@4060536@0.0@0.0@@1@main@4060536@@
-194@avrora.Defaults.addActions()@1@1.3364743E7@13364743@13364743@0.0@0.0@@1@main@13364743@@
-195@avrora.Defaults.addSimulations()@1@1801664.0@1801664@1801664@0.0@0.0@@1@main@1801664@@
-197@avrora.Defaults.addMicrocontrollers()@1@866955.0@866955@866955@0.0@0.0@@1@main@866955@@
-220@avrora.sim.Simulation.createNode(avrora.sim.platform.PlatformFactory,avrora.core.LoadableProgram)@1@193375.0@193375@193375@0.0@0.0@@1@main@193375@@
-227@avrora.sim.Simulation.start()@1@5.2701839E7@52701839@52701839@0.0@0.0@@1@main@52701839@@
-232@avrora.sim.Simulation.join()@1@423908.0@423908@423908@0.0@0.0@@1@main@423908@@
-478@avrora.arch.ArchitectureRegistry.addArchitectures()@1@2324590.0@2324590@2324590@0.0@0.0@@1@main@2324590@@
+191@avrora.Defaults.addMonitors()@1@1.8856058E7@18856058@18856058@0.0@0.0@@1@main@18856058@@
+193@avrora.Defaults.addInputFormats()@1@4545265.0@4545265@4545265@0.0@0.0@@1@main@4545265@@
+194@avrora.Defaults.addActions()@1@2.4353002E7@24353002@24353002@0.0@0.0@@1@main@24353002@@
+195@avrora.Defaults.addSimulations()@1@2023587.0@2023587@2023587@0.0@0.0@@1@main@2023587@@
+197@avrora.Defaults.addMicrocontrollers()@1@846213.0@846213@846213@0.0@0.0@@1@main@846213@@
+220@avrora.sim.Simulation.createNode(avrora.sim.platform.PlatformFactory,avrora.core.LoadableProgram)@1@202435.0@202435@202435@0.0@0.0@@1@main@202435@@
+227@avrora.sim.Simulation.start()@1@1.26094141E8@126094141@126094141@0.0@0.0@@1@main@126094141@@
+232@avrora.sim.Simulation.join()@1@368875.0@368875@368875@0.0@0.0@@1@main@368875@@
+478@avrora.arch.ArchitectureRegistry.addArchitectures()@1@2795359.0@2795359@2795359@0.0@0.0@@1@main@2795359@@
 
 @total functions profiled
 
 
-AbsoluteProgramTime@211682366
-Critical Section Time@89691211
+AbsoluteProgramTime@406142736
+Critical Section Time@180084935

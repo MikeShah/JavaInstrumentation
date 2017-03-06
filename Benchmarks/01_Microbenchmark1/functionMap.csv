@@ -1,0 +1,19 @@
+functionMap(0) Dump of <key function name>@name@Total Runs@Runs Avg(ns)@Max(ns)@Min(ns)@Std Dev@% of Diverging Executions@Diverging Execution@ThreadID@Caller@Time(ns)
+2@Sleeping.RandomSleep2()@2@8.403828975E8@901910481@778855314@6.15275835E7@0.5@0,@1@main@901910481@1@main@778855314@@
+7@Sleeping.e(int)@2@311243.5@386986@235501@75742.5@0.5@0,@1@Sleeping.RandomSleep2()@386986@1@Sleeping.RandomSleep2()@235501@@
+8@Sleeping.e(int,int)@2@23113.0@31370@14856@8257.0@0.5@0,@1@Sleeping.e(int)@14856@1@Sleeping.e(int)@31370@@
+
+@total functions profiled
+
+
+AbsoluteProgramTime@6234650697
+Critical Section Time@1681434508
+2@Sleeping.RandomSleep2()@2@8.403828975E8@901910481@778855314@6.15275835E7@0.5@0,@1@main@901910481@1@main@778855314@@
+7@Sleeping.e(int)@2@311243.5@386986@235501@75742.5@0.5@0,@1@Sleeping.RandomSleep2()@386986@1@Sleeping.RandomSleep2()@235501@@
+8@Sleeping.e(int,int)@2@23113.0@31370@14856@8257.0@0.5@0,@1@Sleeping.e(int)@14856@1@Sleeping.e(int)@31370@@
+
+@total functions profiled
+
+
+AbsoluteProgramTime@6239114141
+Critical Section Time@1681434508

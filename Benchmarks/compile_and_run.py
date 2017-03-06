@@ -33,7 +33,6 @@ def runTest(benchmark,command, command_noagent):
 		# Clean up whatever data was then output
 		os.system('python cleanData.py '+AGENTARGS)
 		# Build histograms for all of our programs that we run
-		buildHistograms(AGENTARGS)
 	else:
 		print command_noagent
 		start_time = time.time();
@@ -44,11 +43,12 @@ def runTest(benchmark,command, command_noagent):
 # Calls runTest in a thread
 def runThreadingTest(benchmark,command, command_noagent):
 	if THREADING=="ON":
-		thread1 = threading.Thread(target=runTest,args=(AGENTARGS,command, command_noagent))
+		thread1 = threading.Thread(target=runTest,args=(benchmark,command, command_noagent))
 		thread1.daemon = True
 		thread1.start()
 	else:
-		runTest(AGENTARGS,command, command_noagent)
+		runTest(benchmark,command, command_noagent)
+	buildHistograms(benchmark)
 
 
 def IQR(dist):
@@ -63,29 +63,30 @@ def buildHistograms(AGENTARGS):
 			reader = csv.reader(csvfile,delimiter=",")
 			dataList = list(reader)
 
-			fig,yscatterPlot = pyplot.subplots()
 			# x-dimension is the number of runs
 			x = range(1,len(dataList[0])+1)
-			# Setup a grid
-			yscatterPlot.grid(True)
-			# Build our data plot
-			yscatterPlot.scatter(x,dataList)
-			# Show it to the user
-			yscatterPlot.plot()
-			pyplot.title(str(f))
-			pyplot.savefig(f+"_scatter_"+".png")
+			if x > 0:
+				fig,yscatterPlot = pyplot.subplots()
+				# Setup a grid
+				yscatterPlot.grid(True)
+				# Build our data plot
+				yscatterPlot.scatter(x,dataList)
+				# Show it to the user
+				yscatterPlot.plot()
+				pyplot.title(str(f))
+				pyplot.savefig(f+"_scatter_"+".png")
 
-			fig,histogramPlot = pyplot.subplots()
-			dataListAsFloat=numpy.array(dataList[0]).astype(numpy.float)
-			binwidth = (2*IQR(dataListAsFloat))/ ((len(dataListAsFloat))**(1./3.))
-			print "bins:"+str(binwidth)
-			print "len:"+str(len(dataListAsFloat))
-			if binwidth <= 0.0:
-				histogramPlot.hist(dataListAsFloat,histtype='bar',bins=5)
-			else:
-				histogramPlot.hist(dataListAsFloat,histtype='bar',bins=numpy.arange(min(dataListAsFloat),max(dataListAsFloat)+binwidth,binwidth))
-			#histogramPlot.hist(dataListAsFloat,histtype='bar',bins=20)
-			pyplot.savefig(f+"_hist_"+".png")
+				fig,histogramPlot = pyplot.subplots()
+				dataListAsFloat=numpy.array(dataList[0]).astype(numpy.float)
+				binwidth = (2*IQR(dataListAsFloat))/ ((len(dataListAsFloat))**(1./3.))
+				print "bins:"+str(binwidth)
+				print "len:"+str(len(dataListAsFloat))
+				if binwidth <= 0.0:
+					histogramPlot.hist(dataListAsFloat,histtype='bar',bins=5)
+				else:
+					histogramPlot.hist(dataListAsFloat,histtype='bar',bins=numpy.arange(min(dataListAsFloat),max(dataListAsFloat)+binwidth,binwidth))
+				#histogramPlot.hist(dataListAsFloat,histtype='bar',bins=20)
+				pyplot.savefig(f+"_hist_"+".png")
 
 
 
@@ -149,7 +150,7 @@ ARGS = "-nogui /home/mike/Desktop/JavaDistribution/JavaInstrumentation/Benchmark
 # Run with Agent
 command=JAVA+' -cp .:../../.:../.:'+JARPATH+' -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
 command_noagent=JAVA+' -cp .:../.:'+JARPATH+' -jar '+JARPATH+JARFILE+" "+ARGS
-runThreadingTest(AGENTARGS,command, command_noagent)
+#####runThreadingTest(AGENTARGS,command, command_noagent)
 # ========================= TEST SUITE AVORA ====================
 JARPATH = "./Avrora/"
 JARFILE = "avrora-beta-1.7.117.jar"
@@ -183,7 +184,7 @@ ARGS 	= "-tcp"
 TIMEOUT = "timeout 5"
 command	= TIMEOUT+" "+JAVA+' -cp .:../.:'+JARPATH+':./H2/bin/:./H2/bin/org/:./H2/bin/:./H2/bin/org/h2/ -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
 command_noagent=TIMEOUT+" "+JAVA+' -cp .:../.:'+JARPATH+' -jar '+JARPATH+JARFILE+" "+ARGS
-runThreadingTest(AGENTARGS,command, command_noagent)
+#####runThreadingTest(AGENTARGS,command, command_noagent)
 # ========================= TEST SUITE YCad====================
 JARPATH = "./ycad/"
 JARFILE = "lib/ycad.jar"
@@ -215,13 +216,14 @@ command_noagent=JAVA+' -cp .:../.:'+JARPATH+":./build/"+' -jar '+JARPATH+JARFILE
 #####runThreadingTest(AGENTARGS,command, command_noagent)
 # ========================= TEST SUITE MICROBENCHMARK 2====================
 JARPATH = "./Microbenchmark2/"
-JARFILE = "benchmark.jar"
+JARFILE = "Microbenchmark2.jar"
 AGENTARGS="011_Microbenchmark2"
 ARGS 	= ""
 TIMEOUT = ""
-command	= JAVA+' -cp '+JARPATH+':.'+' -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
-command_noagent=JAVA+' -cp .:../.:'+JARPATH+":./"+' -jar '+JARPATH+JARFILE+" "+ARGS
-#####runThreadingTest(AGENTARGS,command, command_noagent)
+command =  JAVA+' -javaagent:../Agent.jar='+AGENTARGS+" -cp .:Microbenchmark2:Microbenchmark2/tests/:Microbenchmark2.jar latency"
+#command	= JAVA+' -cp '+JARPATH+':.'+' -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
+command_noagent=JAVA+" -cp .:Microbenchmark2:Microbenchmark2/tests/:Microbenchmark2.jar latency"
+runThreadingTest(AGENTARGS,command, command_noagent)
 # ========================= TEST SUITE sj3d====================
 # https://github.com/Calvin-L/sj3d
 JARPATH = "./sj3d/"
@@ -232,7 +234,7 @@ TIMEOUT = "timeout 5 "
 #java  -cp sj3d.jar:./sj3d:. demo.SJ3DDemo
 command	=TIMEOUT+ JAVA+'-javaagent:../Agent.jar='+AGENTARGS+' -cp '+JARPATH+JARFILE+':'+JARPATH+' '+ARGS
 command_noagent=TIMEOUT+ JAVA+' -cp '+JARPATH+JARFILE+':'+JARPATH+' '+ARGS
-runThreadingTest(AGENTARGS,command, command_noagent)
+#####runThreadingTest(AGENTARGS,command, command_noagent)
 
 '''
 Without Instrumentation
