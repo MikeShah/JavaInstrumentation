@@ -67,19 +67,19 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
                                         // Note that we have to use 'getDeclaredMethod' here -- TODO: WHY use this?
                                         final CtBehavior mainmethod = cc.getDeclaredMethod("main");
                                         System.out.println("Indeed, found:"+mainmethod.getLongName());
-                                        mainmethod.addLocalVariable("absoluteProgramTime", CtClass.longType);
-                                        String startTime   = "absoluteProgramTime = System.nanoTime();";
+                                        String startTime   = "ProfilingController.startClock(System.nanoTime());";
                                         String startMessage =   "System.out.println(\"vvvvvvvvvvvvvvHello from mainvvvvvvvvvvvvvvvvvvvvv\");";
+                                        String addProcessorHook = "Runtime.getRuntime().addShutdownHook(new ProcessorHook());";
                                         String endMessage   =   "System.out.println(\"^^^^^^^^^^^^^^Goodbye from main^^^^^^^^^^^^^^^^^^^\");";
 
-                                        mainmethod.insertBefore(startTime+startMessage);
-                                        //mainmethod.insertAfter("ProfilingController.setAbsoluteTime(absoluteProgramTime);"
+                                        mainmethod.insertBefore(addProcessorHook+startTime+startMessage);
+                                        //mainmethod.insertAfter("ProfilingController.calculateAbsoluteTime();"
                                         //                      + "ProfilingController.dumpFunctionMapCSV();"
                                         //                      + "ProfilingController.printCallTree();"
                                         //                      + "ProfilingController.dumpFunctionMapCSV();"
                                         //                      + "ProfilingController.printCallTree();"
                                         //                      );
-                                        mainmethod.insertAfter(endMessage+"{ProfilingController.setAbsoluteTime(absoluteProgramTime);"
+                                        mainmethod.insertAfter(endMessage+"{ProfilingController.calculateAbsoluteTime();"
                                                               + "ProfilingController.dumpFunctionMapCSV();"
                                                               + "ProfilingController.dumpFunctionHistograms();"
                                                               + "ProfilingController.printCallTree();}");

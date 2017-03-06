@@ -36,6 +36,8 @@ public final class ProfilingController {
 	public static PrintWriter streamCallTreeWriter;
 	// A stream that builds the funtion mapping list
 	public static PrintWriter streamFunctionMapWriter;
+	// The time when the program started executing
+	public static Long start;
 	// Total time spent executing the program. This is computed by instrumenting "main"
 	public static Long absoluteProgramTime;
 	// The number of functions in the program.
@@ -440,7 +442,12 @@ public final class ProfilingController {
 		streamFunctionMapWriter.flush();
 	}
 
-	public static synchronized void setAbsoluteTime(long start){
+	// Call at program start and use with calculateAbsoluteTime to figure out duration of program.
+	public static synchronized void startClock(long t){
+		start = t;
+	}
+
+	public static synchronized void calculateAbsoluteTime(){
 		absoluteProgramTime = System.nanoTime() - start;
 	}
 

@@ -32,6 +32,8 @@ def runTest(benchmark,command, command_noagent):
 		os.system(command)
 		# Clean up whatever data was then output
 		os.system('python cleanData.py '+AGENTARGS)
+		# Build histograms for all of our programs that we run
+		buildHistograms(AGENTARGS)
 	else:
 		print command_noagent
 		start_time = time.time();
@@ -47,6 +49,7 @@ def runThreadingTest(benchmark,command, command_noagent):
 		thread1.start()
 	else:
 		runTest(AGENTARGS,command, command_noagent)
+
 
 def IQR(dist):
 	return numpy.percentile(dist,75) - numpy.percentile(dist,25)
@@ -145,9 +148,8 @@ ARGS = "-nogui /home/mike/Desktop/JavaDistribution/JavaInstrumentation/Benchmark
 #os.system(command)
 # Run with Agent
 command=JAVA+' -cp .:../../.:../.:'+JARPATH+' -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
-#print command
 command_noagent=JAVA+' -cp .:../.:'+JARPATH+' -jar '+JARPATH+JARFILE+" "+ARGS
-#####runThreadingTest(AGENTARGS,command, command_noagent)
+runThreadingTest(AGENTARGS,command, command_noagent)
 # ========================= TEST SUITE AVORA ====================
 JARPATH = "./Avrora/"
 JARFILE = "avrora-beta-1.7.117.jar"
@@ -181,15 +183,14 @@ ARGS 	= "-tcp"
 TIMEOUT = "timeout 5"
 command	= TIMEOUT+" "+JAVA+' -cp .:../.:'+JARPATH+':./H2/bin/:./H2/bin/org/:./H2/bin/:./H2/bin/org/h2/ -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
 command_noagent=TIMEOUT+" "+JAVA+' -cp .:../.:'+JARPATH+' -jar '+JARPATH+JARFILE+" "+ARGS
-#####runThreadingTest(AGENTARGS,command, command_noagent)
-buildHistograms(AGENTARGS)
+runThreadingTest(AGENTARGS,command, command_noagent)
 # ========================= TEST SUITE YCad====================
 JARPATH = "./ycad/"
 JARFILE = "lib/ycad.jar"
 AGENTARGS="08_ycad"
 ARGS 	= "com.ysystems.ycad.app.ycadtest.YcadTest"
 TIMEOUT = "timeout 5"
-command = " "+JAVA+" -cp "+JARPATH+JARFILE+" com.ysystems.ycad.app.ycadtest.YcadTest -javaagent:../Agent.jar="+AGENTARGS
+command = " "+JAVA+"-javaagent:../Agent.jar="+AGENTARGS+" -cp "+JARPATH+JARFILE+" com.ysystems.ycad.app.ycadtest.YcadTest"
 command_noagent=TIMEOUT+" "+JAVA+" -cp "+JARPATH+JARFILE+" com.ysystems.ycad.app.ycadtest.YcadTest"
 #####runThreadingTest(AGENTARGS,command, command_noagent)
 # ========================= TEST SUITE FOP====================
@@ -221,7 +222,17 @@ TIMEOUT = ""
 command	= JAVA+' -cp '+JARPATH+':.'+' -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
 command_noagent=JAVA+' -cp .:../.:'+JARPATH+":./"+' -jar '+JARPATH+JARFILE+" "+ARGS
 #####runThreadingTest(AGENTARGS,command, command_noagent)
-
+# ========================= TEST SUITE sj3d====================
+# https://github.com/Calvin-L/sj3d
+JARPATH = "./sj3d/"
+JARFILE = "sj3d.jar"
+AGENTARGS="012_sj3d"
+ARGS 	= "demo.SJ3DDemo"
+TIMEOUT = "timeout 5 "
+#java  -cp sj3d.jar:./sj3d:. demo.SJ3DDemo
+command	=TIMEOUT+ JAVA+'-javaagent:../Agent.jar='+AGENTARGS+' -cp '+JARPATH+JARFILE+':'+JARPATH+' '+ARGS
+command_noagent=TIMEOUT+ JAVA+' -cp '+JARPATH+JARFILE+':'+JARPATH+' '+ARGS
+runThreadingTest(AGENTARGS,command, command_noagent)
 
 '''
 Without Instrumentation
