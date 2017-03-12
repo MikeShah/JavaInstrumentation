@@ -66,13 +66,15 @@ def buildHistograms(AGENTARGS):
 			# x-dimension is the number of runs
 			x = range(1,len(dataList[0])+1)
 			if x > 0:
-				fig,yscatterPlot = pyplot.subplots()
+				fig,yscatterPlot = pyplot.subplots(figsize=(10,10))
 				# Setup a grid
 				yscatterPlot.grid(True)
+				#yscatterPlot.axis([0.0,0.0,len(x),int(max(dataList[0]))+1]) # Set the axis bounds
 				# Build our data plot
 				yscatterPlot.scatter(x,dataList)
 				# Show it to the user
-				yscatterPlot.plot()
+				yscatterPlot.plot(alpha=0.6)
+
 				pyplot.title(str(f))
 				pyplot.savefig(f+"_scatter_"+".png")
 

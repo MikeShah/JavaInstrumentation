@@ -2,18 +2,18 @@ import java.util.*;
 
 	// Statistic is a Piece of Data (POD) used
 	// in the hashmap for a function.
-	// The hashmap of 'functionMap'  and 'statisticMap' in the Profiling Controller match each other 
+	// The hashmap of 'functionMap'  and 'statisticMap' in the Profiling Controller match each other
 	public class Statistic{
 		ArrayList<Long> timeList; // How much time a method took to execute
 		ArrayList<Long> threadIDList; // The ID of the thread that exectued.
-		ArrayList<String> callerList; // The function caller of this function	
+		ArrayList<String> callerList; // The function caller of this function
 
 		/// Initializer called from any constructor
 		private void init(){
 			if(timeList==null){
 				timeList = new ArrayList<Long>();
 			}
-			
+
 			if(threadIDList==null){
 				threadIDList = new ArrayList<Long>();
 			}
@@ -57,11 +57,11 @@ import java.util.*;
 		// Params: If CSV is true, then output comma separated list
 		public String dumpCSV(){
 			String result="";
-			
+
 			// Output every time and the thread id
 			for(int i =0; i < timeList.size();i++){
 				result += threadIDList.get(i)+ProfilingController.DelimiterSymbol+callerList.get(i)+ProfilingController.DelimiterSymbol+ timeList.get(i).toString()+ProfilingController.DelimiterSymbol;
-				
+
 			}
 
 			ArrayList<Integer> divergingPoints = bestFitLine();
@@ -85,19 +85,24 @@ import java.util.*;
 
 
 		// Some helper math functions
+		// Computes the average of the entire timelist
 		private double getAvg(){
+			return computeAverage(timeList, 0, timeList.size());
+		}
+
+		// Computes the average of a range
+		private double computeAverage(ArrayList<Long> lst, int start, int end){
 			double avg = 0;
 
-			for(int i =0; i < timeList.size();i++){
-				avg += timeList.get(i);
-			}
+			if(lst.size()>0){
+				for(int i =start; i < end; i++){
+					avg += lst.get(i);
+				}
 
-			if(timeList.size()>0){
-				avg = avg / timeList.size();
+				avg = avg / lst.size();
 			}
 			return avg;
 		}
-
 
 		// Highest runtime
 		private long getMax(){
@@ -129,7 +134,7 @@ import java.util.*;
 			// (1) Compute the average
 			double avg = getAvg();
 			// (2) Compute the variances
-			ArrayList<Double> varianceAverages = new ArrayList<Double>(); 
+			ArrayList<Double> varianceAverages = new ArrayList<Double>();
 			for(int i =0; i < timeList.size();i++){
 				double variance = (timeList.get(i)-avg)*(timeList.get(i)-avg);
 				varianceAverages.add(variance);
@@ -158,16 +163,16 @@ import java.util.*;
 			y2sum - The total of each value in the y column squared and then added together.
 			N - The total number of elements (or trials in your experiment).
 
-			m = 
+			m =
 				(Nxysum) - (xsumysum)
 				(Nx2sum) - (xsumxsum)
 
-			b = 
+			b =
 				(x2sumysum) - (xsumxysum)
 				(Nx2sum) - (xsumxsum)
 
 			The purpose of this function is to find where the function
-			diverges. 
+			diverges.
 
 			Based off: http://sciencefair.math.iit.edu/analysis/linereg/hand/
 		*/
@@ -205,10 +210,28 @@ import java.util.*;
 			return divergingPoints;
 		}
 
+		// Computes a list of points that diverage from the previous 'percent' (pass as an argument)
+		// of iterations of the function.
+		//
+		// Algorithm:
+		// 1.) Multiply total executions by percent to figure out the interval size
+		// 2.) Compare current item 'i' with adjacent elements equal to the size of the interval.
+		// 		 a. ) Edge Case: Our first 'interval' is considered the baseline truth
+		public ArrayList<Integer> simpleMovingAverage(double percent){
+			int intervalSize = (int)(timeList.size()*percent);
+
+
+			for(int i = intervalSize; i < timeList.size()-intervalSize; ++i){
+				double currentWindow = computeAverage(timeList.size(),i,i+intervalSize);
+				
+			}
+
+		}
+
 		// Output the statistic in a parsable way
 		// param: instance is the instance of data from the tree at one particular point.
 		//	 (i.e. the 4th execution of a method would be an instance value of 3)
-		//	 
+		//
 		//	 Error Conditions Handled:
 		//	 (1) instance is less than threadIDList or timeList range
 		public String dumpParse(int instance){
@@ -217,7 +240,7 @@ import java.util.*;
 			// If the instance is out of bounds, then return empty.
 			if(instance > threadIDList.size() || instance > timeList.size()){
 				return result;
-			}			
+			}
 
 			//long avg = 0;
 			// Output every time and the thread id
@@ -230,7 +253,7 @@ import java.util.*;
 			//	avg = avg / timeList.size();
 			//}
 
-			return "[["+result+"]]";			
+			return "[["+result+"]]";
 		}
 
 	}

@@ -16,6 +16,10 @@ public class latency {
         t.t1_StackTest();
         t.t1_ArrayDataLocalityTest();
         t.t1_ArrayListOfArraylistTest();
+        t.t1_RandomFastSlowTest();
+        t.t1_NestedSynchronizedClassesTest();
+        t.t1_growingIntegerListTest();
+        t.t1_sortRandomListTest();
     }
 
 }
