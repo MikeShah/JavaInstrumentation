@@ -48,47 +48,87 @@ def runThreadingTest(benchmark,command, command_noagent):
 		thread1.start()
 	else:
 		runTest(benchmark,command, command_noagent)
-	buildHistograms(benchmark)
+	generatePlotsAndCharts(benchmark)
 
 
 def IQR(dist):
 	return numpy.percentile(dist,75) - numpy.percentile(dist,25)
 
 # TODO possibly save to a .pdf or svg to get better resolution for papers
-def buildHistograms(AGENTARGS):
+def generatePlotsAndCharts(AGENTARGS):
 	path = AGENTARGS+"/IndividualFunctionData/"
 	files = glob.glob(path+"*.csv")
 	for f in files:
 		with open(f,'r') as csvfile:
 			reader = csv.reader(csvfile,delimiter=",")
 			dataList = list(reader)
+			# Build the different visualizations
+			buildHistogram(f,dataList)
+			buildHistogramLog(f,dataList)
 
-			# x-dimension is the number of runs
-			x = range(1,len(dataList[0])+1)
-			if x > 0:
-				fig,yscatterPlot = pyplot.subplots(figsize=(10,10))
-				# Setup a grid
-				yscatterPlot.grid(True)
-				#yscatterPlot.axis([0.0,0.0,len(x),int(max(dataList[0]))+1]) # Set the axis bounds
-				# Build our data plot
-				yscatterPlot.scatter(x,dataList)
-				# Show it to the user
-				yscatterPlot.plot(alpha=0.6)
+def buildHistogram(f,dataList):
+	# x-dimension is the number of runs
+	x = range(1,len(dataList[0])+1)
+	if x > 0:
+		dataListAsFloat=numpy.array(dataList[0]).astype(numpy.float)
 
-				pyplot.title(str(f))
-				pyplot.savefig(f+"_scatter_"+".png")
+		fig, ax = pyplot.subplots()
+		pyplot.subplot(2,1,1)
+		pyplot.yscale('linear')
+		pyplot.scatter(x,dataListAsFloat)
+		pyplot.title("Critical Section Executions (n="+str(len(dataList[0]))+")")
+		pyplot.ylabel("Nanoseconds(ns)")
+		pyplot.xlabel("Nth Execution of Method")
 
-				fig,histogramPlot = pyplot.subplots()
-				dataListAsFloat=numpy.array(dataList[0]).astype(numpy.float)
-				binwidth = (2*IQR(dataListAsFloat))/ ((len(dataListAsFloat))**(1./3.))
-				print "bins:"+str(binwidth)
-				print "len:"+str(len(dataListAsFloat))
-				if binwidth <= 0.0:
-					histogramPlot.hist(dataListAsFloat,histtype='bar',bins=5)
-				else:
-					histogramPlot.hist(dataListAsFloat,histtype='bar',bins=numpy.arange(min(dataListAsFloat),max(dataListAsFloat)+binwidth,binwidth))
-				#histogramPlot.hist(dataListAsFloat,histtype='bar',bins=20)
-				pyplot.savefig(f+"_hist_"+".png")
+		pyplot.subplot(2,1,2)
+		pyplot.yscale('linear')
+		pyplot.hist(dataListAsFloat,histtype='bar',bins=20)
+		pyplot.title("Histogram")
+		pyplot.ylabel("Number of Executions")
+		pyplot.xlabel("Nanoseconds(ns)")
+		# Potential way to automatically select bin sizes--for now 20 is just fine.
+		#dataListAsFloat=numpy.array(dataList[0]).astype(numpy.float)
+		#binwidth = (2*IQR(dataListAsFloat))/ ((len(dataListAsFloat))**(1./3.))
+		#histogramPlot.hist(dataListAsFloat,histtype='bar',bins=numpy.arange(min(dataListAsFloat),max(dataListAsFloat)+binwidth,binwidth))
+		#
+		pyplot.plot()
+		pyplot.savefig(f+"1_hist_linear_"+".png")
+		# clear all data and continue plotting
+		pyplot.cla()
+		pyplot.clf()
+		pyplot.close()
+
+def buildHistogramLog(f,dataList):
+	# x-dimension is the number of runs
+	x = range(1,len(dataList[0])+1)
+	if x > 0:
+		dataListAsFloat=numpy.array(dataList[0]).astype(numpy.float)
+
+		fig, ax = pyplot.subplots()
+		pyplot.subplot(2,1,1)
+		pyplot.yscale('log')
+		pyplot.scatter(x,dataListAsFloat)
+		pyplot.title("Critical Section Executions (n="+str(len(dataList[0]))+")")
+		pyplot.ylabel("Nanoseconds(ns)")
+		pyplot.xlabel("Nth Execution of Method")
+
+		pyplot.subplot(2,1,2)
+		pyplot.yscale('linear')
+		pyplot.hist(dataListAsFloat,histtype='bar',bins=20)
+		pyplot.title("Histogram")
+		pyplot.ylabel("Number of Executions")
+		pyplot.xlabel("Nanoseconds(ns)")
+		# Potential way to automatically select bin sizes--for now 20 is just fine.
+		#dataListAsFloat=numpy.array(dataList[0]).astype(numpy.float)
+		#binwidth = (2*IQR(dataListAsFloat))/ ((len(dataListAsFloat))**(1./3.))
+		#histogramPlot.hist(dataListAsFloat,histtype='bar',bins=numpy.arange(min(dataListAsFloat),max(dataListAsFloat)+binwidth,binwidth))
+		#
+		pyplot.plot()
+		pyplot.savefig(f+"2_hist_log_"+".png")
+		# clear all data and continue plotting
+		pyplot.cla()
+		pyplot.clf()
+		pyplot.close()
 
 
 
@@ -177,16 +217,17 @@ AGENTARGS="06_Batik"
 ARGS 	= "./Batik/samples/batikFX.svg"
 command	= TIMEOUT+" "+JAVA+' -cp :.:../.:'+JARPATH+' -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
 command_noagent=TIMEOUT+" "+JAVA+' -cp .:../.:'+JARPATH+' -jar '+JARPATH+JARFILE+" "+ARGS
-#####runThreadingTest(AGENTARGS,command, command_noagent)
+runThreadingTest(AGENTARGS,command, command_noagent)
 # ========================= TEST SUITE H2====================
 JARPATH = "./H2/"
 JARFILE = "./bin/h2-1.3.174.jar"
 AGENTARGS="07_H2"
-ARGS 	= "-tcp"
-TIMEOUT = "timeout 5"
+#ARGS 	= "-tcp"
+ARGS 	= ""
+TIMEOUT = "timeout 15"
 command	= TIMEOUT+" "+JAVA+' -cp .:../.:'+JARPATH+':./H2/bin/:./H2/bin/org/:./H2/bin/:./H2/bin/org/h2/ -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
 command_noagent=TIMEOUT+" "+JAVA+' -cp .:../.:'+JARPATH+' -jar '+JARPATH+JARFILE+" "+ARGS
-#####runThreadingTest(AGENTARGS,command, command_noagent)
+runThreadingTest(AGENTARGS,command, command_noagent)
 # ========================= TEST SUITE YCad====================
 JARPATH = "./ycad/"
 JARFILE = "lib/ycad.jar"
@@ -205,7 +246,7 @@ ARGS 	= "-fo ./fop/examples/fo/advanced/barcode.fo -pdf foo.pdf"
 TIMEOUT = ""
 command	= JAVA+' -cp '+JARPATH+":../Agent.jar:../javassist-3.21.0/javassist.jar:"+JARPATH+JARFILE+' -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
 command_noagent=JAVA+' -cp .:../.:'+JARPATH+":./build/"+' -jar '+JARPATH+JARFILE+" "+ARGS
-#####runThreadingTest(AGENTARGS,command, command_noagent)
+runThreadingTest(AGENTARGS,command, command_noagent)
 # ========================= TEST SUITE PMD====================
 # java -cp ./lib/pmd-4.2.4.jar:./lib/jaxen-1.1.1.jar:./lib/asm-3.1.jar net.sourceforge.pmd.PMD ./src/net/sourceforge/pmd/ html unusedcode -javaagent:./../../../Agent.jar="010_pmd"
 JARPATH = "./pmd-4.2.4/"
@@ -215,7 +256,7 @@ ARGS 	= "./pmd/pmd-4.2.4/src/net/sourceforge/pmd/ html unusedcode"
 TIMEOUT = ""
 command	= JAVA+' -verbose:class -cp '+JARPATH+'lib/pmd-4.2.4.jar:'+JARPATH+'lib/jaxen-1.1.1.jar:'+JARPATH+'lib/asm-3.1.jar:./pmd-4.2.4:./pmd-4.2.4/src net.sourceforge.pmd.PMD -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
 command_noagent=JAVA+' -cp .:../.:'+JARPATH+":./build/"+' -jar '+JARPATH+JARFILE+" "+ARGS
-#####runThreadingTest(AGENTARGS,command, command_noagent)
+runThreadingTest(AGENTARGS,command, command_noagent)
 # ========================= TEST SUITE MICROBENCHMARK 2====================
 JARPATH = "./Microbenchmark2/"
 JARFILE = "Microbenchmark2.jar"

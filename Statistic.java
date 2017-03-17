@@ -217,15 +217,16 @@ import java.util.*;
 		// 1.) Multiply total executions by percent to figure out the interval size
 		// 2.) Compare current item 'i' with adjacent elements equal to the size of the interval.
 		// 		 a. ) Edge Case: Our first 'interval' is considered the baseline truth
-		public ArrayList<Integer> simpleMovingAverage(double percent){
+		public List<Integer> simpleMovingAverage(double percent){
 			int intervalSize = (int)(timeList.size()*percent);
 
+			List<Integer> results = new LinkedList<Integer>();
 
 			for(int i = intervalSize; i < timeList.size()-intervalSize; ++i){
-				double currentWindow = computeAverage(timeList.size(),i,i+intervalSize);
-				
+				double currentWindow = computeAverage(timeList,i,i+intervalSize);
 			}
 
+			return results;
 		}
 
 		// Output the statistic in a parsable way

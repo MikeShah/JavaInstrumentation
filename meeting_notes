@@ -1,0 +1,48 @@
+Think about context of critical section (who is the caller)
+	Instrument callers statically
+		Perturb minimally
+
+Find more benchmarks beyond DaCapo (Check the race detectors)
+Understanding concurrency in Java programs
+	ICPE Benchmarks
+
+One is timing mode
+	What we have
+Coverage mode
+	heavyweight -- Dd we take a fast or a slow path through the critical section
+	Does variability occur because of different behaviors in critical section
+
+We're at the intersection of static and dynamic analysis
+	Look at test coverage work
+
+=========================================
+- Be able to run Jython demo
+- Be able to get spreadsheet of results into paper
+- Write about test infrastructure in paper (python scripts?)
+
+
+- Begin implementing Sam's changes about finding call sites
+- Investigate if a virtual call does not have to be synchronized.
+	- I think I can check this in javaassist when the method is found.
+- Figure out in Javaassist if I can do the instrumentation that Sam wants.
+	- This would involve scanning every method
+	- Can talk about how this is more expensive, but gives us access to the call site
+
+
+=========================================
+Send Sam some data on time spent in critical sections
+
+Send Overleaf documents
+
+Free Delta skyline miles
+
+
+==========================
+1. Start forcing allocation
+	Make this tunable
+	Set the max heap size
+2. Network case microbenchmark
+3. Run real benchmarks 
+	Log scale
+
+

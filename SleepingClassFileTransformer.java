@@ -69,7 +69,7 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
                                         System.out.println("Indeed, found:"+mainmethod.getLongName());
                                         String startTime   = "ProfilingController.startClock(System.nanoTime());";
                                         String startMessage =   "System.out.println(\"vvvvvvvvvvvvvvHello from mainvvvvvvvvvvvvvvvvvvvvv\");";
-                                        String addProcessorHook = "Runtime.getRuntime().addShutdownHook(new ProcessorHook());";
+                                        String addProcessorHook = "";//"Runtime.getRuntime().addShutdownHook(new ProcessorHook());";
                                         String endMessage   =   "System.out.println(\"^^^^^^^^^^^^^^Goodbye from main^^^^^^^^^^^^^^^^^^^\");";
 
                                         mainmethod.insertBefore(addProcessorHook+startTime+startMessage);
