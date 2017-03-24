@@ -184,7 +184,7 @@ JARPATH = "./Sunflow/sunflow/"
 JARFILE = "sunflow.jar"
 AGENTARGS="03_Sunflow"
 #ARGS = "-nogui /h/mshah08/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/Sunflow/examples/shader_examples/VerySimple.sc"
-ARGS = "-nogui /home/mike/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/Sunflow/examples/shader_examples/VerySimple.sc"
+ARGS = "-bake test -rtbench -dumpkd -ipr -threads 8 /home/mike/Desktop/JavaDistribution/JavaInstrumentation/Benchmarks/Sunflow/examples/aliens_shiny.sc"
 
 # Run without agent
 #command = JAVA+' -cp .:../.:'+JARPATH+' -jar '+JARPATH+JARFILE+" "+ARGS
@@ -192,7 +192,7 @@ ARGS = "-nogui /home/mike/Desktop/JavaDistribution/JavaInstrumentation/Benchmark
 # Run with Agent
 command=JAVA+' -cp .:../../.:../.:'+JARPATH+' -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
 command_noagent=JAVA+' -cp .:../.:'+JARPATH+' -jar '+JARPATH+JARFILE+" "+ARGS
-#####runThreadingTest(AGENTARGS,command, command_noagent)
+runThreadingTest(AGENTARGS,command, command_noagent)
 # ========================= TEST SUITE AVORA ====================
 JARPATH = "./Avrora/"
 JARFILE = "avrora-beta-1.7.117.jar"
@@ -217,7 +217,7 @@ AGENTARGS="06_Batik"
 ARGS 	= "./Batik/samples/batikFX.svg"
 command	= TIMEOUT+" "+JAVA+' -cp :.:../.:'+JARPATH+' -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
 command_noagent=TIMEOUT+" "+JAVA+' -cp .:../.:'+JARPATH+' -jar '+JARPATH+JARFILE+" "+ARGS
-runThreadingTest(AGENTARGS,command, command_noagent)
+#####runThreadingTest(AGENTARGS,command, command_noagent)
 # ========================= TEST SUITE H2====================
 JARPATH = "./H2/"
 JARFILE = "./bin/h2-1.3.174.jar"
@@ -227,7 +227,7 @@ ARGS 	= ""
 TIMEOUT = "timeout 15"
 command	= TIMEOUT+" "+JAVA+' -cp .:../.:'+JARPATH+':./H2/bin/:./H2/bin/org/:./H2/bin/:./H2/bin/org/h2/ -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
 command_noagent=TIMEOUT+" "+JAVA+' -cp .:../.:'+JARPATH+' -jar '+JARPATH+JARFILE+" "+ARGS
-runThreadingTest(AGENTARGS,command, command_noagent)
+#####runThreadingTest(AGENTARGS,command, command_noagent)
 # ========================= TEST SUITE YCad====================
 JARPATH = "./ycad/"
 JARFILE = "lib/ycad.jar"
@@ -246,7 +246,7 @@ ARGS 	= "-fo ./fop/examples/fo/advanced/barcode.fo -pdf foo.pdf"
 TIMEOUT = ""
 command	= JAVA+' -cp '+JARPATH+":../Agent.jar:../javassist-3.21.0/javassist.jar:"+JARPATH+JARFILE+' -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
 command_noagent=JAVA+' -cp .:../.:'+JARPATH+":./build/"+' -jar '+JARPATH+JARFILE+" "+ARGS
-runThreadingTest(AGENTARGS,command, command_noagent)
+#####runThreadingTest(AGENTARGS,command, command_noagent)
 # ========================= TEST SUITE PMD====================
 # java -cp ./lib/pmd-4.2.4.jar:./lib/jaxen-1.1.1.jar:./lib/asm-3.1.jar net.sourceforge.pmd.PMD ./src/net/sourceforge/pmd/ html unusedcode -javaagent:./../../../Agent.jar="010_pmd"
 JARPATH = "./pmd-4.2.4/"
@@ -256,7 +256,7 @@ ARGS 	= "./pmd/pmd-4.2.4/src/net/sourceforge/pmd/ html unusedcode"
 TIMEOUT = ""
 command	= JAVA+' -verbose:class -cp '+JARPATH+'lib/pmd-4.2.4.jar:'+JARPATH+'lib/jaxen-1.1.1.jar:'+JARPATH+'lib/asm-3.1.jar:./pmd-4.2.4:./pmd-4.2.4/src net.sourceforge.pmd.PMD -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
 command_noagent=JAVA+' -cp .:../.:'+JARPATH+":./build/"+' -jar '+JARPATH+JARFILE+" "+ARGS
-runThreadingTest(AGENTARGS,command, command_noagent)
+#####runThreadingTest(AGENTARGS,command, command_noagent)
 # ========================= TEST SUITE MICROBENCHMARK 2====================
 JARPATH = "./Microbenchmark2/"
 JARFILE = "Microbenchmark2.jar"
@@ -266,7 +266,7 @@ TIMEOUT = ""
 command =  JAVA+' -javaagent:../Agent.jar='+AGENTARGS+" -cp .:Microbenchmark2:Microbenchmark2/tests/:Microbenchmark2.jar latency"
 #command	= JAVA+' -cp '+JARPATH+':.'+' -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
 command_noagent=JAVA+" -cp .:Microbenchmark2:Microbenchmark2/tests/:Microbenchmark2.jar latency"
-runThreadingTest(AGENTARGS,command, command_noagent)
+#####runThreadingTest(AGENTARGS,command, command_noagent)
 # ========================= TEST SUITE sj3d====================
 # https://github.com/Calvin-L/sj3d
 JARPATH = "./sj3d/"

@@ -133,6 +133,9 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
     // Updates a method such that it has a timer
     // This function actually modifies the method inserting code at each entry and exit.
     private void instrumentMethod(CtBehavior method) throws NotFoundException, CannotCompileException{
+        if(isNative(method)){
+          return;
+        }
 
         // Retrieve the method name
         String m_name = method.getLongName();

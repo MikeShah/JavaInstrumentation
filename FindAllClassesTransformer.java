@@ -1,4 +1,4 @@
-// Import instrumentation classes 
+// Import instrumentation classes
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.lang.instrument.*;
@@ -21,29 +21,29 @@ public class FindAllClassesTransformer implements ClassFileTransformer {
         byte[] byteCode = classfileBuffer;
 
         try{
-            if(className != null 
-                 && !className.contains("java") 
-                 && !className.contains("sun") 
-                 && !className.contains("jdk") 
-                 && !className.contains("reflect") 
-                 && !className.contains("ProfilingController") 
+            if(className != null
+                 && !className.contains("java")
+                 && !className.contains("sun")
+                 && !className.contains("jdk")
+                 && !className.contains("reflect")
+                 && !className.contains("ProfilingController")
                 && !className.contains("Statistic")
-                && !className.contains("DurationAgent") 
-                && !className.contains("FindAllClassesTransformer") 
+                && !className.contains("DurationAgent")
+                && !className.contains("FindAllClassesTransformer")
                 && !className.contains("SleepingClassFileTransformer")
-                && !className.contains("CallingContextStack")  
-                && !className.contains("ThreadData") 
-                && !className.contains("$") 
-                && !className.contains("_") 
+                && !className.contains("CallingContextStack")
+                && !className.contains("ThreadData")
+                && !className.contains("$")
+                && !className.contains("_")
             ){
 //            if(className != null){
             if(ProfilingController.KNOB_VERBOSE_OUTPUT){
                 System.out.println("--------------Adding:"+className);
             }
-                ProfilingController.classNames.add(className.replace('/','.'));            
-            }            
+                ProfilingController.classNames.add(className.replace('/','.'));
+            }
         }catch(Exception ex){
-            
+
         }
 
         return byteCode;
