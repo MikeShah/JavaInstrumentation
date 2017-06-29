@@ -3,11 +3,5 @@ functionMap(0) Dump of <key function name>@name@Total Runs@Runs Avg(ns)@Max(ns)@
 @total functions profiled
 
 
-AbsoluteProgramTime@441722158
-Critical Section Time@0
-
-@total functions profiled
-
-
-AbsoluteProgramTime@443610947
+AbsoluteProgramTime@12138291881
 Critical Section Time@0

@@ -5,7 +5,7 @@ import java.util.*;
 // they are testing.
 public class tests {
 
-	private final int ITERATIONS = 5000;
+	private final int ITERATIONS = 50;
 
 	// arithmetic.java
 	public void t1_arithmetic(){
@@ -119,6 +119,13 @@ public class tests {
 	public void t1_sortRandomListTest(){
 		for(int i =0; i < ITERATIONS; ++i){
 			SortRandomListTest.generateAndSortRandomLists(i);
+		}
+	}
+
+	// NetworkIPReachableTest.java
+	public void t1_NetworkIPReachableTest(){
+		for(int i =0; i < ITERATIONS; ++i){
+			NetworkIPReachableTest.getHost();
 		}
 	}
 

@@ -40,6 +40,9 @@ public final class ProfilingController {
 	public static Long start;
 	// Total time spent executing the program. This is computed by instrumenting "main"
 	public static Long absoluteProgramTime;
+	// A estimate of how much additional time was spent due to instrumentation.
+	// This essentially measurs time spent in each of the logging functions.
+	public static Long overhead;
 	// The number of functions in the program.
 	// Also used as a unique ID for all functions in the program.
 	static int functionCount;
@@ -74,6 +77,7 @@ public final class ProfilingController {
 
 	/// Add indentation before a function entry
 	public static void addEntry(){
+		long startTime = System.nanoTime();
 		boolean outputSpaces = false;
 		if(outputSpaces){
 			for(int i=0;i<prettyPrint; ++i){
@@ -81,10 +85,12 @@ public final class ProfilingController {
 			}
 		}
 		prettyPrint++;
+		overhead += System.nanoTime() - startTime;
 	}
 
 	/// Add indentation before a function entry
 	public static void addExit(){
+		long startTime = System.nanoTime();
 		prettyPrint--;
 		boolean outputSpaces = false;
 		if(outputSpaces){
@@ -92,6 +98,7 @@ public final class ProfilingController {
 				System.out.print(" ");
 			}
 		}
+		overhead += System.nanoTime() - startTime;
 	}
 
 	/// Immedietely write to our output file
@@ -302,6 +309,7 @@ public final class ProfilingController {
 
 	// Increases the occurances of a function
 	public static synchronized void log(String functionName, long time, long threadID, String caller){
+		long startTime = System.nanoTime();
 		if (functionMap==null || functionMapIDs==null || statisticMap==null){
 			System.out.println("attempted log1");
 			init();
@@ -328,7 +336,8 @@ public final class ProfilingController {
 			temp.addTime(time,threadID,caller);
 			statisticMap.put(id,temp);
 		}
-
+		// End the overhead time recorded here
+		overhead += System.nanoTime() - startTime;
 	}
 
 	private static synchronized String removeLeadingNumeric(String s){
@@ -499,6 +508,8 @@ public final class ProfilingController {
 		streamFunctionMapWriter.write("\n\nAbsoluteProgramTime"+DelimiterSymbol+ProfilingController.absoluteProgramTime.toString()+'\n');
 		// Time spent in only the Critical Sections
 		streamFunctionMapWriter.write("Critical Section Time"+DelimiterSymbol+totalTimeInCriticalSections+'\n');
+		// Output the overhead of instrumentation 
+		streamFunctionMapWriter.write("Estimated overhead of logging"+DelimiterSymbol+overhead+'\n');
 		// Ensure that everything gets written.
 		streamFunctionMapWriter.flush();
 	}

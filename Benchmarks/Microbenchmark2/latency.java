@@ -20,6 +20,7 @@ public class latency {
         t.t1_NestedSynchronizedClassesTest();
         t.t1_growingIntegerListTest();
         t.t1_sortRandomListTest();
+        t.t1_NetworkIPReachableTest();
     }
 
 }

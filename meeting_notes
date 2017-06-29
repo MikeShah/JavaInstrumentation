@@ -46,3 +46,7 @@ Free Delta skyline miles
 	Log scale
 
 
+==========================
+Assign some random Min Max to operations, and then meet function takes that in
+
+See if the static analysis can match the microbenchmarks

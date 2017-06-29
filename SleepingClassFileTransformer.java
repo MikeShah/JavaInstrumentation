@@ -192,7 +192,8 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
         String callStackStart = "ProfilingController.ccspush(mainThreadId,\""+m_name+"\");";
         // method.insertBefore(getThreadID+callStackStart+addToCallTreeListEntry+addEntry+startTime+printEntry);
 
-
+        // If we are enabling Call stack information, then add this Instrumentation
+        // Otherwise, just enable regular instrumentation.
         if(ProfilingController.KNOB_CALL_STACK_INFO){
             method.insertBefore(    getThreadID
                                 +   callStackStart
@@ -216,7 +217,8 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
         String addExit = "ProfilingController.addExit();";
         String addToCallTreeListExit = "ProfilingController.addToCallTreeList(ProfilingController.getSpaces(true)+\""+m_name+"__Exit\" +\"|\"+elapsedTime+\"|\"+mainThreadId+\"|\"+"+synchronizedMethod+");";
 
-
+        // If we are enabling Call stack information, then add this Instrumentation
+        // Otherwise, just enable regular instrumentation.
         if(ProfilingController.KNOB_CALL_STACK_INFO){
                 method.insertAfter("{"
                                  + calculateElapsedTime
