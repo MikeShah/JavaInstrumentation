@@ -1,5 +1,7 @@
 CommentFromMike: This is the manifest for the agent
+Main-Class: DurationAgent
 Premain-Class: DurationAgent
+Agent-Class: DurationAgent
 Boot-Class-Path: javassist-3.21.0/javassist.jar Agent.jar
 Can-Redefine-Classes: true
 Can-Retransform-Classes: true

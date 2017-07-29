@@ -7,6 +7,9 @@
 */
 
 // import Instrumentation classes
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadInfo;
+import java.lang.management.ThreadMXBean;
 import java.lang.instrument.Instrumentation;
 import java.util.concurrent.*;
 import java.io.*;
@@ -42,7 +45,7 @@ public final class ProfilingController {
 	public static Long absoluteProgramTime;
 	// A estimate of how much additional time was spent due to instrumentation.
 	// This essentially measurs time spent in each of the logging functions.
-	public static Long overhead;
+	public static Long overhead = 0L;
 	// The number of functions in the program.
 	// Also used as a unique ID for all functions in the program.
 	static int functionCount;
@@ -61,9 +64,13 @@ public final class ProfilingController {
 	// Output more information
 	public static Boolean KNOB_VERBOSE_OUTPUT = false;
 	// Get call Stack information
-	public static Boolean KNOB_CALL_STACK_INFO = true;
+	public static Boolean KNOB_CALL_STACK_INFO = false;
 	// Has main been instrumented already?
 	public static Boolean mainInstrumented = false; //
+	// Only outputs a subset of the CSV File
+	public static Boolean KNOB_COMPRESSED_CSV = false; //
+
+	public static ThreadMXBean threadMXBean;// = ManagementFactory.getThreadMXBean();
 
 	// Sets the agent arguments in our internal profiling controller.
 	// By default the java agent only takes in a string, so if we need to parse it
@@ -267,6 +274,10 @@ public final class ProfilingController {
 		if(ccs==null){
 			ccs = new CallingContextStack();
 		}
+		if(threadMXBean==null){
+			threadMXBean = ManagementFactory.getThreadMXBean();
+		}
+
 	}
 
 	// Default constructor
@@ -308,7 +319,7 @@ public final class ProfilingController {
 	}
 
 	// Increases the occurances of a function
-	public static synchronized void log(String functionName, long time, long threadID, String caller){
+	public static synchronized void log(String functionName, long time, long threadID, String caller, boolean td){
 		long startTime = System.nanoTime();
 		if (functionMap==null || functionMapIDs==null || statisticMap==null){
 			System.out.println("attempted log1");
@@ -333,7 +344,7 @@ public final class ProfilingController {
 		// 	Modify the occurance count
 		Statistic temp = statisticMap.get(id);
 		if(temp!=null){
-			temp.addTime(time,threadID,caller);
+			temp.addTime(time,threadID,caller,td);
 			statisticMap.put(id,temp);
 		}
 		// End the overhead time recorded here
@@ -464,25 +475,22 @@ public final class ProfilingController {
 	/// Concise - 	Only outputs functions that have run more than once
 	///  			Note that this is toggled in "mainmethod.insertAfter"
 	public static synchronized void dumpFunctionMapCSV(){
-		boolean concise = true;
+		boolean concise = false;
 		if (functionMap==null || functionMapIDs==null){
 			System.out.println("dump is null, add a function first");
 			return;
 		}
 		System.out.println("====================================================");
 		System.out.println("=================dumpFunctionMapCSV=================");
-		System.out.println("=================dumpFunctionMapCSV=================");
-		System.out.println("=================dumpFunctionMapCSV=================");
-		System.out.println("=================dumpFunctionMapCSV=================");
-		System.out.println("=================dumpFunctionMapCSV=================");
-		System.out.println("=================dumpFunctionMapCSV=================");
-		System.out.println("=================dumpFunctionMapCSV=================");
+		System.out.println("=================                  =================");
 		System.out.println("====================================================");
-
+		System.out.println("Quick Stats");
+		System.out.println("AbsoluteProgramTime="+absoluteProgramTime);
+		System.out.println("Instrumentation Overhead="+overhead);
 
 		// Total time spent in critical sections
 		long totalTimeInCriticalSections = 0L;
-		// Iteratoe through i# of functions in the function map.
+
 		for(Integer i = 0; i < functionMap.size(); ++i){
 		    String functionName = functionMap.get(i).toString();
 		    Statistic temp = statisticMap.get(i);
@@ -490,17 +498,28 @@ public final class ProfilingController {
 		    for(int j =0; j < temp.timeList.size(); ++j){
 		    	totalTimeInCriticalSections+= temp.timeList.get(j);
 		    }
+			}
+
+			System.out.println("totalTimeInCriticalSections="+overhead);
+
+
+		// Iteratoe through i# of functions in the function map.
+		for(Integer i = 0; i < functionMap.size(); ++i){
+		    String functionName = functionMap.get(i).toString();
+		    Statistic temp = statisticMap.get(i);
 		    String output = temp.dumpCSV();
 		    //System.out.println(i.toString() + " = " + value + statisticMap.get(i).dump());
+				String finalString = i.toString()+DelimiterSymbol+functionName + output+'\n';
+				// System.out.println(finalString); // Uncomment this to debug any output
 		    if(concise){
-		    	// Only write out information for functions that ran at least once
-			    if(temp.timeList.size()>0){
-			    	streamFunctionMapWriter.write(i.toString()+DelimiterSymbol+functionName + output+'\n');
+			    	// Only write out information for functions that ran at least once
+				    if(temp.timeList.size()>0){
+				    	streamFunctionMapWriter.write(finalString);
+						}
+				}else
+				{
+					streamFunctionMapWriter.write(finalString);
 				}
-			}else
-			{
-				streamFunctionMapWriter.write(i.toString()+DelimiterSymbol+functionName + output+'\n');
-			}
 		}
 		// Output the final Absolute Time
 		streamFunctionMapWriter.write('\n');
@@ -508,10 +527,14 @@ public final class ProfilingController {
 		streamFunctionMapWriter.write("\n\nAbsoluteProgramTime"+DelimiterSymbol+ProfilingController.absoluteProgramTime.toString()+'\n');
 		// Time spent in only the Critical Sections
 		streamFunctionMapWriter.write("Critical Section Time"+DelimiterSymbol+totalTimeInCriticalSections+'\n');
-		// Output the overhead of instrumentation 
+		// Output the overhead of instrumentation
 		streamFunctionMapWriter.write("Estimated overhead of logging"+DelimiterSymbol+overhead+'\n');
 		// Ensure that everything gets written.
 		streamFunctionMapWriter.flush();
+		System.out.println("====================================================");
+		System.out.println("=================dumpFunctionMapCSV=================");
+		System.out.println("=================     Complete     =================");
+		System.out.println("====================================================");
 	}
 
 	// This function dumps a histogram of a functions execution times
@@ -553,37 +576,71 @@ public final class ProfilingController {
 
 	}
 
+	// Sampled dump
+	// Stream information out of a program
+	// e.g. 10000000000 = 10 seconds
+	static long sampleTimeElapsed = 0L;
+	public static void dumpFunctionMapCSVInterval(long interval){
+		//long timepoint = System.nanoTime();
+		sampleTimeElapsed = sampleTimeElapsed + 1;
+		if( sampleTimeElapsed > interval){
+			dumpFunctionMapCSV();
+			sampleTimeElapsed = 0L;
+		}
+		// Keep adding to elapsed time
+		//sampleTimeElapsed += System.nanoTime() - timepoint;
+	}
+
+	// Attempt to get contention information
+	public static boolean getContention(boolean holdsLock){
+			long startTime = System.nanoTime();
+
+			//ThreadData temp;
+
+			overhead += System.nanoTime() - startTime;
+			return holdsLock;
+	}
+
 	public static String getStackTrace(){
-        System.out.print("\tCaller:"+Thread.currentThread().getStackTrace()[3].getMethodName());
+		long startTime = System.nanoTime();
+
+			// FIX ME TODO: What if stack trace is less than 3 elements?
+        //System.out.print("\tCaller:"+Thread.currentThread().getStackTrace()[3].getMethodName()); // Debug by removing this
         //e.printStackTrace(pw);
+				overhead += System.nanoTime() - startTime;
+
         return ""; // stack trace as a string
     }
 
   public static synchronized String getCaller(long threadID){
-  	if(ccs==null){
+		long startTime = System.nanoTime();
+		if(ccs==null){
   		init();
   	}
 
   	String result = ccs.peek(threadID);
+		overhead += System.nanoTime() - startTime;
   	return result;
   }
 
   public static synchronized void ccspush(long threadID, String funcName){
-
+		long startTime = System.nanoTime();
   	if(ccs==null){
   		init();
   	}
 
   	ccs.push(threadID,funcName);
-
+		overhead += System.nanoTime() - startTime;
   }
 
   public static synchronized void ccspop(long threadID){
-  	if(ccs==null){
+		long startTime = System.nanoTime();
+		if(ccs==null){
   		init();
   	}
 
   	ccs.pop(threadID);
+		overhead += System.nanoTime() - startTime;
   }
 
 }

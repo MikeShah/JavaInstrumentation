@@ -8,7 +8,11 @@ import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.*;
-
+//
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadInfo;
+import java.lang.management.*;
+//
 import java.util.*;
 import java.io.*;
 
@@ -38,9 +42,13 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
         	//System.out.println("============= (SleepClassFileTransformer.java) Transforming and Instrumenting Classes ================== ");
 	        //System.out.println("\tAttempted transform() on class: "+ProfilingController.classNames.get(x));
                 try {
-                    final ClassPool cp = ClassPool.getDefault();
+                    ClassPool cp = ClassPool.getDefault();
+                              cp.importPackage("sun.management.*");
+                              cp.importPackage("java.lang.management.*");
+
                     // The class here (i.e. org.something.something)
-                    final CtClass cc = cp.get(ProfilingController.classNames.get(x));
+                    CtClass cc = cp.get(ProfilingController.classNames.get(x));
+
 
                     // Modify all of the classes methods
                     CtBehavior[] methods = cc.getDeclaredBehaviors();
@@ -213,7 +221,12 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
         String calculateElapsedTime = "elapsedTime = System.nanoTime() - elapsedTime;";
         String ccsPop = "ProfilingController.ccspop(mainThreadId);";
         String getStackTrace = "System.out.println(ProfilingController.getStackTrace());";       // Note that we get the caller here
-        String log = "ProfilingController.log(\""+m_name+"\",elapsedTime,mainThreadId,ProfilingController.getCaller(mainThreadId));";
+        String log="";
+        if(ProfilingController.KNOB_CALL_STACK_INFO){
+          log = "ProfilingController.log(\""+m_name+"\",elapsedTime,mainThreadId,ProfilingController.getCaller(mainThreadId),ProfilingController.getContention(true));";
+        }else{
+          log = "ProfilingController.log(\""+m_name+"\",elapsedTime,mainThreadId,\"\",ProfilingController.getContention(true)); ProfilingController.dumpFunctionMapCSVInterval(10000L);";
+        }
         String addExit = "ProfilingController.addExit();";
         String addToCallTreeListExit = "ProfilingController.addToCallTreeList(ProfilingController.getSpaces(true)+\""+m_name+"__Exit\" +\"|\"+elapsedTime+\"|\"+mainThreadId+\"|\"+"+synchronizedMethod+");";
 
@@ -223,7 +236,7 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
                 method.insertAfter("{"
                                  + calculateElapsedTime
                                  + ccsPop
-                                 + getStackTrace
+                              //   + getStackTrace
                                  + log //
                                  + addExit
                                  + addToCallTreeListExit

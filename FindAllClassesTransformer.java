@@ -23,8 +23,10 @@ public class FindAllClassesTransformer implements ClassFileTransformer {
         try{
             if(className != null
                  && !className.contains("java")
-                 && !className.contains("sun")
-                 && !className.contains("jdk")
+                 && !className.contains("javasist")
+
+                // && !className.contains("sun")
+                // && !className.contains("sun.management.")
                  && !className.contains("reflect")
                 //  && !className.contains("ProfilingController")
                 // && !className.contains("Statistic")

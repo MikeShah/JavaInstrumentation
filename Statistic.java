@@ -7,6 +7,8 @@ import java.util.*;
 		ArrayList<Long> timeList; // How much time a method took to execute
 		ArrayList<Long> threadIDList; // The ID of the thread that exectued.
 		ArrayList<String> callerList; // The function caller of this function
+		ArrayList<Boolean> threadDataList; // The function caller of this function
+
 
 		/// Initializer called from any constructor
 		private void init(){
@@ -21,20 +23,24 @@ import java.util.*;
 			if(callerList==null){
 				callerList = new ArrayList<String>();
 			}
+			if(threadDataList==null){
+				threadDataList = new ArrayList<Boolean>();
+			}
 		}
 		/// Default constructor
 		public Statistic(){
 			init();
 		}
 		// Adds a log of how long a method executed for.
-		public void addTime(Long t, Long id, String caller){
-			if(timeList==null || threadIDList==null || callerList==null){
+		public void addTime(Long t, Long id, String caller, boolean td){
+			if(timeList==null || threadIDList==null || callerList==null || threadDataList==null){
 				init();
 			}
 
 			timeList.add(t);
 			threadIDList.add(id);
 			callerList.add(caller);
+			threadDataList.add(td);
 		}
 
 		// Outputs the statistic in a nice way
@@ -55,21 +61,36 @@ import java.util.*;
 		}
 
 		// Params: If CSV is true, then output comma separated list
+		// If concise is true, then it will only output a sum of the time, and a
+		// total of the divergent points.
 		public String dumpCSV(){
 			String result="";
 
 			// Output every time and the thread id
-			for(int i =0; i < timeList.size();i++){
-				result += threadIDList.get(i)+ProfilingController.DelimiterSymbol+callerList.get(i)+ProfilingController.DelimiterSymbol+ timeList.get(i).toString()+ProfilingController.DelimiterSymbol;
-
+			if(ProfilingController.KNOB_COMPRESSED_CSV){
+				long timeSum = 0L;
+				for(int i =0; i < timeList.size();i++){
+					timeSum+=timeList.get(i);
+				}
+				result = "Total Calls="+timeSum+ProfilingController.DelimiterSymbol;
+			}else{
+				for(int i =0; i < timeList.size();i++){
+					result += threadIDList.get(i)+ProfilingController.DelimiterSymbol+callerList.get(i)+ProfilingController.DelimiterSymbol+ timeList.get(i).toString()+ProfilingController.DelimiterSymbol;
+				}
 			}
 
-			ArrayList<Integer> divergingPoints = bestFitLine();
+			ArrayList<Integer> divergingPoints = bestFitLineLeastSquares();//bestFitLine();
 			double percentageOfDivergingPoints = (double)divergingPoints.size()/(double)timeList.size();
 			String divergingPointsList = "";
-			for(int i = 0; i < divergingPoints.size(); ++ i){
-				divergingPointsList += divergingPoints.get(i)+",";
+			if(ProfilingController.KNOB_COMPRESSED_CSV){
+					divergingPointsList += "Total="+divergingPoints.size();
 			}
+			else{
+				for(int i = 0; i < divergingPoints.size(); ++ i){
+					divergingPointsList += divergingPoints.get(i)+",";
+				}
+			}
+
 
 			// Outputs the total number of executions, Average execution time, and then individual runs
 			return 	ProfilingController.DelimiterSymbol+timeList.size()+
@@ -185,30 +206,78 @@ import java.util.*;
 			double xysum = 0;
 			double x2sum = 0;
 			double y2sum = 0;
-			for(int i =0; i < timeList.size(); ++i){
-				xysum += (i+1)*timeList.get(i);
-				x2sum += (i+1);
-				y2sum += timeList.get(i);
+			for(int x =0; x < timeList.size(); ++x){
+				xysum += (x+1)*timeList.get(x);
+				x2sum += (x+1);
+				y2sum += timeList.get(x);
 			}
 
+			// The number of executions
 			double N 	 = timeList.size();
-
+			// Slope of the line
 			double m = ((N*xysum) - (xsum*ysum)) / ((N*x2sum) -(xsum*xsum));
+			// y-intercept
 			double b = ((N*x2sum)-(xsum*xsum)) / ((N*x2sum)-(xsum*xsum));
+			// Retrieve the stddev
+			double stddev = getStdDev();
 
 			// Equation of a line then becomes y=mx + b
-			// We then use this to find all points that are greater than
-			// the standard deviation.
-			double stddev = getStdDev();
-			for(int i =0; i < timeList.size(); ++i){
-				double y = m*i+b;
-				if(Math.abs(y - timeList.get(i)) > stddev){
-					divergingPoints.add(i);
+			// We then use this to find all points that are greater than one
+			// 1 standard deviation (That is, one standard deviation away from the trend line).
+			for(int x =0; x < timeList.size(); ++x){
+				double y = m*x+b;
+				if(Math.abs(y - timeList.get(x)) > stddev){
+					divergingPoints.add(x);
 				}
 			}
 
 			return divergingPoints;
 		}
+
+		public ArrayList<Integer> bestFitLineLeastSquares(){
+
+			ArrayList<Integer> divergingPoints = new ArrayList<Integer>();
+
+			// End execution if ther eis nothing to cmopute
+			if(timeList.size()==0){
+				return divergingPoints;
+			}
+
+			// (1) Compute means of x and y
+			// Not used arithmetic sum for xMean to quickly compute
+			double xMean = ((timeList.size()*timeList.size()+1)/2) / timeList.size();
+			double yMean =  getAvg();
+			// (2) compute slope
+			double m = 1;
+			double rise = 0;
+			double run = 0;
+
+			for(int i =0; i < timeList.size(); ++i){
+						rise += (i-xMean)*(timeList.get(i)-yMean);
+						run += (i-xMean)*(i-xMean);
+			}
+			// Compute the final slope if m is not zero
+			if(m!=0){
+				m = rise/run;
+			}
+			// (3) Compute y-intercept
+			double b = yMean - (m*xMean);
+
+			// Retrieve the stddev
+			double stddev = getStdDev();
+			// (4) The final equation is y = mx + b
+			for(int x = 0; x < timeList.size(); ++x){
+					// projected y value is
+					double y = (m*x) + b;
+					// Now if that point is greater than the stddev, then output it
+					if( Math.abs(timeList.get(x) - y) >  stddev){
+						divergingPoints.add(x);
+					}
+			}
+
+			return divergingPoints;
+		}
+
 
 		// Computes a list of points that diverage from the previous 'percent' (pass as an argument)
 		// of iterations of the function.

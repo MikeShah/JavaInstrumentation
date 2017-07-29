@@ -1,7 +1,0 @@
-functionMap(0) Dump of <key function name>@name@Total Runs@Runs Avg(ns)@Max(ns)@Min(ns)@Std Dev@% of Diverging Executions@Diverging Execution@ThreadID@Caller@Time(ns)
-
-@total functions profiled
-
-
-AbsoluteProgramTime@12138291881
-Critical Section Time@0

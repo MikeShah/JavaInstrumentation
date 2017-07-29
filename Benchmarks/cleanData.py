@@ -7,6 +7,8 @@
 #
 import sys
 
+print "-------------------python cleanData.py called -----------------"
+
 
 ROOTDIR=sys.argv[1]
 

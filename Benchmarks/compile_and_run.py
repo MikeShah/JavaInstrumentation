@@ -68,38 +68,47 @@ def generatePlotsAndCharts(AGENTARGS):
 
 def buildHistogram(f,dataList):
 	# x-dimension is the number of runs
+	# Remove any empty strings
+	dataList[0] = filter(None, dataList[0]) # fastest
+
 	x = range(1,len(dataList[0])+1)
 	if x > 0:
-		dataListAsFloat=numpy.array(dataList[0]).astype(numpy.float)
+		try:
+			dataListAsFloat=numpy.array(dataList[0]).astype(numpy.float)
 
-		fig, ax = pyplot.subplots()
-		pyplot.subplot(2,1,1)
-		pyplot.yscale('linear')
-		pyplot.scatter(x,dataListAsFloat)
-		pyplot.title("Critical Section Executions (n="+str(len(dataList[0]))+")")
-		pyplot.ylabel("Nanoseconds(ns)")
-		pyplot.xlabel("Nth Execution of Method")
+			fig, ax = pyplot.subplots()
+			pyplot.subplot(2,1,1)
+			pyplot.yscale('linear')
+			pyplot.scatter(x,dataListAsFloat)
+			pyplot.title("Critical Section Executions (n="+str(len(dataList[0]))+")")
+			pyplot.ylabel("Nanoseconds(ns)")
+			pyplot.xlabel("Nth Execution of Method")
 
-		pyplot.subplot(2,1,2)
-		pyplot.yscale('linear')
-		pyplot.hist(dataListAsFloat,histtype='bar',bins=20)
-		pyplot.title("Histogram")
-		pyplot.ylabel("Number of Executions")
-		pyplot.xlabel("Nanoseconds(ns)")
-		# Potential way to automatically select bin sizes--for now 20 is just fine.
-		#dataListAsFloat=numpy.array(dataList[0]).astype(numpy.float)
-		#binwidth = (2*IQR(dataListAsFloat))/ ((len(dataListAsFloat))**(1./3.))
-		#histogramPlot.hist(dataListAsFloat,histtype='bar',bins=numpy.arange(min(dataListAsFloat),max(dataListAsFloat)+binwidth,binwidth))
-		#
-		pyplot.plot()
-		pyplot.savefig(f+"1_hist_linear_"+".png")
-		# clear all data and continue plotting
-		pyplot.cla()
-		pyplot.clf()
-		pyplot.close()
+			pyplot.subplot(2,1,2)
+			pyplot.yscale('linear')
+			pyplot.hist(dataListAsFloat,histtype='bar',bins=20)
+			pyplot.title("Histogram")
+			pyplot.ylabel("Number of Executions")
+			pyplot.xlabel("Nanoseconds(ns)")
+			# Potential way to automatically select bin sizes--for now 20 is just fine.
+			#dataListAsFloat=numpy.array(dataList[0]).astype(numpy.float)
+			#binwidth = (2*IQR(dataListAsFloat))/ ((len(dataListAsFloat))**(1./3.))
+			#histogramPlot.hist(dataListAsFloat,histtype='bar',bins=numpy.arange(min(dataListAsFloat),max(dataListAsFloat)+binwidth,binwidth))
+			#
+			pyplot.plot()
+			pyplot.savefig(f+"1_hist_linear_"+".png")
+			# clear all data and continue plotting
+			pyplot.cla()
+			pyplot.clf()
+			pyplot.close()
+		except ValueError,e:
+			print "error",e,"for:"+str(dataList[0])
 
 def buildHistogramLog(f,dataList):
 	# x-dimension is the number of runs
+	# Remove any empty strings
+	dataList[0] = filter(None, dataList[0]) # fastest
+
 	x = range(1,len(dataList[0])+1)
 	if x > 0:
 		dataListAsFloat=numpy.array(dataList[0]).astype(numpy.float)
@@ -192,7 +201,7 @@ ARGS = "-bake test -rtbench -dumpkd -ipr -threads 8 /home/mike/Desktop/JavaDistr
 # Run with Agent
 command=JAVA+' -cp .:../../.:../.:'+JARPATH+' -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
 command_noagent=JAVA+' -cp .:../.:'+JARPATH+' -jar '+JARPATH+JARFILE+" "+ARGS
-runThreadingTest(AGENTARGS,command, command_noagent)
+#####runThreadingTest(AGENTARGS,command, command_noagent)
 # ========================= TEST SUITE AVORA ====================
 JARPATH = "./Avrora/"
 JARFILE = "avrora-beta-1.7.117.jar"
@@ -278,6 +287,32 @@ TIMEOUT = "timeout 5 "
 command	=TIMEOUT+ JAVA+'-javaagent:../Agent.jar='+AGENTARGS+' -cp '+JARPATH+JARFILE+':'+JARPATH+' '+ARGS
 command_noagent=TIMEOUT+ JAVA+' -cp '+JARPATH+JARFILE+':'+JARPATH+' '+ARGS
 #####runThreadingTest(AGENTARGS,command, command_noagent)
+# ========================= TEST SUITE Skulls====================
+# https://hub.jmonkeyengine.org/t/skulls-demo-available-for-download/31984
+# Run the sh Instrumented.sh in its directory and you are good to go
+JARPATH = "./Skulls/"
+JARFILE = "Skulls.jar"
+AGENTARGS="56_Skulls"
+ARGS 	= ""
+TIMEOUT = ""
+command	= JAVA+' -cp '+JARPATH+':.'+' -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
+command_noagent=TIMEOUT+ JAVA+' -cp '+JARPATH+JARFILE+':'+JARPATH+' '+ARGS
+runThreadingTest(AGENTARGS,command, command_noagent)
+# ========================= TEST SUITE Skulls====================
+# https://hub.jmonkeyengine.org/t/skulls-demo-available-for-download/31984
+# Run the sh Instrumented.sh in its directory and you are good to go
+JARPATH = "./MoviePlayer/"
+JARFILE = "MoviePlayer.jar"
+AGENTARGS="55_MoviePlayer"
+ARGS 	= ""
+TIMEOUT = ""
+command	= JAVA+' -cp '+JARPATH+':.'+' -javaagent:../Agent.jar='+AGENTARGS+' -jar '+JARPATH+JARFILE+" "+ARGS
+command_noagent=TIMEOUT+ JAVA+' -cp '+JARPATH+JARFILE+':'+JARPATH+' '+ARGS
+#####runThreadingTest(AGENTARGS,command, command_noagent)
+
+
+
+
 
 '''
 Without Instrumentation
