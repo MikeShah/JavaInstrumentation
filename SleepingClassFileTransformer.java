@@ -224,8 +224,11 @@ public class SleepingClassFileTransformer implements ClassFileTransformer {
         String log="";
         if(ProfilingController.KNOB_CALL_STACK_INFO){
           log = "ProfilingController.log(\""+m_name+"\",elapsedTime,mainThreadId,ProfilingController.getCaller(mainThreadId),ProfilingController.getContention(true));";
-        }else{
+        }else if(ProfilingController.KNOB_INTERVAL_PROFILE){
           log = "ProfilingController.log(\""+m_name+"\",elapsedTime,mainThreadId,\"\",ProfilingController.getContention(true)); ProfilingController.dumpFunctionMapCSVInterval(10000L);";
+        }
+        else{
+          log = "ProfilingController.log(\""+m_name+"\",elapsedTime,mainThreadId,\"\",ProfilingController.getContention(true));";
         }
         String addExit = "ProfilingController.addExit();";
         String addToCallTreeListExit = "ProfilingController.addToCallTreeList(ProfilingController.getSpaces(true)+\""+m_name+"__Exit\" +\"|\"+elapsedTime+\"|\"+mainThreadId+\"|\"+"+synchronizedMethod+");";

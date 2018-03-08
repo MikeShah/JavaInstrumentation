@@ -62,9 +62,11 @@ public final class ProfilingController {
 	// Knob to determine if we collect only critical section information
 	public static Boolean KNOB_INSTRUMENT_ONLY_CRITICAL_SECTIONS = true;
 	// Output more information
-	public static Boolean KNOB_VERBOSE_OUTPUT = false;
+	public static Boolean KNOB_VERBOSE_OUTPUT = true;
 	// Get call Stack information
 	public static Boolean KNOB_CALL_STACK_INFO = false;
+	// Whether or not dump the function map at fixed intervals
+	public static Boolean KNOB_INTERVAL_PROFILE = true;
 	// Has main been instrumented already?
 	public static Boolean mainInstrumented = false; //
 	// Only outputs a subset of the CSV File
